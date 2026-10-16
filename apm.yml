@@ -1,0 +1,15 @@
+name: partition-commerce
+version: 1.0.0
+description: APM project for partition-commerce
+author: Elie NEHME
+# Which agent platforms to deploy to.
+# Resolution order: --target flag > this field > auto-detect from filesystem.
+# Accepted values: agent-skills, antigravity, claude, codex, copilot, cursor, gemini, grok-build, hermes, kiro, opencode, vscode, windsurf
+targets:
+  - claude
+dependencies:
+  apm:
+    - elie29/partition
+  mcp: []
+includes: auto
+scripts: {}
