@@ -99,6 +99,7 @@
 							<modelPackage>com.commerce.invoice.inbound.api.model</modelPackage>
 							<configOptions>
 								<interfaceOnly>true</interfaceOnly>
+								<useTags>true</useTags>
 								<openApiNullable>false</openApiNullable>
 								<annotationLibrary>none</annotationLibrary>
 								<documentationProvider>none</documentationProvider>

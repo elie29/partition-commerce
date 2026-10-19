@@ -1,41 +1,35 @@
 package com.commerce.invoice.inbound;
 
+import static com.commerce.invoice.inbound.InvoiceModels.toInvoice;
+
 import com.commerce.invoice.application.CancelInvoiceUseCase;
 import com.commerce.invoice.application.GetInvoiceUseCase;
 import com.commerce.invoice.application.InvoiceView;
 import com.commerce.invoice.application.IssueInvoiceCommand;
 import com.commerce.invoice.application.IssueInvoiceUseCase;
 import com.commerce.invoice.application.LineData;
-import com.commerce.invoice.application.PayInvoiceUseCase;
-import com.commerce.invoice.inbound.api.InvoicesApi;
+import com.commerce.invoice.inbound.api.InvoiceApi;
 import com.commerce.invoice.inbound.api.model.Invoice;
 import com.commerce.invoice.inbound.api.model.IssueInvoice;
 import com.commerce.invoice.inbound.api.model.Line;
-import com.commerce.invoice.inbound.api.model.Money;
-import com.commerce.invoice.inbound.api.model.PayInvoice;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-/** The HTTP API of {@code invoice}, as `docs/contracts/billing.openapi.json` declares it. */
+/** The operations of the tag {@code Invoice} of `docs/contracts/billing.openapi.json`. */
 @RestController
-public class InvoiceController implements InvoicesApi {
+public class InvoiceController implements InvoiceApi {
 
     private final IssueInvoiceUseCase issueInvoice;
     private final GetInvoiceUseCase getInvoice;
     private final CancelInvoiceUseCase cancelInvoice;
-    private final PayInvoiceUseCase payInvoice;
 
     public InvoiceController(
-            IssueInvoiceUseCase issueInvoice,
-            GetInvoiceUseCase getInvoice,
-            CancelInvoiceUseCase cancelInvoice,
-            PayInvoiceUseCase payInvoice) {
+            IssueInvoiceUseCase issueInvoice, GetInvoiceUseCase getInvoice, CancelInvoiceUseCase cancelInvoice) {
         this.issueInvoice = issueInvoice;
         this.getInvoice = getInvoice;
         this.cancelInvoice = cancelInvoice;
-        this.payInvoice = payInvoice;
     }
 
     @Override
@@ -46,12 +40,6 @@ public class InvoiceController implements InvoicesApi {
     @Override
     public ResponseEntity<Invoice> cancelInvoice(String invoiceId) {
         return ResponseEntity.ok(toInvoice(cancelInvoice.cancel(invoiceId)));
-    }
-
-    /** The request model prints its card token: it is handed to the use case and never logged (BR-3). */
-    @Override
-    public ResponseEntity<Invoice> payInvoice(String invoiceId, PayInvoice request) {
-        return ResponseEntity.ok(toInvoice(payInvoice.pay(invoiceId, request.getCardToken())));
     }
 
     @Override
@@ -66,16 +54,5 @@ public class InvoiceController implements InvoicesApi {
                 .map(l -> l == null ? null
                         : new LineData(l.getLabel(), l.getPrice().getAmountMinor(), l.getPrice().getCurrency()))
                 .toList();
-    }
-
-    private static Invoice toInvoice(InvoiceView view) {
-        return new Invoice()
-                .invoiceId(view.invoiceId().toString())
-                .orderId(view.orderId())
-                .status(Invoice.StatusEnum.fromValue(view.status()))
-                .amount(new Money(view.amountMinor(), view.currency()))
-                .lines(view.lines().stream()
-                        .map(l -> new Line(l.label(), new Money(l.priceMinor(), l.currency())))
-                        .toList());
     }
 }

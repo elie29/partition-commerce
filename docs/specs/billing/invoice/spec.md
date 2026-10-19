@@ -6,7 +6,7 @@
 >
 > **Provenance:** 2026-10-19 · dff137fa31edf80bc498c2617ec2883ce74c9be9
 >
-> **Scope:** whole source
+> **Scope:** REQ-1 to REQ-3 of the whole source; REQ-4, REQ-5 and DEC-1 went to `payment` (fission, 2026-10-19)
 >
 > **Decomposition:** see `../bounded-contexts.md`
 
@@ -15,38 +15,30 @@
 
 ## Business objective
 
-Bill the customer for a confirmed order, and collect the payment of the invoice by card.
+Bill the customer for a confirmed order.
 
 ## Scope
 
-**In scope:** issuing an invoice, keeping it as issued, cancelling it, paying it by card and cancelling a paid invoice (REQ-1 to REQ-5). Reading an invoice back by its identifier (`getInvoice`; PO, 2026-10-19).
+**In scope:** issuing an invoice, keeping it as issued, cancelling it (REQ-1 to REQ-3). Reading an invoice back by its identifier (`getInvoice`; PO, 2026-10-19). Recording, for `payment`, an invoice paid and a payment cancelled (`InvoicePayments`; architect, 2026-10-19).
 
-**Out of scope:** the confirmation of the order that triggers the invoice (REQ-1): no contract of the project exposes it. The accountant's issue is how REQ-1's issue happens for now; an automatic issue on confirmation waits for an order context (PO, 2026-10-19). The order, its customer and its items: no bounded context owns them yet; the issue request carries `orderId`, `customerId` and the lines (architect, 2026-10-19). Charging a card and reversing a charge: handed to CardPay (REQ-4, REQ-5).
+**Out of scope:** the confirmation of the order that triggers the invoice (REQ-1): no contract of the project exposes it. The accountant's issue is how REQ-1's issue happens for now; an automatic issue on confirmation waits for an order context (PO, 2026-10-19). The order, its customer and its items: no bounded context owns them yet; the issue request carries `orderId`, `customerId` and the lines (architect, 2026-10-19). Paying an invoice by card and cancelling a payment (REQ-4, REQ-5): `payment` (fission, 2026-10-19).
 
 ## Language
 
-One meaning per word, no synonyms. A word that changes meaning in a neighbour marks the boundary.
+One meaning per word, no synonyms. A word that changes meaning in a neighbour marks the boundary. The words shared by `billing` (Amount, Blank, Character, Currency, Minor units, Payment, Refused) are in `../area.md`.
 
 | Term | Meaning in this bounded context |
 | ---- | ------------------------------- |
 | Invoice | What the customer owes for one confirmed order, line by line. |
 | Issued | Recorded by the issue, with an identifier of its own; nothing is sent to the customer in this version, and there is no state before it; from then on never modified (BA, 2026-10-19). Not the status `ISSUED`, which is an invoice neither paid nor cancelled (PO, BA, 2026-10-19). |
 | Paid | Its amount has been paid in full: its charge is recorded; its status `PAID` (PO, 2026-10-19). |
-| Payment | A charge recorded on the invoice; a declined charge is no payment. Held on the invoice, not an entity of its own (PO, architect, 2026-10-19). |
-| Card token | What CardPay makes on the customer's side to stand for a card; never a card number (TL, 2026-10-19). |
-| Charge reference | What CardPay answers when it accepts a charge: text bounded as a label is (BR-12) (TL, 2026-10-19). |
-| Declined | CardPay's answer to a charge it does not accept: CardPay declines a card. Not a refusal: a refusal is `invoice`'s (PO, 2026-10-19). |
-| Time of the payment | The moment the record of the payment commits (architect, 2026-10-19). |
 | Line | What the contract's `Line` holds: a label and a price; no quantity, no tax (PO, 2026-10-19). |
-| Amount | The sum of the prices of an invoice's lines (PO, 2026-10-19). |
 | Price | What one line costs (PO, 2026-10-19). |
-| Blank | Empty or only white space; a non-breaking space (U+00A0, U+2007, U+202F) is white space (PO, BA, 2026-10-19). |
-| Character | A Unicode code point: an emoji is one character (architect, 2026-10-19). |
 | Order | What the customer confirmed, identified by its `orderId`; it lives outside `invoice` (BA, 2026-10-19). |
 | Confirmed | The state of an order that may be invoiced; `invoice` takes it as given (BA, 2026-10-19). |
 | Customer | Who owes the invoice, identified by its `customerId` (BA, 2026-10-19). |
 | Accountant | The person who issues an invoice and cancels one before any payment (BA, 2026-10-19). |
-| Cancelled | Of an invoice not paid: voided before any payment, at no fee (BR-4); its status `CANCELLED` (PO, 2026-10-19). |
+| Cancelled | Of an invoice not paid: voided before any payment, at no fee (BR-4); its status `CANCELLED` (PO, 2026-10-19). Voided only: an invoice whose payment is cancelled is not cancelled, for BR-1 too; it is unpaid again, `ISSUED`, and can be paid again (PO, 2026-10-19). Not `payment`'s cancelled, a payment reversed. |
 | Correction | Two actions: the accountant cancels an invoice, then issues a new one for the same order with what any issue carries, which may differ from the cancelled invoice; the new invoice keeps no link to the cancelled one (PO, 2026-10-19). |
 
 ## Source parts owned
@@ -58,10 +50,7 @@ What this bounded context owns in its source. The source says what each part hol
 | REQ-1 | [REQ-1](../../../sources/billing.md#req-1--issue-an-invoice) | Issue an invoice for a confirmed order |
 | REQ-2 | [REQ-2](../../../sources/billing.md#req-2--keep-an-issued-invoice-as-issued) | Keep an issued invoice as issued, and how a correction is made |
 | REQ-3 | [REQ-3](../../../sources/billing.md#req-3--cancel-an-invoice) | The accountant cancels an invoice |
-| REQ-4 | [REQ-4](../../../sources/billing.md#req-4--pay-an-invoice) | The customer pays an invoice by card |
-| REQ-5 | [REQ-5](../../../sources/billing.md#req-5--cancel-a-paid-invoice) | The customer cancels a paid invoice |
-| DEC-1 | [DEC-1](../../../sources/billing.md#dec-1--cardpay) | The choice of the card payment provider |
-| Glossary | [Glossary](../../../sources/billing.md#glossary) | The two meanings of "Cancelled", for an unpaid and a paid invoice |
+| Glossary | [Glossary](../../../sources/billing.md#glossary) | "Cancelled" of an unpaid invoice |
 
 ## Business rules
 
@@ -69,16 +58,14 @@ What this bounded context owns in its source. The source says what each part hol
 | --- | --- | --- | --- | --- |
 | BR-1 | An order has at most one invoice that is not cancelled. | An issue for an order that already has an invoice that is not cancelled, a `PAID` invoice included (PO, 2026-10-19) | Refused, nothing is issued; of two issues of one order at the same moment, the second is refused. 409, no body; an issue that races the cancel of its order's invoice gets 409 until the cancel has committed; the database holds the rule, for simultaneous issues too | from source: REQ-1 (1.0.1); trigger and effect: owner, 2026-10-19; response and database: architect, 2026-10-19 |
 | BR-2 | The amount of an invoice is the sum of its lines. | An issue accepted | The amount is the sum of the prices of its lines, in their currency (Amount, BR-7) | from source: REQ-1; trigger and effect: PO, 2026-10-19 |
-| BR-3 | An issued invoice is never modified. | A cancel (BR-4) or a pay (BR-5) | Not a modification: only the status changes, to cancelled or to paid; the lines, the amount, the order and the customer stay as issued; a cancel records nothing else; a pay records the time of the payment and the charge reference, never the card token; the card token appears in no log, no error and no trace (TL, 2026-10-19) | from source: REQ-2; trigger and effect: PO, 2026-10-19 |
+| BR-3 | An issued invoice is never modified. | A cancel (BR-4), the record of a payment (BR-23) or of a payment cancelled (REQ-5) | Not a modification: only the status changes, to cancelled, to paid, or back to `ISSUED` when its payment is cancelled (PO, 2026-10-19); the lines, the amount, the order and the customer stay as issued; a cancel and a record record nothing else: the time of the payment and the charge reference are `payment`'s | from source: REQ-2; trigger and effect: PO, 2026-10-19 |
 | BR-4 | An invoice is cancelled only before any payment, at no fee. | A cancel of an invoice whose status is `ISSUED`: neither paid nor cancelled (PO); an invoice whose pay was refused included | 200 with the invoice, cancelled (BR-3); at no fee: the cancel charges nothing and calls no third party. A cancel of an invoice whose status is `PAID`: refused, 409, no body; nothing changes | from source: REQ-3; trigger and effect: PO, architect, 2026-10-19 |
-| BR-5 | An invoice is paid once its amount is paid in full. | A pay of an invoice whose status is `ISSUED` | CardPay is asked, in one call, to charge the card token for the whole amount, once; no partial payment; an amount of 0 is charged like any other, CardPay decides (PO). Accepted: the invoice is paid (BR-3), 200 with the invoice; the payment is recorded by a conditional update on an invoice still `ISSUED`, as a cancel is: of two pays, or a pay and a cancel, of one invoice at the same moment, the first to commit wins and the other gets 409, no body; its charge is not kept (architect). Accepted, then the record failing otherwise than by losing a race: 500, the invoice stays `ISSUED` (architect). A charge reference that is not bounded as a label is (BR-12): a defect, 500 (architect). Declined: no payment, 402, no body; the invoice stays `ISSUED` | from source: REQ-4; trigger and effect: PO, architect, 2026-10-19 |
-| BR-6 | A paid invoice is cancelled only within 24 hours of being paid; the invoice is then unpaid again. | — | — | from source: REQ-5 |
 | BR-7 | The lines of an invoice are all in one currency. | An issue whose lines are in different currencies | Refused: 400, no body | PO, 2026-10-19 |
 | BR-8 | A price is zero or more. | An issue with a negative price | Refused: 400, no body; a price of 0 is allowed | PO, 2026-10-19 |
 | BR-9 | A currency is a known code: a code of the JDK's `Currency` list that does not start with `X`. The list is the JDK's, updated with the JDK; fund codes and the withdrawn codes it still lists are known in this version. | An issue with a currency the contract's pattern accepts but that is not a known code: one the JDK does not list, or one starting with `X` (`XXX`, `XTS`, `XAU`, `XDR`, …) | Refused: 400, no body; the contract checks the form, the code that the code is known | PO, 2026-10-19 |
 | BR-10 | The amount stays within the range of the amount. | An issue whose sum of prices goes beyond that range | Refused: 400, no body | PO, 2026-10-19 |
 | BR-11 | `orderId` and `customerId` are any text bounded as a label is (BR-12). | An issue with one of them blank or longer | Refused: 400, no body | PO, 2026-10-19 |
-| BR-12 | A label is non-blank and holds at most 255 characters. | An issue with a label blank or longer | Refused: 400, no body | architect, 2026-10-19 |
+| BR-12 | A label is bounded by AR-1. | An issue with a label blank or longer | Refused: 400, no body | architect, 2026-10-19 |
 | BR-13 | A request the contract refuses, or one BR-7 to BR-12 refuse, is refused before BR-1 is checked. | An issue whose content is refused | Refused: 400, no body, whether or not the order already has an invoice. A request with no content type keeps the framework's 415 | architect, 2026-10-19 |
 | BR-14 | An invoice has an identifier of its own, a UUID made by `invoice` when it issues. | An issue accepted | 201 with the issued invoice and its identifier | architect, 2026-10-19 |
 | BR-15 | An invoice is read by anyone holding its identifier. | A read | 200 with the invoice; an identifier that names no invoice, one that is not a UUID included: 404 | PO, architect, 2026-10-19 |
@@ -86,19 +73,15 @@ What this bounded context owns in its source. The source says what each part hol
 | BR-17 | The lines of an invoice are read back in the order they were issued. | A read | The lines in the order of the issue request | PO, 2026-10-19 |
 | BR-18 | A cancelled invoice is not cancelled again. | A cancel of a cancelled invoice, the second of two cancels of one invoice at the same moment included | Refused: 409, no body; nothing changes | PO, architect, 2026-10-19 |
 | BR-19 | An invoice is cancelled by anyone holding its identifier. | A cancel | An identifier that names no invoice, one that is not a UUID included: 404, no body | PO, architect, 2026-10-19 |
-| BR-20 | Only an invoice whose status is `ISSUED` is paid. | A pay of an invoice whose status is `PAID` or `CANCELLED` | Refused: 409, no body; nothing changes; CardPay is not called: it is called only for an invoice whose status is `ISSUED` | PO, 2026-10-19; CardPay not called: architect, 2026-10-19 |
-| BR-21 | An invoice is paid by anyone holding its identifier. | A pay | An identifier that names no invoice, one that is not a UUID included: 404, no body | PO, 2026-10-19 |
-| BR-22 | A card token is bounded as a label is (BR-12). | A pay with a card token BR-12's bound refuses; a pay the contract refuses: no body (a JSON request with an empty body), a body that is not JSON, no `cardToken`, a `cardToken` `null` or not a string | Refused: 400, no body. The content of a pay is checked first (400), then the invoice (404, BR-21; 409, BR-20). A request with no content type keeps the framework's 415 | TL, 2026-10-19; contract refusals, order and 415: architect, 2026-10-19 |
+| BR-23 | A payment is recorded only on an invoice still `ISSUED`. | A record of a payment, by `payment` through `InvoicePayments` | The status becomes `PAID` by a conditional update on an invoice still `ISSUED`, as a cancel is, in the caller's transaction: of a pay and a cancel of one invoice at the same moment, the first to commit holds. An invoice no longer `ISSUED`: refused, nothing changes | architect, 2026-10-19 (the conditional record of BR-5 of `payment`) |
 
-BR-4 against BR-6, and BR-3 against BR-5 and BR-6, are kept as written in 1.0, knowingly (PO, 2026-10-19); see `../bounded-contexts.md`, _Gaps detected_.
+BR-4 against BR-6 of `payment`, and BR-3 against BR-5 and BR-6 of `payment`, are kept as written in 1.0, knowingly (PO, 2026-10-19); see `../bounded-contexts.md`, _Gaps detected_.
 
 ## Decisions
 
 The decisions the source states, copied with their reason. A decision taken while building lives in the plan that took it; what it established is written in the sections above.
 
-| Decision | Reason | Source | Date |
-| -------- | ------ | ------ | ---- |
-| Card payments go through CardPay | it is the provider the company already has a contract with | DEC-1 | 1.0 |
+None: DEC-1 went to `payment` (fission, 2026-10-19).
 
 ## Persistence
 
@@ -106,31 +89,24 @@ No schema documents are declared for this project.
 
 ## External dependencies
 
-- **CardPay** — charges the customer's card when an invoice is paid (REQ-4), reverses the charge when a paid invoice is cancelled (REQ-5). Reached through a port with one operation: a charge of a card token for an amount, answered accepted with a charge reference, or declined. Not reachable in this version: its only adapter is a fake that accepts every card, wherever the service runs, accepted since the demo has no real customer; a real adapter comes with CardPay; no URL, no credentials (TL, 2026-10-19).
+None: CardPay is `payment`'s (fission, 2026-10-19).
 
 ## Contracts with neighbours
 
 | Neighbour | Direction | Contract | What crosses |
 | --------- | --------- | -------- | ------------ |
-| Callers: the accountant (issue), anyone holding an identifier (read, cancel, pay) | inbound | `docs/contracts/billing.openapi.json` 1.2.0: `issueInvoice`, `getInvoice`, `cancelInvoice`, `payInvoice` | in: `orderId`, `customerId`, the lines; the identifier to cancel; the identifier to pay and a `cardToken`; out: the invoice, without its customer, its time of payment and its charge reference |
+| Callers: the accountant (issue), anyone holding an identifier (read, cancel) | inbound | `docs/contracts/billing.openapi.json` 1.2.0: `issueInvoice`, `getInvoice`, `cancelInvoice` (tag `Invoice`) | in: `orderId`, `customerId`, the lines; the identifier to cancel; out: the invoice, without its customer |
+| `payment` | inbound, in process | `InvoicePayments`, in `invoice`'s application layer, frozen 2026-10-19 | read an invoice as `getInvoice` shows it; record a payment (BR-23); record a payment cancelled (REQ-5, not built). Used from `payment`'s outbound adapter only (architect, 2026-10-19) |
 
-What the contract does not declare (the 400, the 255 characters, blank, no body on a refusal) the code enforces (architect, 2026-10-19).
+What the contract does not declare (the 400, the bound of AR-1, no body on a refusal) the code enforces (architect, 2026-10-19).
 
 ## Applicable area rules and invariants
 
-None.
+AR-1, AR-2 of `../area.md`, with its language.
 
 ## Open questions
 
-- "Cancelled" is given two meanings: "Voided before any payment, at no fee" and "Reversed within 24 hours". The first holds for an invoice not paid (PO, 2026-10-19). When payment comes: does the reversal of a paid invoice (BR-6) take another word, or another bounded context?
-- After a paid invoice is cancelled and is "unpaid again" (REQ-5), can it be paid again, or cancelled by the accountant (REQ-3)?
-- Does cancelling a paid invoice (REQ-5) carry a fee?
-- BR-6 has no trigger and no expected effect.
-- CardPay does not answer, or answers out of bounds (BR-5): open until CardPay is reachable; its fake always answers (architect, 2026-10-19). Owner: architect.
-- A charge accepted whose record loses to another pay or to a cancel, or fails otherwise (BR-5), is kept nowhere in this version: the card is charged and no payment is recorded. Reversed with REQ-5: open until then (architect, 2026-10-19). Owner: architect.
-- Anyone may retry a pay after a 402 and so test card tokens: accepted in this version, there is no login (PO, 2026-10-19). Owner: PO.
-- The card token reaches the log when `org.springframework.web` runs at DEBUG or TRACE: the request model generated from the contract prints it, and Spring logs the body and the arguments it reads (BR-3). Accepted in this version: the demo never runs that logger at DEBUG or TRACE and has no real card token; open until a real CardPay adapter comes; no contract change (TL, 2026-10-19). Owner: TL.
-- Is a payment an entity of its own? Not in this version: it is held on the invoice. A yes reopens the `invoice` / `payment` split (architect, 2026-10-19). Owner: architect.
+- An invoice whose payment is cancelled is `ISSUED` again and is not cancelled by the accountant: REQ-3 holds (PO, 2026-10-19). Yet BR-4 cancels any invoice whose status is `ISSUED`. How does `invoice` tell an invoice whose payment was cancelled from one never paid? Settled with REQ-5 (2026-10-19). Owner: PO, architect.
 - A currency a later JDK drops (BR-9, "updated with the JDK"): an invoice issued in it no longer passes BR-9, yet is read as issued (BR-3, BR-15). How is it read once the JDK is upgraded? (2026-10-19). Owner: architect.
 
 ### Attack — 2026-10-19 — feature "the accountant issues the invoice of a confirmed order, and anyone can read it back"
@@ -138,7 +114,7 @@ None.
 The findings still open; the others were settled on 2026-10-19 and written in the sections above.
 
 1. **Who may read an invoice.** Anyone holding its identifier reads it (BR-15); who may read stays open. Accepted for this version (PO, 2026-10-19). Owner: PO.
-6. **Read access reaches payment and cancellation.** REQ-4 "The customer pays", REQ-5 "The customer can cancel a paid invoice": neither says _the customer of the invoice_. Scenario: B reads A's invoice, takes its identifier and cancels A's payment within 24 hours (REQ-5). Missing: which caller may cancel which paid invoice. Owner: PO. The accountant's cancel before any payment (REQ-3) and the pay (REQ-4): anyone holding the identifier, accepted for this version (BR-19, BR-21; PO, 2026-10-19).
+6. Moved to `payment` with the rules it attacks (fission, 2026-10-19). The accountant's cancel before any payment (REQ-3): anyone holding the identifier, accepted for this version (BR-19; PO, 2026-10-19).
 7. **Who may issue.** No login in this version: anyone can issue, and can issue first for an order, so that the accountant's issue is then refused by BR-1. Accepted for this version (PO, TL, 2026-10-19). Owner: PO.
 13. **The H2 console** (`/h2-console`, enabled in `application.yaml`) is reachable. Accepted for this version (PO, TL, 2026-10-19). Owner: TL.
 
@@ -148,14 +124,7 @@ The findings still open; the others were settled on 2026-10-19 and written in th
 
 2. **Replacing someone else's invoice.** B reads A's invoice (BR-15), cancels it (BR-19), then issues for the same order with B's own `customerId` and lines (BR-1, Correction): A's order now carries B's invoice. Accepted for this version, with the cancel: there is no login (PO, 2026-10-19). Owner: PO.
 4. **The correction cannot be found from the cancelled invoice** (Correction). Accepted for this version (PO, 2026-10-19). Owner: PO.
-5. **"Not cancelled" in BR-1 once a paid invoice can be reversed (BR-6).** Settled with payment (PO, 2026-10-19). Owner: PO.
 
 Skipped: the data (a cancel answers the invoice as a read does, without its customer, and records only the status), the budget (nothing outside `invoice` is read but its contract), the session (no session: a stale status is answered by BR-18 or BR-1).
 
-### Attack — 2026-10-19 — feature "the customer pays an issued invoice by card, through CardPay"
-
-The findings still open; the others were settled on 2026-10-19 and written in the sections above. Findings 1 and 2 (a charge whose record loses or fails) are the open question on the charge kept nowhere, above.
-
-4. **A paid invoice has no way out in this version.** It is not cancelled by the accountant (BR-4), not cancelled by the customer (REQ-5 is a later feature), and blocks any new issue for its order (BR-1); anyone holding the identifier pays it (BR-21). Scenario: the accountant issues wrong lines; someone holding the identifier pays before the correction; no correction can be issued. Accepted until REQ-5 (PO, 2026-10-19). Owner: PO.
-
-Skipped: the siblings (the pay has one inbound surface, `payInvoice`; the refusal of a paid invoice reaches `cancelInvoice` (BR-4) and `issueInvoice` (BR-1), both written), the contract (the pay answers the contract's `Invoice`, without the time of the payment or the charge reference; CardPay is a port of `invoice`, no neighbour's contract is relied on), the budget (nothing outside `invoice` is read but its contract), the session (a status changed under the caller is answered by BR-20's 409 before any charge; a race is finding 1).
+The attack on the feature "the customer pays an issued invoice by card, through CardPay" moved to `payment` with the rules it attacked (fission, 2026-10-19).

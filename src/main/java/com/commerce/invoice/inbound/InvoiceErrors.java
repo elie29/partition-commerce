@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 /** The refusals of the API of {@code invoice}: a status and no body, so no value of the request travels back. */
-@RestControllerAdvice(assignableTypes = InvoiceController.class)
+@RestControllerAdvice(assignableTypes = {InvoiceController.class, PayInvoiceController.class})
 class InvoiceErrors {
 
     /** A request the contract refuses, or a content a business rule refuses (BR-13, BR-22). */

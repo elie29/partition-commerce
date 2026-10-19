@@ -10,7 +10,7 @@
 >
 > **Units covered:** 5 / 5
 >
-> **Decided:** 2026-10-19 · [architect] · proposal: option 1
+> **Decided:** 2026-10-19 · [architect] · proposal: option 1; fission of `invoice` into `invoice` and `payment`: 2026-10-19 · Claire Martin (architect), Paul Durand (PO), Léa Petit (BA) · workshop: `docs/sources/workshop-invoice-fission.md`
 
 The **Scope** line fixes the units analysed; the others appear in the `Coverage` table with the mention "out of scope". Change it only when a scope extension has been validated.
 
@@ -33,23 +33,22 @@ Decision rules: **R1** a bounded context needs C2 and one of C3–C5; **R2** C1 
 
 | Bounded context | Units | Criteria satisfied | Justification |
 | --- | --- | --- | --- |
-| invoice | REQ-1, REQ-2, REQ-3, REQ-4, REQ-5 | C6 (hint: C1 split in two sections) | Every unit acts on the invoice: "an invoice is issued" (REQ-1), "An issued invoice is never modified" (REQ-2), "The accountant can cancel an invoice" (REQ-3), "The customer pays an issued invoice by card" (REQ-4), "The customer can cancel a paid invoice" (REQ-5). |
+| invoice | REQ-1, REQ-2, REQ-3 | C6 (hint: C1, section "Invoices") | Every unit acts on the invoice: "an invoice is issued" (REQ-1), "An issued invoice is never modified" (REQ-2), "The accountant can cancel an invoice" (REQ-3). |
+| payment | REQ-4, REQ-5 | C5 (CardPay: "The card is charged through CardPay" (REQ-4), "CardPay reverses the charge" (REQ-5)); hint: C1, section "Paying an invoice" | Fission of `invoice`, 2026-10-19: "Cancelled" is, of an unpaid invoice, "voided before any payment, at no fee", and of a paid invoice, "reversed within 24 hours of being paid" (Glossary); kept against C2, see below. |
 
 ## Decisions not to split
 
-| Units kept together | Criteria failing | Reason |
-| --- | --- | --- |
-| REQ-1, REQ-2, REQ-3 / REQ-4, REQ-5 | C2, C3, C4 | R1: C2 fails, REQ-4 and REQ-5 act on the invoice, the source names no payment entity. C3 fails: "Cancelled" is defined once, for the invoice (Glossary). C4 fails: REQ-3 depends on whether a payment exists, REQ-5 changes the invoice's state. C5 (CardPay, REQ-4 and REQ-5) alone does not meet R1; C6 (the invoice, shared by all) argues against the separation (R4). |
+None. The decision of 2026-10-19 to keep REQ-1 to REQ-5 together was overturned by the fission of the same day: see `History`.
 
 ## Alternatives rejected
 
-| Split considered | Why rejected |
-| --- | --- |
-| Option 2 — `invoice` (REQ-1, REQ-2, REQ-3) and `payment` (REQ-4, REQ-5) | Breaks R1: C2 fails for REQ-4 and REQ-5 ("pays an issued invoice", "cancel a paid invoice"), C3 and C4 fail too; the invoice's state would be written from both sides (R4). Not chosen by [architect], 2026-10-19. |
+None. Option 2, rejected on 2026-10-19, was taken by the fission of the same day: see `History`.
 
 ## Kept against the criteria
 
-None.
+| Point | Criterion | Decided by | Date | Reason |
+| --- | --- | --- | --- | --- |
+| `payment` (REQ-4, REQ-5) retained apart from `invoice` | C2 (R1): REQ-4 and REQ-5 act on the invoice ("pays an issued invoice", "cancel a paid invoice"); the source names no payment entity | Claire Martin (architect) | 2026-10-19 | "Cancelled" carries two meanings, and the PRD will name the payment; a payment is an entity of its own. Against R4: every write of the invoice's state stays inside `invoice`, behind `InvoicePayments` |
 
 ## Gaps detected
 
@@ -65,11 +64,12 @@ None.
 | REQ-1 | Invoices | invoice |
 | REQ-2 | Invoices | invoice |
 | REQ-3 | Invoices | invoice |
-| REQ-4 | Paying an invoice | invoice |
-| REQ-5 | Paying an invoice | invoice |
+| REQ-4 | Paying an invoice | payment |
+| REQ-5 | Paying an invoice | payment |
 
 ## History
 
 | Date | Version | Provenance | Nature | Detail |
 | ---- | ------- | ---------- | ------ | ------ |
 | 2026-10-19 | 1.0 → 1.0.1 | dff137f | breaking | REQ-1: "An invoice is issued once per order" became "An order has at most one invoice that is not cancelled"; decomposition unchanged; BR-1 of `invoice` reported, not rewritten |
+| 2026-10-19 | 1.0.1 | dff137f | fission | `invoice` becomes `invoice` (REQ-1, REQ-2, REQ-3) and `payment` (REQ-4, REQ-5), both in `billing`; workshop `docs/sources/workshop-invoice-fission.md`, record `docs/architecture/reshapes/2026-10-19-invoice-fission.md`; `payment` kept against C2. Overturned the same day's _Decisions not to split_ line "REQ-1, REQ-2, REQ-3 / REQ-4, REQ-5 — C2, C3, C4 — R1: C2 fails, REQ-4 and REQ-5 act on the invoice, the source names no payment entity. C3 fails: "Cancelled" is defined once, for the invoice (Glossary). C4 fails: REQ-3 depends on whether a payment exists, REQ-5 changes the invoice's state. C5 alone does not meet R1; C6 argues against the separation (R4)", and the _Alternatives rejected_ line "Option 2 — `invoice` (REQ-1, REQ-2, REQ-3) and `payment` (REQ-4, REQ-5) — Breaks R1: C2 fails for REQ-4 and REQ-5, C3 and C4 fail too; the invoice's state would be written from both sides (R4). Not chosen by [architect], 2026-10-19" |

@@ -40,3 +40,21 @@ contexts:                     # one entry per bounded context, declared by parti
           - inbound -> application
           - outbound -> application
           - outbound -> domain
+  - id: payment
+    area: billing
+    code:
+      - src/main/java/com/commerce/payment/**
+    hexagons:
+      - id: payment
+        form: rich
+        reason: a payment moves from made to cancelled within 24 hours (workshop, architect, 2026-10-19)
+        layers:
+          domain: src/main/java/com/commerce/payment/domain/**
+          application: src/main/java/com/commerce/payment/application/**
+          inbound: src/main/java/com/commerce/payment/inbound/**
+          outbound: src/main/java/com/commerce/payment/outbound/**
+        allowed:
+          - application -> domain
+          - inbound -> application
+          - outbound -> application
+          - outbound -> domain
