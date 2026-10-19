@@ -110,6 +110,22 @@ class IssueInvoiceTest {
     }
 
     @Test
+    void refuses_a_currency_starting_with_x() {
+        assertRefused(request(newOrderId(), "customer-1", line("Book", 1250, "XXX")));
+        assertRefused(request(newOrderId(), "customer-1", line("Book", 1250, "XTS")));
+        assertRefused(request(newOrderId(), "customer-1", line("Book", 1250, "XAU")));
+        assertRefused(request(newOrderId(), "customer-1", line("Book", 1250, "XDR")));
+    }
+
+    @Test
+    void accepts_a_fund_code_and_a_withdrawn_code_the_jdk_lists() {
+        assertThat(client.issue(request(newOrderId(), "customer-1", line("Book", 1250, "BOV"))).statusCode())
+                .isEqualTo(201);
+        assertThat(client.issue(request(newOrderId(), "customer-1", line("Book", 1250, "DEM"))).statusCode())
+                .isEqualTo(201);
+    }
+
+    @Test
     void refuses_a_sum_of_prices_beyond_the_range_of_the_amount() {
         assertRefused(request(newOrderId(), "customer-1",
                 line("Book", Long.MAX_VALUE, "EUR"), line("Pen", 1, "EUR")));
@@ -135,6 +151,14 @@ class IssueInvoiceTest {
         assertRefused(request(newOrderId(), "customer-1", line("x".repeat(256), 1250, "EUR")));
         assertThat(client.issue(request(newOrderId(), "customer-1", line("😀".repeat(255), 1250, "EUR")))
                 .statusCode()).isEqualTo(201);
+    }
+
+    @Test
+    void refuses_a_text_of_only_non_breaking_spaces_as_blank() {
+        String nonBreaking = "   ";
+        assertRefused(request(nonBreaking, "customer-1", line("Book", 1250, "EUR")));
+        assertRefused(request(newOrderId(), nonBreaking, line("Book", 1250, "EUR")));
+        assertRefused(request(newOrderId(), "customer-1", line(nonBreaking, 1250, "EUR")));
     }
 
     @Test

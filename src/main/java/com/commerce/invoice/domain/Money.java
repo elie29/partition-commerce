@@ -1,8 +1,10 @@
 package com.commerce.invoice.domain;
 
 import java.util.Currency;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-/** An amount in minor units, with its currency, a known three-letter ISO 4217 code (BR-9). */
+/** An amount in minor units, with its currency, a known code (BR-9). */
 public record Money(long amountMinor, String currency) {
 
     public Money {
@@ -27,7 +29,13 @@ public record Money(long amountMinor, String currency) {
         return amountMinor < 0;
     }
 
+    /** The codes of the JDK's list, updated with the JDK, that do not start with X; read once. */
+    private static final Set<String> KNOWN = Currency.getAvailableCurrencies().stream()
+            .map(Currency::getCurrencyCode)
+            .filter(code -> !code.startsWith("X"))
+            .collect(Collectors.toUnmodifiableSet());
+
     private static boolean isKnown(String code) {
-        return Currency.getAvailableCurrencies().stream().anyMatch(c -> c.getCurrencyCode().equals(code));
+        return KNOWN.contains(code);
     }
 }

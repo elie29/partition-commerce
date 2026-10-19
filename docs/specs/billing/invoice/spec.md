@@ -35,7 +35,8 @@ One meaning per word, no synonyms. A word that changes meaning in a neighbour ma
 | Line | What the contract's `Line` holds: a label and a price; no quantity, no tax (PO, 2026-10-19). |
 | Amount | The sum of the prices of an invoice's lines (PO, 2026-10-19). |
 | Price | What one line costs (PO, 2026-10-19). |
-| Blank | Empty or only white space (PO, 2026-10-19). |
+| Blank | Empty or only white space; a non-breaking space (U+00A0, U+2007, U+202F) is white space (PO, BA, 2026-10-19). |
+| Character | A Unicode code point: an emoji is one character (architect, 2026-10-19). |
 | Order | What the customer confirmed, identified by its `orderId`; it lives outside `invoice` (BA, 2026-10-19). |
 | Confirmed | The state of an order that may be invoiced; `invoice` takes it as given (BA, 2026-10-19). |
 | Customer | Who owes the invoice, identified by its `customerId` (BA, 2026-10-19). |
@@ -67,7 +68,7 @@ What this bounded context owns in its source. The source says what each part hol
 | BR-6 | A paid invoice is cancelled only within 24 hours of being paid; the invoice is then unpaid again. | — | — | from source: REQ-5 |
 | BR-7 | The lines of an invoice are all in one currency. | An issue whose lines are in different currencies | Refused: 400, no body | PO, 2026-10-19 |
 | BR-8 | A price is zero or more. | An issue with a negative price | Refused: 400, no body; a price of 0 is allowed | PO, 2026-10-19 |
-| BR-9 | A currency is a three-letter ISO 4217 code that is known. | An issue with a currency the contract's pattern accepts but that is not a known code | Refused: 400, no body; the contract checks the form, the code that the code is known | PO, 2026-10-19 |
+| BR-9 | A currency is a known code: a code of the JDK's `Currency` list that does not start with `X`. The list is the JDK's, updated with the JDK; fund codes and the withdrawn codes it still lists are known in this version. | An issue with a currency the contract's pattern accepts but that is not a known code: one the JDK does not list, or one starting with `X` (`XXX`, `XTS`, `XAU`, `XDR`, …) | Refused: 400, no body; the contract checks the form, the code that the code is known | PO, 2026-10-19 |
 | BR-10 | The amount stays within the range of the amount. | An issue whose sum of prices goes beyond that range | Refused: 400, no body | PO, 2026-10-19 |
 | BR-11 | `orderId` and `customerId` are any non-blank text of at most 255 characters. | An issue with one of them blank or longer | Refused: 400, no body | PO, 2026-10-19 |
 | BR-12 | A label is non-blank and holds at most 255 characters. | An issue with a label blank or longer | Refused: 400, no body | architect, 2026-10-19 |
@@ -116,8 +117,7 @@ None.
 - After a paid invoice is cancelled and is "unpaid again" (REQ-5), can it be paid again, or cancelled by the accountant (REQ-3)?
 - Does cancelling a paid invoice (REQ-5) carry a fee?
 - BR-3 to BR-6 have no trigger and no expected effect.
-- Blank (BR-11, BR-12): is a text of non-breaking spaces only (U+00A0, U+2007, U+202F) "only white space"? The code takes it as non-blank today (gate, 2026-10-19). Owner: PO, BA.
-- Known ISO 4217 code (BR-9): any code the JDK lists, special and withdrawn codes such as `XXX` or `XTS` included, as the code does today, or only the active codes? (gate, 2026-10-19). Owner: PO.
+- A currency a later JDK drops (BR-9, "updated with the JDK"): an invoice issued in it no longer passes BR-9, yet is read as issued (BR-3, BR-15). How is it read once the JDK is upgraded? (2026-10-19). Owner: architect.
 
 ### Attack — 2026-10-19 — feature "the accountant issues the invoice of a confirmed order, and anyone can read it back"
 
