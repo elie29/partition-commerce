@@ -21,4 +21,8 @@ budget:
   chars_per_token: 4
   review: quarterly           # when the assessment is held, e.g. quarterly, every six sprints
 
-contexts: []                  # one entry per bounded context, declared by partition-shape or partition-reshape
+contexts:                     # one entry per bounded context, declared by partition-shape or partition-reshape
+  - id: invoice
+    area: billing
+    code:
+      - src/main/java/com/commerce/invoice/**
