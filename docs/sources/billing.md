@@ -1,13 +1,14 @@
 # Billing — product requirements
 
-Version 1.0
+Version 1.0.1
 
 ## Invoices
 
 ### REQ-1 — Issue an invoice
 
 When an order is confirmed, an invoice is issued to the customer of the order, with one line per ordered item.
-Rule: An invoice is issued once per order. Rule: The amount of an invoice is the sum of its lines.
+Rule: An order has at most one invoice that is not cancelled. Rule: The amount of an invoice is the sum of its
+lines.
 
 ### REQ-2 — Keep an issued invoice as issued
 
