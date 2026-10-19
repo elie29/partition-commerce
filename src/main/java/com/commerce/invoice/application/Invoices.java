@@ -23,12 +23,4 @@ public interface Invoices {
      * @return false when the recorded status is no longer {@code from}: a simultaneous change came first
      */
     boolean changeStatus(UUID id, InvoiceStatus from, InvoiceStatus to);
-
-    /**
-     * Records the payment of a paid invoice — its status, its charge reference and the time of the payment, the moment
-     * the record commits — and nothing else, if its recorded status is still {@code ISSUED} (BR-3, BR-5).
-     *
-     * @return false when the recorded status is no longer {@code ISSUED}: a simultaneous pay or cancel came first
-     */
-    boolean recordPayment(Invoice paid);
 }

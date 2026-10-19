@@ -82,12 +82,12 @@ Carried out by `docs/plans/invoice-fission-preconditions.md`.
 
 Carried out by `docs/plans/invoice-fission.md`.
 
-- Verification: `<to write when the move starts>`
-- Expected: <only the wiring>
-- Real output:
+- Verification: `git status --short -- . ':!src/main/java/com/commerce/payment' ':!src/test/java/com/commerce/payment'` against `4b3a86f`, the commit before the move; then `git diff --quiet 4b3a86f --` the callers and the contract
+- Expected: outside `payment`, only the wiring (`pom.xml`, `ArchitectureTest.java`), what `invoice` loses (8 files deleted, 9 changed, its `PayInvoiceTest` moved, `InvoicePaymentsTest`), the migrations V4 and V5, the plan; no caller of `invoice` and not its contract
+- Real output (2026-10-19): the list above, file for file (`docs/plans/invoice-fission.md` Task 6); `git diff --quiet` on `InvoicePayments`, `InvoiceView`, `LineData`, `InvoiceNotIssued`, `InvoiceController`, the three use cases of `invoice`, `billing.openapi.json`, `application.yaml` and the four test files of `invoice` that call it: `exit=0`. No caller changed
 
 ## After
 
-- [ ] C4 model updated and regenerated
+- [x] C4 model updated and regenerated: the component `payment` in `commerce-app`, `payment -> invoicing` through `InvoicePayments`, CardPay called by `payment`, 2026-10-19
 - [x] `docs/partition.yml` declares `payment`, area `billing`, code `src/main/java/com/commerce/payment/**`, form rich, 2026-10-19
-- [ ] Budget measured again: `docs/budget/YYYY-MM-DD.md`
+- [x] Budget measured again: `docs/budget/2026-10-19.md` — `invoice` 5 881, `payment` 5 089, both far under 32 000; the fission was raised by a word, not a gauge

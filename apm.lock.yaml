@@ -248,7 +248,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:c4bcf0efd8373bb0737f4748bdbb72ceebfb167e77c47c1295f8a4e1f4a14d72
+  content_hash: sha256:baf2d10d60347815da9a6459963641b1761bf7febc45d34654b04ab054fb4782
 - kind: project-relative
   target: claude
   value: .claude/rules/partition.md
@@ -1013,4 +1013,4 @@ local_deployed_file_hashes:
   .claude/rules/backend-database.md: sha256:65f156591a259bc67d05504f95859f74aad6a437e30bae14dd6546c764cf0d5f
   .claude/rules/backend-security-invoice.md: sha256:1d188ad77bffc01a05d25fd8bd1f69d1ce72be110698e9acc2498108ac9e1c91
   .claude/rules/backend-security.md: sha256:528096b117d21f78a65ea64126ee3d113db81f0f16df3a882d7c35f5eacefe5a
-  .claude/rules/backend-testing.md: sha256:c4bcf0efd8373bb0737f4748bdbb72ceebfb167e77c47c1295f8a4e1f4a14d72
+  .claude/rules/backend-testing.md: sha256:baf2d10d60347815da9a6459963641b1761bf7febc45d34654b04ab054fb4782

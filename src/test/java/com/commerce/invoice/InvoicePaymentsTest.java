@@ -5,8 +5,12 @@ import static com.commerce.invoice.InvoiceClient.newOrderId;
 import static com.commerce.invoice.InvoiceClient.request;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 
 import com.commerce.invoice.application.InvoiceNotIssued;
+import com.commerce.invoice.application.Invoices;
 import com.commerce.invoice.application.InvoicePayments;
 import com.commerce.invoice.application.InvoiceView;
 import com.commerce.invoice.application.LineData;
@@ -16,12 +20,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.support.TransactionTemplate;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The contract {@code InvoicePayments} through which {@code payment} reaches {@code invoice}: read an invoice as
- * {@code getInvoice} shows it, record a payment on an invoice still issued (BR-3, BR-5), record a payment cancelled
+ * {@code getInvoice} shows it, record a payment on an invoice still issued (BR-3, BR-23), record a payment cancelled
  * (REQ-5, not built yet). A payment is recorded in a transaction the test rolls back: it joins the caller's transaction.
  */
 @InvoiceApiTest
@@ -38,6 +43,10 @@ class InvoicePaymentsTest {
 
     @Autowired
     TransactionTemplate transaction;
+
+    /** Spied on: a test makes the conditional update lose to a simultaneous change. */
+    @MockitoSpyBean
+    Invoices invoices;
 
     InvoiceClient client;
 
@@ -74,6 +83,7 @@ class InvoicePaymentsTest {
 
             assertThat(paid.status()).isEqualTo("PAID");
             assertThat(paid).usingRecursiveComparison().ignoringFields("status").isEqualTo(issued);
+            assertThatThrownBy(() -> invoicePayments.recordPayment(invoiceId)).isInstanceOf(InvoiceNotIssued.class);
             status.setRollbackOnly();
         });
 
@@ -96,6 +106,15 @@ class InvoicePaymentsTest {
 
         assertThatThrownBy(() -> invoicePayments.recordPayment(invoiceId)).isInstanceOf(InvoiceNotIssued.class);
         assertThat(invoicePayments.find(invoiceId).orElseThrow().status()).isEqualTo("PAID");
+    }
+
+    @Test
+    void refuses_to_record_a_payment_when_a_simultaneous_change_commits_first() {
+        UUID invoiceId = issue();
+        doReturn(false).when(invoices).changeStatus(eq(invoiceId), any(), any());
+
+        assertThatThrownBy(() -> invoicePayments.recordPayment(invoiceId)).isInstanceOf(InvoiceNotIssued.class);
+        assertThat(invoicePayments.find(invoiceId).orElseThrow().status()).isEqualTo("ISSUED");
     }
 
     @Test

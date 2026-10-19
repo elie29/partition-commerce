@@ -1,6 +1,6 @@
 package com.commerce.invoice.domain;
 
-/** The one definition of a text the spec bounds as a label (BR-12): BR-11, BR-22, the charge reference (BR-5). */
+/** The one definition in {@code invoice} of a text bounded as a label is (BR-12, AR-1): the label, BR-11. */
 final class Text {
 
     static final int MAX_CHARACTERS = 255;

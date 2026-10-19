@@ -24,6 +24,6 @@ A correction is a cancel, then a new `POST /invoices` for the same order. An ord
 
 CardPay is not reachable in this version: the service charges cards through a fake that accepts every card. There is nothing to configure, no URL and no credentials.
 
-A refusal carries no body. A JSON value of the wrong type is refused, never coerced; a request with no content type gets `415`. The rules are in `docs/specs/billing/invoice/spec.md`.
+A refusal carries no body. A JSON value of the wrong type is refused, never coerced; a request with no content type gets `415`. The rules are in `docs/specs/billing/invoice/spec.md` (issue, read, cancel), `docs/specs/billing/payment/spec.md` (pay) and, for those both share, `docs/specs/billing/area.md`.
 
-The database migration `V3` records the payment. Once an invoice is paid, an earlier version of the service can no longer read it: there is no rollback, the project fixes forward.
+The database migration `V3` records the payment. Once an invoice is paid, an earlier version of the service can no longer read it: there is no rollback, the project fixes forward. The migrations `V4` and `V5` move the payment to a table of its own, copying the payments already recorded, and drop its columns from the invoice: no version earlier than `V5` runs after them.

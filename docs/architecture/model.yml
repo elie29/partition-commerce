@@ -25,6 +25,11 @@ elements:
     in: commerce-app
     name: Invoicing
     context: invoice
+  - id: payment
+    kind: component
+    in: commerce-app
+    name: Payment
+    context: payment
   - id: h2
     kind: container
     in: commerce
@@ -39,7 +44,9 @@ relations:
   - customer -> commerce-app: pays
   - accountant -> commerce-app: issues, cancels
   - invoicing -> h2: SQL
-  - invoicing -> cardpay: charges, reverses
+  - payment -> invoicing: InvoicePayments, in process
+  - payment -> h2: SQL
+  - payment -> cardpay: charges, reverses
 
 views:
   - id: context
@@ -83,19 +90,21 @@ views:
   - id: pay-invoice
     kind: dynamic
     title: Dynamic - Pay an invoice by card
-    participants: [customer, invoicing, h2, cardpay]
+    participants: [customer, payment, invoicing, h2, cardpay]
     steps:
-      - "customer -> invoicing: POST /invoices/{invoiceId}/pay (cardToken)"
-      - "invoicing --> customer: content refused (contract, BR-22): 400, no body"
-      - "invoicing -> h2: read the invoice"
-      - "invoicing --> customer: not a UUID, or no such invoice (BR-21): 404, no body"
-      - "invoicing --> customer: paid or cancelled (BR-20): 409, no body"
-      - "invoicing -> cardpay: charge the card token for the whole amount"
-      - "cardpay --> invoicing: declined"
-      - "invoicing --> customer: 402, no body; still issued"
-      - "cardpay --> invoicing: accepted, charge reference"
-      - "invoicing -> h2: set paid, the charge reference and the time, if still issued"
-      - "h2 --> invoicing: no row changed: a pay or a cancel came first"
-      - "invoicing --> customer: BR-5: 409, no body; the charge is not kept"
-      - "h2 --> invoicing: changed"
-      - "invoicing --> customer: 200, the paid invoice"
+      - "customer -> payment: POST /invoices/{invoiceId}/pay (cardToken)"
+      - "payment --> customer: content refused (contract, BR-22): 400, no body"
+      - "payment -> invoicing: InvoicePayments.find"
+      - "invoicing --> payment: the invoice, or none"
+      - "payment --> customer: not a UUID, or no such invoice (BR-21): 404, no body"
+      - "payment --> customer: paid or cancelled (BR-20): 409, no body"
+      - "payment -> cardpay: charge the card token for the whole amount"
+      - "cardpay --> payment: declined"
+      - "payment --> customer: 402, no body; still issued"
+      - "cardpay --> payment: accepted, charge reference"
+      - "payment -> invoicing: InvoicePayments.recordPayment, in payment's transaction"
+      - "invoicing -> h2: set paid, if still issued (BR-23)"
+      - "invoicing --> payment: no longer issued: a pay or a cancel came first"
+      - "payment --> customer: BR-5: 409, no body; the charge is not kept"
+      - "payment -> h2: insert the payment: amount, charge reference, time (BR-24); commit"
+      - "payment --> customer: 200, the paid invoice"

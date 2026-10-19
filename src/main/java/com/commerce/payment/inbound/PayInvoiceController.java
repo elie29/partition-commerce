@@ -1,11 +1,11 @@
-package com.commerce.invoice.inbound;
+package com.commerce.payment.inbound;
 
-import static com.commerce.invoice.inbound.InvoiceModels.toInvoice;
+import static com.commerce.payment.inbound.PaymentModels.toInvoice;
 
-import com.commerce.invoice.application.PayInvoiceUseCase;
-import com.commerce.invoice.inbound.api.PaymentApi;
-import com.commerce.invoice.inbound.api.model.Invoice;
-import com.commerce.invoice.inbound.api.model.PayInvoice;
+import com.commerce.payment.application.PayInvoiceUseCase;
+import com.commerce.payment.inbound.api.PaymentApi;
+import com.commerce.payment.inbound.api.model.Invoice;
+import com.commerce.payment.inbound.api.model.PayInvoice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +19,7 @@ public class PayInvoiceController implements PaymentApi {
         this.payInvoice = payInvoice;
     }
 
-    /** The request model prints its card token: it is handed to the use case and never logged (BR-3). */
+    /** The request model prints its card token: it is handed to the use case and never logged (BR-24). */
     @Override
     public ResponseEntity<Invoice> payInvoice(String invoiceId, PayInvoice request) {
         return ResponseEntity.ok(toInvoice(payInvoice.pay(invoiceId, request.getCardToken())));

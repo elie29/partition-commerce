@@ -4,7 +4,7 @@ package com.commerce.invoice.domain;
 public enum InvoiceStatus {
     /** Neither paid nor cancelled (BR-4). */
     ISSUED,
-    /** Its charge is recorded (BR-5). */
+    /** Its payment is recorded, by {@code payment} (BR-23). */
     PAID,
     /** Voided before any payment, at no fee (BR-4). */
     CANCELLED

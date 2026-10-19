@@ -97,6 +97,29 @@
 							<generatorName>spring</generatorName>
 							<apiPackage>com.commerce.invoice.inbound.api</apiPackage>
 							<modelPackage>com.commerce.invoice.inbound.api.model</modelPackage>
+							<openapiNormalizer>FILTER=tag:Invoice</openapiNormalizer>
+							<modelsToGenerate>Invoice,IssueInvoice,Line,Money</modelsToGenerate>
+							<configOptions>
+								<interfaceOnly>true</interfaceOnly>
+								<useTags>true</useTags>
+								<openApiNullable>false</openApiNullable>
+								<annotationLibrary>none</annotationLibrary>
+								<documentationProvider>none</documentationProvider>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>payment</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/docs/contracts/billing.openapi.json</inputSpec>
+							<generatorName>spring</generatorName>
+							<apiPackage>com.commerce.payment.inbound.api</apiPackage>
+							<modelPackage>com.commerce.payment.inbound.api.model</modelPackage>
+							<openapiNormalizer>FILTER=tag:Payment</openapiNormalizer>
+							<modelsToGenerate>Invoice,Line,Money,PayInvoice</modelsToGenerate>
 							<configOptions>
 								<interfaceOnly>true</interfaceOnly>
 								<useTags>true</useTags>

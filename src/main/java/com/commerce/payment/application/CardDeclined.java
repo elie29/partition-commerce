@@ -1,4 +1,4 @@
-package com.commerce.invoice.application;
+package com.commerce.payment.application;
 
 /** BR-5: CardPay declined the card; no payment, the invoice stays issued. */
 public class CardDeclined extends RuntimeException {

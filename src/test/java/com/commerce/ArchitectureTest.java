@@ -3,6 +3,8 @@ package com.commerce;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
+import com.tngtech.archunit.base.DescribedPredicate;
+import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
@@ -16,6 +18,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
@@ -72,6 +76,7 @@ class ArchitectureTest {
         }
     }
 
+    /** No hexagon imports from another, except the types of a contract it declares, listed in {@link #CONTRACTS}. */
     @Test
     void no_hexagon_imports_from_another() {
         for (Hexagon hexagon : hexagons) {
@@ -79,12 +84,51 @@ class ArchitectureTest {
                 if (hexagon == other) {
                     continue;
                 }
+                Set<String> contractTypes = CONTRACTS.stream()
+                        .filter(c -> c.from().equals(hexagon.id()) && c.to().equals(other.id()))
+                        .flatMap(c -> c.types().stream())
+                        .collect(Collectors.toSet());
                 noClasses().that().resideInAPackage(hexagon.rootPackage())
-                        .should().dependOnClassesThat().resideInAPackage(other.rootPackage())
+                        .should().dependOnClassesThat(JavaClass.Predicates.resideInAPackage(other.rootPackage())
+                                .and(DescribedPredicate.describe("not a type of a declared contract",
+                                        (JavaClass type) -> !contractTypes.contains(type.getName()))))
                         .allowEmptyShould(true)
                         .check(classes);
             }
         }
+    }
+
+    /** The layer map gives way for a declared contract from one layer only: the rest of the hexagon never reaches the other. */
+    @Test
+    void only_the_layer_a_contract_names_reaches_the_other_hexagon() {
+        for (Contract contract : CONTRACTS) {
+            Hexagon from = hexagon(contract.from());
+            Hexagon to = hexagon(contract.to());
+            noClasses().that().resideInAPackage(from.rootPackage())
+                    .and().resideOutsideOfPackage(from.layer(contract.fromLayer()))
+                    .should().dependOnClassesThat().resideInAPackage(to.rootPackage())
+                    .allowEmptyShould(true)
+                    .check(classes);
+        }
+    }
+
+    /**
+     * The contracts in process between hexagons, as {@code Contracts with neighbours} of both specs declare them
+     * ({@code docs/specs/billing/payment/spec.md}, {@code docs/specs/billing/invoice/spec.md}); {@code docs/partition.yml}
+     * declares no dependency between contexts (architect, 2026-10-19).
+     */
+    private static final List<Contract> CONTRACTS = List.of(new Contract(
+            "payment/payment", "outbound", "invoice/invoice",
+            Set.of("com.commerce.invoice.application.InvoicePayments",
+                    "com.commerce.invoice.application.InvoiceView",
+                    "com.commerce.invoice.application.LineData",
+                    "com.commerce.invoice.application.InvoiceNotIssued")));
+
+    private record Contract(String from, String fromLayer, String to, Set<String> types) {
+    }
+
+    private static Hexagon hexagon(String id) {
+        return hexagons.stream().filter(h -> h.id().equals(id)).findFirst().orElseThrow();
     }
 
     @SuppressWarnings("unchecked")

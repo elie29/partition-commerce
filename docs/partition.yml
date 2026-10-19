@@ -29,7 +29,7 @@ contexts:                     # one entry per bounded context, declared by parti
     hexagons:
       - id: invoice
         form: rich
-        reason: an invoice moves from issued to paid or cancelled under BR-3 to BR-6, and some transitions are forbidden
+        reason: an invoice moves from issued to paid or cancelled under BR-3, BR-4, BR-18 and BR-23, and some transitions are forbidden
         layers:
           domain: src/main/java/com/commerce/invoice/domain/**
           application: src/main/java/com/commerce/invoice/application/**

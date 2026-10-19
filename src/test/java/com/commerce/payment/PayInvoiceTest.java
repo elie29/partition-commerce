@@ -1,9 +1,9 @@
-package com.commerce.invoice;
+package com.commerce.payment;
 
-import static com.commerce.invoice.InvoiceClient.line;
-import static com.commerce.invoice.InvoiceClient.newOrderId;
-import static com.commerce.invoice.InvoiceClient.payRequest;
-import static com.commerce.invoice.InvoiceClient.request;
+import static com.commerce.payment.PaymentClient.line;
+import static com.commerce.payment.PaymentClient.newOrderId;
+import static com.commerce.payment.PaymentClient.payRequest;
+import static com.commerce.payment.PaymentClient.request;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -13,10 +13,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.commerce.invoice.application.CardPay;
-import com.commerce.invoice.application.Charge;
-import com.commerce.invoice.application.Invoices;
-import com.commerce.invoice.domain.Money;
+import com.commerce.payment.application.CardPay;
+import com.commerce.payment.application.Charge;
+import com.commerce.payment.application.Payments;
+import com.commerce.payment.domain.Money;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +39,8 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 
-/** The use case "pay an invoice by card": BR-3, BR-5, BR-20, BR-21, BR-22 of the spec of {@code invoice}. */
-@InvoiceApiTest
+/** The use case "pay an invoice by card": BR-5, BR-20, BR-21, BR-22, BR-24 of the spec of {@code payment}. */
+@PaymentApiTest
 @ExtendWith(OutputCaptureExtension.class)
 class PayInvoiceTest {
 
@@ -56,14 +56,15 @@ class PayInvoiceTest {
     @MockitoSpyBean
     CardPay cardPay;
 
+    /** Spied on: a test makes the record of the payment fail, the second write of its transaction. */
     @MockitoSpyBean
-    Invoices invoices;
+    Payments payments;
 
-    InvoiceClient client;
+    PaymentClient client;
 
     @BeforeEach
     void client() {
-        client = new InvoiceClient(port);
+        client = new PaymentClient(port);
     }
 
     @Test
@@ -220,7 +221,7 @@ class PayInvoiceTest {
     @Test
     void answers_500_and_the_invoice_stays_issued_when_the_record_fails() {
         doThrow(new DataAccessResourceFailureException("the database is down"))
-                .when(invoices).recordPayment(any());
+                .when(payments).add(any());
         String invoiceId = invoiceId(issue());
 
         HttpResponse<String> pay = client.pay(invoiceId, payRequest(TOKEN));
@@ -256,7 +257,7 @@ class PayInvoiceTest {
         answers.add(client.pay(invoiceId(issue()), payRequest(token)));
         doReturn(new Charge.Accepted("ref-1")).when(cardPay).charge(any(), any());
         doThrow(new DataAccessResourceFailureException("the database is down"))
-                .when(invoices).recordPayment(any());
+                .when(payments).add(any());
         answers.add(client.pay(invoiceId(issue()), payRequest(token)));
 
         assertThat(answers).extracting(HttpResponse::statusCode).containsExactly(200, 409, 404, 400, 400, 402, 500, 500);

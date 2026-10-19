@@ -1,4 +1,4 @@
-package com.commerce.invoice.application;
+package com.commerce.payment.application;
 
 /** CardPay's answer to a charge. */
 public sealed interface Charge {

@@ -1,7 +1,7 @@
-package com.commerce.invoice.application;
+package com.commerce.payment.application;
 
-import com.commerce.invoice.domain.CardToken;
-import com.commerce.invoice.domain.Money;
+import com.commerce.payment.domain.CardToken;
+import com.commerce.payment.domain.Money;
 
 /** The port to CardPay, through which card payments go (DEC-1); an outbound adapter implements it. */
 public interface CardPay {
