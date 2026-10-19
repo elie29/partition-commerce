@@ -62,7 +62,7 @@ Everything else is pointed to from `Source parts owned`, the sentences a source 
 
 ## Provenance and changes
 
-A source in the repository is recorded by the sha of its last commit (`git log -1 --format=%H -- <file>`); modified and not committed, `uncommitted`. The delta compares the recorded sha with the current file by `git diff <sha> -- <file>` and lists the units added, removed, renamed (anchor changed) and modified, by anchor. They are classified as in step 3 of `references/delta.md`, read for a document:
+A source in the repository is recorded by the sha of its last commit, read from git (`git log -1 --format=%H -- <file>`, and `git status --porcelain -- <file>` for uncommitted changes) when step 1 records it and again when the hard stop displays it, never carried over from an earlier turn. It is `uncommitted` only when that read shows the file never committed or changed since its last commit; a read that could not be run is reported as such, never recorded as `uncommitted`. The delta compares the recorded sha with the current file by `git diff <sha> -- <file>` and lists the units added, removed, renamed (anchor changed) and modified, by anchor. They are classified as in step 3 of `references/delta.md`, read for a document:
 
 | Change | Nature |
 | --- | --- |

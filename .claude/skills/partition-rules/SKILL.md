@@ -43,7 +43,7 @@ A rule has no `#` or `##` heading: its sections start at `###`. `apm compile` gi
 
 ## Add or change one rule
 
-Find the file whose topic and scope fit; add the line there. Create a file only for a new topic. Before adding, look for a rule that already says it: rewrite that line rather than adding a near-duplicate. A rule that binds the whole project and whose breach is a defect, not a matter of style, is a candidate for the invariant register instead (`partition-spec`).
+Find the file whose topic fits and whose `applyTo` matches only the code the line binds; add the line there. A file of that topic scoped wider does not fit: the line would load wherever that scope reaches. A line that binds part of the code, such as one bounded context, goes to a file of the same topic scoped to that part, named `<profile>-<topic>-<part>.instructions.md`, created if none exists, its scope checked to match files. Otherwise create a file only for a new topic. Before adding, look for a rule that already says it: rewrite that line rather than adding a near-duplicate, but never merge a line into one of a file scoped wider than the code it binds. A rule that binds the whole project and whose breach is a defect, not a matter of style, is a candidate for the invariant register instead (`partition-spec`).
 
 Keep a rule file to what is not obvious from the code. Remove a rule that has become obvious.
 

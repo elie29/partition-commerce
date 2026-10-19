@@ -228,7 +228,7 @@ Record the controller, the service and the adapter concerned, when they exist, a
 
 ## Step 6 — Present the plan and stop
 
-**Hard stop.** Display, before any writing:
+**Hard stop.** Read the current provenance again, as in step 1, never carried over from an earlier turn, then display, before any writing:
 
 ```text
 Contract           : <contracts>/<contract>
@@ -298,7 +298,7 @@ After validation only, and exactly according to the validated plan.
 
 | Class | Sections | Treatment |
 | --- | --- | --- |
-| **Derived from the source** | `Source parts owned` | Regenerated from the current source: one line per unit owned, with its link; nothing the source holds is copied |
+| **Derived from the source** | `Source parts owned` | Regenerated from the current source: one line per unit owned, then one line per part that is not a unit and bears on them, each with its link; nothing the source holds is copied |
 | **Copied from the source** | the "from source" lines of `Business rules`, `Decisions` | **Addition only.** A rule or decision the source newly states is added word for word with its anchor; one the source changed or removed is reported, never rewritten: a person confirmed it |
 | **Semi-derived** | `Persistence` | **Lines are added only.** A piece of data newly introduced by the contract receives its mapping line if `<schemas>/` documents one; otherwise it joins "Data without a documented place". The existing lines are neither rewritten nor deleted: a mapping that became false is reported. |
 | **Hand-written** | `Business objective`, `Scope`, `Language`, `Business rules`, `External dependencies`, `Contracts with neighbours`, `Applicable area rules and invariants`, `Open questions` | **Addition only.** Never replaced, never rewritten, never reordered; a "TO FILL" banner is removed only when the first rule the source states replaces it with "TO VALIDATE" (absolute rule 10). A new piece of information is added to them; a piece of information that became false is reported to the user, not corrected. |
