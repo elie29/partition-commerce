@@ -17,6 +17,8 @@
 
 	<properties>
 		<java.version>21</java.version>
+		<openapi-generator.version>7.26.0</openapi-generator.version>
+		<archunit.version>1.5.1</archunit.version>
 	</properties>
 
 	<dependencies>
@@ -35,6 +37,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
 		<dependency>
@@ -62,6 +68,12 @@
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.tngtech.archunit</groupId>
+			<artifactId>archunit-junit5</artifactId>
+			<version>${archunit.version}</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -69,6 +81,31 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>${openapi-generator.version}</version>
+				<executions>
+					<execution>
+						<id>billing</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/docs/contracts/billing.openapi.json</inputSpec>
+							<generatorName>spring</generatorName>
+							<apiPackage>com.commerce.invoice.inbound.api</apiPackage>
+							<modelPackage>com.commerce.invoice.inbound.api.model</modelPackage>
+							<configOptions>
+								<interfaceOnly>true</interfaceOnly>
+								<openApiNullable>false</openApiNullable>
+								<annotationLibrary>none</annotationLibrary>
+								<documentationProvider>none</documentationProvider>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

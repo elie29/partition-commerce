@@ -146,4 +146,81 @@
       </root>
     </mxGraphModel>
   </diagram>
+  <diagram id="issue-invoice" name="Dynamic - Issue an invoice">
+    <mxGraphModel dx="1434" dy="836" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1728" pageHeight="700" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="issue-invoice--p--accountant" value="&lt;b&gt;Accountant&lt;/b&gt;" style="rounded=1;absoluteArcSize=1;arcSize=10;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;fontColor=#000000;fontFamily=IBM Plex Sans;fontSize=19;partition=QE_JvAnkiK;" parent="1" vertex="1">
+          <mxGeometry x="129" y="0" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="issue-invoice--p--invoicing" value="&lt;b&gt;Invoicing&lt;/b&gt;" style="rounded=1;absoluteArcSize=1;arcSize=10;html=1;fillColor=#ffffff;strokeColor=#b85450;strokeWidth=2;fontColor=#000000;fontFamily=IBM Plex Sans;fontSize=19;partition=hQXAoU2tt2;" parent="1" vertex="1">
+          <mxGeometry x="750" y="0" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="issue-invoice--p--h2" value="&lt;b&gt;H2&lt;/b&gt;" style="rounded=1;absoluteArcSize=1;arcSize=10;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontColor=#000000;fontFamily=IBM Plex Sans;fontSize=19;partition=55Yf4BeX7v;" parent="1" vertex="1">
+          <mxGeometry x="1311" y="0" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="issue-invoice--l--accountant" value="" style="endArrow=none;strokeColor=#999999;strokeWidth=1;html=1;dashed=1;dashPattern=4 4;partition=DK8Bjvfh-u;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="259" y="42" as="sourcePoint"/>
+            <mxPoint x="259" y="560" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="issue-invoice--l--invoicing" value="" style="endArrow=none;strokeColor=#999999;strokeWidth=1;html=1;dashed=1;dashPattern=4 4;partition=uqvSaaE-I9;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="42" as="sourcePoint"/>
+            <mxPoint x="880" y="560" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="issue-invoice--l--h2" value="" style="endArrow=none;strokeColor=#999999;strokeWidth=1;html=1;dashed=1;dashPattern=4 4;partition=ER6w72UT_n;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1441" y="42" as="sourcePoint"/>
+            <mxPoint x="1441" y="560" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="issue-invoice--s--1" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;1&lt;/span&gt;POST /invoices (orderId, customerId, lines)" style="endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;dashed=0;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=VTDmVTRJxU;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="259" y="100" as="sourcePoint"/>
+            <mxPoint x="880" y="100" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="issue-invoice--s--2" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;2&lt;/span&gt;content refused (contract, BR-7 to BR-12): 400, no body" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=UvqcaO-C8U;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="170" as="sourcePoint"/>
+            <mxPoint x="259" y="170" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="issue-invoice--s--3" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;3&lt;/span&gt;insert the invoice and its lines, one transaction" style="endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;dashed=0;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=jnWJgZu4qN;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="240" as="sourcePoint"/>
+            <mxPoint x="1441" y="240" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="issue-invoice--s--4" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;4&lt;/span&gt;order already invoiced: unique key refused" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=wxhGOODC9s;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1441" y="310" as="sourcePoint"/>
+            <mxPoint x="880" y="310" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="issue-invoice--s--5" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;5&lt;/span&gt;BR-1: 409, no body" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=vH2L-V2tbu;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="380" as="sourcePoint"/>
+            <mxPoint x="259" y="380" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="issue-invoice--s--6" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;6&lt;/span&gt;inserted" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=LLAEimiGe7;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1441" y="450" as="sourcePoint"/>
+            <mxPoint x="880" y="450" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="issue-invoice--s--7" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;7&lt;/span&gt;201, the issued invoice" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=oK98Y5jzGx;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="880" y="520" as="sourcePoint"/>
+            <mxPoint x="259" y="520" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
 </mxfile>
