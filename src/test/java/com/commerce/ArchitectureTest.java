@@ -115,7 +115,8 @@ class ArchitectureTest {
     /**
      * The contracts in process between hexagons, as {@code Contracts with neighbours} of both specs declare them
      * ({@code docs/specs/billing/payment/spec.md}, {@code docs/specs/billing/invoice/spec.md},
-     * {@code docs/specs/billing/refund/spec.md}); {@code docs/partition.yml} declares no dependency between contexts
+     * {@code docs/specs/billing/refund/spec.md}, {@code docs/specs/catalog/product/spec.md},
+     * {@code docs/specs/catalog/price-list/spec.md}); {@code docs/partition.yml} declares no dependency between contexts
      * (architect, 2026-10-19).
      */
     private static final List<Contract> CONTRACTS = List.of(
@@ -127,7 +128,10 @@ class ArchitectureTest {
             new Contract("refund/refund", "outbound", "payment/payment",
                     Set.of("com.commerce.payment.application.PaymentRefunds",
                             "com.commerce.payment.application.RefundableInvoice",
-                            "com.commerce.payment.application.PaidPayment")));
+                            "com.commerce.payment.application.PaidPayment")),
+            new Contract("product/product", "outbound", "price-list/price-list",
+                    Set.of("com.commerce.pricelist.application.PriceListPrices",
+                            "com.commerce.pricelist.application.PriceListPrice")));
 
     private record Contract(String from, String fromLayer, String to, Set<String> types) {
     }

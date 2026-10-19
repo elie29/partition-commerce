@@ -80,7 +80,32 @@ contexts:                     # one entry per bounded context, declared by parti
     area: catalog
     code:
       - src/main/java/com/commerce/product/**
+    hexagons:
+      - id: product
+        form: thin
+        reason: "its only rule checks an input: there is no state to protect; the unique reference (BR-1) is held by a unique constraint in the store (architect, 2026-10-19)"
+        layers:
+          application: src/main/java/com/commerce/product/application/**
+          inbound: src/main/java/com/commerce/product/inbound/**
+          outbound: src/main/java/com/commerce/product/outbound/**
+        allowed:
+          - inbound -> application
+          - outbound -> application
   - id: price-list
     area: catalog
     code:
       - src/main/java/com/commerce/pricelist/**
+    hexagons:
+      - id: price-list
+        form: rich
+        reason: one price per product holds at every write (BR-1) (architect, 2026-10-19)
+        layers:
+          domain: src/main/java/com/commerce/pricelist/domain/**
+          application: src/main/java/com/commerce/pricelist/application/**
+          inbound: src/main/java/com/commerce/pricelist/inbound/**
+          outbound: src/main/java/com/commerce/pricelist/outbound/**
+        allowed:
+          - application -> domain
+          - inbound -> application
+          - outbound -> application
+          - outbound -> domain

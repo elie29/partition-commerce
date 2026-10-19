@@ -35,6 +35,16 @@ elements:
     in: commerce-app
     name: Refund
     context: refund
+  - id: product
+    kind: component
+    in: commerce-app
+    name: Product
+    context: product
+  - id: price-list
+    kind: component
+    in: commerce-app
+    name: Price list
+    context: price-list
   - id: h2
     kind: container
     in: commerce
@@ -55,6 +65,9 @@ relations:
   - refund -> payment: PaymentRefunds, in process
   - refund -> h2: SQL
   - refund -> cardpay: sends refunds
+  - product -> h2: SQL
+  - product -> price-list: PriceListPrices, in process
+  - price-list -> h2: SQL
 
 views:
   - id: context

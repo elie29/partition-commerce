@@ -25,10 +25,12 @@ Describe what the shop sells: create a product, read it, list the products, and 
 
 ## Language
 
-One meaning per word, no synonyms. A word that changes meaning in a neighbour marks the boundary.
+One meaning per word, no synonyms. A word that changes meaning in a neighbour marks the boundary. The words shared by `catalog` (Product, Price list, Price, Day, Currency, Amount, Applies, Blank, Character, Identifier, Minor units, Refused) are in `../area.md`.
 
 | Term | Meaning in this bounded context |
 | ---- | ------------------------------- |
+| Reference | The code a product is known by, unique (BR-1) (BA, 2026-10-19). |
+| Label | The name of a product as given at creation (BA, 2026-10-19). |
 
 ## Source parts owned
 
@@ -45,12 +47,18 @@ What this bounded context owns in its source. The source says what each part hol
 
 ## Business rules
 
-> **TO FILL BEFORE THIS BOUNDED CONTEXT IS USED.** This section is left empty on purpose: a business rule cannot be deduced from a source or from code. While this banner stands, the bounded context is not fit for design or implementation.
-
 | # | Rule | Trigger | Expected effect | Source |
 | --- | --- | --- | --- | --- |
-
-Remove the banner once the section is filled and confirmed.
+| BR-1 | A product reference is unique. | A `createProduct` whose reference another product holds, references compared exactly as written; two `createProduct` with one reference at the same moment | Refused: 409, nothing created; its `errors` item names `/reference` as its `field`. A unique constraint on the reference in the store holds the rule: the first to commit holds, the other gets 409 | BA (rule, trigger, effect), architect (the constraint), TL (the `field`), 2026-10-19 |
+| BR-2 | `createProduct` answers 409 for a reference already held, and for nothing else. | A `createProduct` refused on any other ground | Not a 409 | BA, 2026-10-19 |
+| BR-3 | A label is not blank. | A `createProduct` with a blank `label` | Refused: 400, nothing created; with a `reference` off its pattern too, two items, both content (AR-1) | BA, architect (two items), 2026-10-19 |
+| BR-4 | `description`, `ean` and `attributes`, translations included, are accepted and not kept. | A `createProduct` that carries them | No operation returns them; a value the contract's schema refuses is still refused, 400 (`backend-api-contract`) | BA, TL, 2026-10-19 |
+| BR-5 | A product is created at the server's clock, in UTC. | A `createProduct` accepted | 201 with the product; `createdAt` kept and returned wherever the contract's `Product` carries it (`createProduct`, `getProduct`, `listProducts`); `Location` is the path `/commerce/v1/catalog/products/{productId}` | BA (`createdAt`), TL (`Location`), 2026-10-19 |
+| BR-6 | The label is the one given at creation, on every operation. | `localized` or `Accept-Language` given | They change nothing in this version | BA, 2026-10-19 |
+| BR-7 | A page of `listProducts` is ordered by reference, ascending. | A `listProducts` | Products by reference, ascending; `references` compared exactly, as a reference is: an unknown reference matches nothing, a reference given twice counts once; `references=` empty is no filter; a page past the last: 200, no item, the totals true; no maximum on `page` nor on the number of `references` in this version, but a `page` beyond the integer range is refused, 400, as the schema's type says; a product created between two pages may shift them, an item seen twice | BA, PO (bounds, empty filter, the shift accepted), TL and PO (the integer range), 2026-10-19 |
+| BR-8 | An unknown product is not found. | A `getProduct` whose product does not exist, or whose `productId` is not a UUID | 404, `PRODUCT_NOT_FOUND` | architect, 2026-10-19 |
+| BR-9 | The price of a product in a price list on a day is the price the list holds now, when its `effectiveFrom` is on or before the end of that day, in UTC: a price applies by the day. | A `getProductPrice`; `at` absent is today; a day ends before 00:00 UTC of the next day; an `at` in the past is answered against the price the list holds now | 200 with the price that applies. No such product, no such price list, or no price that applies: one 404, `PRICE_NOT_FOUND`, one `detail`, "No such product, or no price for it in that price list"; `PriceListPrices` does not tell them apart | BA (rule, by the day, `at`, today, end of day), architect (one 404, its code), 2026-10-19 |
+| BR-10 | `getProductPrice` checks its content first. | A `getProductPrice` refused on more than one ground | A `priceListId` or an `at` the schema refuses is content: 400, before the product; then any 404 of BR-9. The first refusal stops the checks | architect, TL, 2026-10-19 |
 
 ## Decisions
 
@@ -69,19 +77,23 @@ None.
 
 ## Contracts with neighbours
 
-<What this bounded context shows to the others, and what it consumes from them. A neighbour is known by this and nothing else. An API contract given for this bounded context once it exists is recorded here, never as a second source of its decomposition.>
-
 | Neighbour | Direction | Contract | What crosses |
 | --------- | --------- | -------- | ------------ |
+| Callers | inbound | `docs/contracts/catalog.openapi.json` 1.0.0: `listProducts`, `createProduct`, `getProduct`, `getProductPrice` (tag `Product`), served under `/commerce/v1/catalog` | as the contract says; authentication is out of this version: the contract's `security` is kept as written, nothing of it is built, 401 and 403 are never answered (TL, PO, 2026-10-19) |
+| `price-list` | outbound, in process | `PriceListPrices`, in `price-list`'s application layer | in: a product, a price list, a day; out: the amount, the currency and the `effectiveFrom` of the price that applies, or none; an unknown price list and no price that day are not told apart. Called only from `product`'s outbound adapter, which uses nothing else of `price-list` (architect, 2026-10-19) |
 
 ## Applicable area rules and invariants
 
 | Entry | What it constrains here |
 | ----- | ----------------------- |
-| INV-DATA-001 of `../../invariants.md` | The price `getProductPrice` returns (architect, 2026-10-19) |
+| INV-DATA-001 of `../../invariants.md` | The amount `getProductPrice` answers, read from `price-list` (architect, 2026-10-19) |
+| AR-1 of `../area.md` | Every error answer of its four operations (BA, TL, 2026-10-19) |
+| AR-2 of `../area.md` | What it logs: never a label, a reference value or the amount read from `price-list` (TL, 2026-10-19) |
+| AR-3 of `../area.md` | `productId` in the path, `priceListId` in the query of `getProductPrice` (TL, 2026-10-19) |
+| AR-4 of `../area.md` | The body of `createProduct` (TL, 2026-10-19) |
+| AR-5 of `../area.md` | `createdAt` (TL, 2026-10-19) |
 
 ## Open questions
 
-- The `Product` response holds neither the `description`, the `attributes` nor the `ean` that `createProduct` accepts: are they kept, and where are they read? (2026-10-19)
-- What does `createProduct` refuse with `409 CONFLICT`: which state of the products does the request conflict with? (2026-10-19)
-- `getProductPrice` reads a price held by a price list: through which contract of `price-list` is it read? (2026-10-19)
+None (2026-10-19).
+

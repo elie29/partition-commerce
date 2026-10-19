@@ -25,10 +25,11 @@ Group prices by list: create a price list, read it, and set the price of a produ
 
 ## Language
 
-One meaning per word, no synonyms. A word that changes meaning in a neighbour marks the boundary.
+One meaning per word, no synonyms. A word that changes meaning in a neighbour marks the boundary. The words shared by `catalog` (Product, Price list, Price, Day, Currency, Amount, Applies, Blank, Character, Identifier, Minor units, Refused) are in `../area.md`.
 
 | Term | Meaning in this bounded context |
 | ---- | ------------------------------- |
+| Channel | `SHOP`, `MARKETPLACE` or `B2B`: kept and returned, governs no price (BA, 2026-10-19). |
 
 ## Source parts owned
 
@@ -44,12 +45,20 @@ What this bounded context owns in its source. The source says what each part hol
 
 ## Business rules
 
-> **TO FILL BEFORE THIS BOUNDED CONTEXT IS USED.** This section is left empty on purpose: a business rule cannot be deduced from a source or from code. While this banner stands, the bounded context is not fit for design or implementation.
-
 | # | Rule | Trigger | Expected effect | Source |
 | --- | --- | --- | --- | --- |
-
-Remove the banner once the section is filled and confirmed.
+| BR-1 | A price list holds one price per product. | A `setPrice` for a product already priced in that list; two `setPrice` for one product and list at the same moment | The new price replaces the old one: 200, the price set; the list keeps no history. One price per product and list, held by the store's key: the last to commit replaces the other. The last price set replaces the price whatever its `effectiveFrom`: a future price hides the current one, and until it applies, by the day as `product`'s BR-9 reads it, the product has no price in that list | BA (rule, trigger, effect, a future price, by the day), architect (the key), 2026-10-19 |
+| BR-2 | The amount of a price is never negative. | A `setPrice` with a negative amount | Refused: 400, nothing set; zero is a price | BA (rule; worded after the area's Price), 2026-10-19 |
+| BR-3 | A price is in its price list's currency. | A `setPrice` whose currency is not its list's | Refused: 400, nothing set | BA, 2026-10-19 |
+| BR-4 | A currency is a known ISO 4217 code, as `invoice`'s rule on a currency says: a code of the JDK's `Currency` list that does not start with `X`. The list is the JDK's, updated with the JDK; fund codes and the withdrawn codes it still lists are known in this version. | A `createPriceList` or a `setPrice` with a currency the contract's pattern accepts but that is not a known code (`XYZ`) | Refused: 400, nothing created or set; content, checked with the body (BR-10). BR-4 is checked on incoming requests only: a stored code is read as kept, a code a later JDK drops included | BA (the whole rule, incoming only), architect (its own check, content, incoming only), 2026-10-19 |
+| BR-5 | A name is not blank. | A `createPriceList` with a blank `name` | Refused: 400, nothing created | BA, 2026-10-19 |
+| BR-6 | The channel and the validity of a price list govern no price in this version. | A `createPriceList` | The channel is kept and returned; the validity is accepted, not kept, a validity ending before it starts included; a value the contract's schema refuses is still refused, 400 (`backend-api-contract`) | BA, TL, 2026-10-19 |
+| BR-7 | `createPriceList` never answers 409 in this version. | A `createPriceList` | No 409 | BA, 2026-10-19 |
+| BR-8 | A price takes effect at its `effectiveFrom`, read in UTC; absent, now. | A `setPrice` | `effectiveFrom` absent is the server's clock in UTC; one with an offset is read in UTC; one without an offset is refused, 400, the schema's date-time requiring one; one in the past is accepted; returned as kept | BA, TL, 2026-10-19 |
+| BR-9 | An unknown price list is not found. | A `getPriceList` or a `setPrice` whose `priceListId` is not a UUID or names no list | 404, `PRICE_LIST_NOT_FOUND` | architect, 2026-10-19 |
+| BR-12 | A price is set for the product identifier given, whether `product` holds it or not. | A `setPrice` | `price-list` does not read `product`; a `productId` that is not a UUID: 404, `PRICE_LIST_NOT_FOUND`, the only 404 `setPrice` declares | architect, 2026-10-19 |
+| BR-10 | A `setPrice` checks its body, then its price list, then its product identifier, then BR-3. | A `setPrice` refused on more than one ground | The body first: a negative amount, an unknown currency (`XYZ`), any value the schema refuses: 400. Then the `priceListId` (BR-9), then the `productId` (BR-12): 404. Then a currency other than the list's (BR-3): 400. The first group refused stops the checks, and the 400 carries one item per field at fault within it (AR-1): a negative amount with `XYZ` gives two items, both content; a negative amount in a currency other than the list's gives one, BR-3 being checked after | architect, 2026-10-19 (`backend-api-contract`; corrected the same day: "a negative amount with `XYZ` gives two items") |
+| BR-13 | `Accept-Language` changes nothing. | A `createPriceList`, `getPriceList` or `setPrice` that carries it | Nothing changes in this version | BA, 2026-10-19 |
 
 ## Decisions
 
@@ -72,16 +81,21 @@ None.
 
 | Neighbour | Direction | Contract | What crosses |
 | --------- | --------- | -------- | ------------ |
+| Callers | inbound | `docs/contracts/catalog.openapi.json` 1.0.0: `createPriceList`, `getPriceList`, `setPrice` (tag `PriceList`), served under `/commerce/v1/catalog` | as the contract says; authentication is out of this version: the contract's `security` is kept as written, nothing of it is built, 401 and 403 are never answered (TL, PO, 2026-10-19) |
+| `product` | inbound, in process | `PriceListPrices`, in `price-list`'s application layer | in: a product, a price list, a day; out: the amount, the currency and the `effectiveFrom` of the price that applies (BR-1, and `product`'s BR-9), or none; an unknown price list and no price that day are not told apart: `product` answers both with its one 404, `PRICE_NOT_FOUND` (architect, 2026-10-19; the TL's three codes withdrawn). Called only from `product`'s outbound adapter (architect, 2026-10-19) |
 
 ## Applicable area rules and invariants
 
 | Entry | What it constrains here |
 | ----- | ----------------------- |
 | INV-DATA-001 of `../../invariants.md` | The price `setPrice` sets (architect, 2026-10-19) |
+| AR-1 of `../area.md` | Every error answer of its three operations (BA, TL, 2026-10-19) |
+| AR-2 of `../area.md` | What it logs: never an amount (TL, 2026-10-19; was BR-11 of this spec) |
+| AR-3 of `../area.md` | `priceListId` and `productId` in the path of `setPrice`, `priceListId` of `getPriceList` (TL, 2026-10-19) |
+| AR-4 of `../area.md` | The bodies of `createPriceList` and `setPrice` (TL, 2026-10-19) |
+| AR-5 of `../area.md` | `effectiveFrom` (TL, 2026-10-19) |
 
 ## Open questions
 
-- What does `createPriceList` refuse with `409 CONFLICT`: which state of the price lists does the request conflict with? (2026-10-19)
-- Must the product named in the path of `setPrice` exist? The contract documents a `404` only for an unknown price list. (2026-10-19)
-- May the currency of a price set by `setPrice` differ from the currency of its price list? (2026-10-19)
-- The `PriceList` response does not hold the `validity` that `createPriceList` accepts: is it kept, and where is it read? (2026-10-19)
+
+None (2026-10-19).
