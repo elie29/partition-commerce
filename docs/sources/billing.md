@@ -1,6 +1,6 @@
 # Billing — product requirements
 
-Version 1.0.1
+Version 1.1
 
 ## Invoices
 
@@ -24,12 +24,20 @@ The accountant can cancel an invoice. Rule: An invoice is cancelled only before 
 ### REQ-4 — Pay an invoice
 
 The customer pays an issued invoice by card. The card is charged through CardPay. Rule: An invoice is paid
-once its amount is paid in full.
+once its amount is paid in full. Rule: A customer under fraud review can neither pay nor be refunded.
 
 ### REQ-5 — Cancel a paid invoice
 
 The customer can cancel a paid invoice. CardPay reverses the charge. Rule: A paid invoice is cancelled only
 within 24 hours of being paid; the invoice is then unpaid again.
+
+## Refunds
+
+### REQ-6 — Refund a paid invoice
+
+The accountant requests a refund of all or part of a paid invoice. A refund is sent to the card through CardPay,
+then settled by CardPay, days later, on its own schedule. Rule: The refunds of an invoice never exceed its amount
+paid. Rule: A customer under fraud review can neither pay nor be refunded.
 
 ## Decisions
 
