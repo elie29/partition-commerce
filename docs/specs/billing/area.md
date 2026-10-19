@@ -8,6 +8,7 @@ The language and the area rules shared by the bounded contexts of this area. A r
 | --------------- | ------------------- |
 | invoice         | `invoice/spec.md`   |
 | payment         | `payment/spec.md`   |
+| refund          | `refund/spec.md`    |
 
 ## Language
 
@@ -27,5 +28,6 @@ One meaning per word, no synonyms. A word used by one bounded context only stays
 
 | # | Rule | Trigger | Expected effect | Binds | Source |
 | --- | --- | --- | --- | --- | --- |
-| AR-1 | A bounded text is non-blank and holds at most 255 characters. | A text a rule of the area bounds by AR-1: a label, `orderId`, `customerId` (`invoice`); a card token, a charge reference (`payment`) | A text blank or longer is refused, as the rule that bounds it says | invoice, payment | architect, 2026-10-19 (the bound of BR-12) |
-| AR-2 | Every amount is stored in minor units, with its currency: a `BIGINT` and a three-letter ISO 4217 code, never a decimal. | An amount stored: the prices and the amount of an invoice (`invoice`), the amount charged (`payment`) | Stored as a whole number of minor units and the code of its currency | invoice, payment | architect, 2026-10-19 (from `.apm/instructions/backend-database.instructions.md`) |
+| AR-1 | A bounded text is non-blank and holds at most 255 characters. | A text a rule of the area bounds by AR-1: a label, `orderId`, `customerId` (`invoice`); a card token, a charge reference (`payment`); the charge reference (`refund`) | A text blank or longer is refused, as the rule that bounds it says | invoice, payment, refund | architect, 2026-10-19 (the bound of BR-12); binds `refund`: architect, 2026-10-19 |
+| AR-2 | Every amount is stored in minor units, with its currency: a `BIGINT` and a three-letter ISO 4217 code, never a decimal. | An amount stored: the prices and the amount of an invoice (`invoice`), the amount charged (`payment`), the amount of a refund (`refund`) | Stored as a whole number of minor units and the code of its currency | invoice, payment, refund | architect, 2026-10-19 (from `.apm/instructions/backend-database.instructions.md`); binds `refund`: architect, 2026-10-19 |
+| AR-3 | A customer under fraud review can neither pay nor be refunded. | A pay (`payment`) or a refund (`refund`) of an invoice whose customer, the invoice's `customerId`, is under fraud review: listed in `application.yaml` under `commerce.fraud-review.customers` until the risk team has a system (PO, 2026-10-19) | — | payment, refund | from source: REQ-4, REQ-6 (1.1); trigger: PO, 2026-10-19; confirmed: owner, 2026-10-19 |

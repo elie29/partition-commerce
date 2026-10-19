@@ -2,9 +2,9 @@
 
 > **Source:** `docs/sources/billing.md`
 >
-> **Source version:** 1.0.1
+> **Source version:** 1.1
 >
-> **Provenance:** 2026-10-19 · dff137fa31edf80bc498c2617ec2883ce74c9be9
+> **Provenance:** 2026-10-19 · 972aeb0000d5498ea82996110ca39366fadffb37
 >
 > **Scope:** REQ-1 to REQ-3 of the whole source; REQ-4, REQ-5 and DEC-1 went to `payment` (fission, 2026-10-19)
 >
@@ -107,6 +107,7 @@ AR-1, AR-2 of `../area.md`, with its language.
 ## Open questions
 
 - An invoice whose payment is cancelled is `ISSUED` again and is not cancelled by the accountant: REQ-3 holds (PO, 2026-10-19). Yet BR-4 cancels any invoice whose status is `ISSUED`. How does `invoice` tell an invoice whose payment was cancelled from one never paid? Settled with REQ-5 (2026-10-19). Owner: PO, architect.
+- After a refund of all or part of a paid invoice (REQ-6, `refund`), what is the invoice's status, and does a fully refunded invoice still count for BR-1? (1.1, 2026-10-19). Owner: PO.
 - A currency a later JDK drops (BR-9, "updated with the JDK"): an invoice issued in it no longer passes BR-9, yet is read as issued (BR-3, BR-15). How is it read once the JDK is upgraded? (2026-10-19). Owner: architect.
 
 ### Attack — 2026-10-19 — feature "the accountant issues the invoice of a confirmed order, and anyone can read it back"

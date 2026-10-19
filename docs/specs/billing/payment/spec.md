@@ -2,9 +2,9 @@
 
 > **Source:** `docs/sources/billing.md`; the boundary: `docs/sources/workshop-invoice-fission.md`
 >
-> **Source version:** 1.0.1
+> **Source version:** 1.1
 >
-> **Provenance:** 2026-10-19 · dff137fa31edf80bc498c2617ec2883ce74c9be9 (fission of `invoice`, `docs/architecture/reshapes/2026-10-19-invoice-fission.md`)
+> **Provenance:** 2026-10-19 · 972aeb0000d5498ea82996110ca39366fadffb37
 >
 > **Scope:** REQ-4, REQ-5, DEC-1 of the whole source
 >
@@ -21,7 +21,7 @@ Collect the payment of an invoice by card, and cancel a payment within 24 hours 
 
 **In scope:** paying an invoice by card and cancelling a paid invoice's payment (REQ-4, REQ-5).
 
-**Out of scope:** the invoice, its issue, its read and its cancel by the accountant: `invoice`, reached through its contract `InvoicePayments`. Charging a card and reversing a charge: handed to CardPay (REQ-4, REQ-5).
+**Out of scope:** the invoice, its issue, its read and its cancel by the accountant: `invoice`, reached through its contract `InvoicePayments`. Charging a card and reversing a charge: handed to CardPay (REQ-4, REQ-5). Refunding a paid invoice (REQ-6): `refund` (1.1, 2026-10-19).
 
 ## Language
 
@@ -88,6 +88,7 @@ What the contract does not declare (the 400, the bound of AR-1, no body on a ref
 | ----- | ----------------------- |
 | AR-1 | The card token (BR-22) and the charge reference (BR-5) |
 | AR-2 | The amount charged, stored (BR-24) |
+| AR-3 | A pay (BR-5) of an invoice whose customer is under fraud review |
 
 ## Open questions
 
@@ -96,6 +97,9 @@ What the contract does not declare (the 400, the bound of AR-1, no body on a ref
 - CardPay does not answer, or answers out of bounds (BR-5): open until CardPay is reachable; its fake always answers (architect, 2026-10-19). Owner: architect.
 - A charge accepted whose record loses to another pay or to a cancel, or fails otherwise (BR-5), is kept nowhere in this version: the card is charged and no payment is recorded. Reversed with REQ-5: open until then (architect, 2026-10-19). Owner: architect.
 - Anyone may retry a pay after a 402 and so test card tokens: accepted in this version, there is no login (PO, 2026-10-19). Owner: PO.
+- What does a pay refused by AR-3 answer, and is AR-3 checked before or after BR-22, BR-21 and BR-20? (1.1, 2026-10-19). Owner: PO, architect.
+- AR-3 needs the invoice's `customerId` (PO, 2026-10-19), yet `InvoicePayments`, frozen 2026-10-19, shows the invoice without its customer. How does `payment` read it? (2026-10-19). Owner: architect.
+- Can a payment refunded in part or whole (REQ-6, `refund`) still be cancelled within 24 hours (REQ-5), and can a cancelled payment be refunded? (1.1, 2026-10-19). Owner: PO.
 - The card token reaches the log when `org.springframework.web` runs at DEBUG or TRACE: the request model generated from the contract prints it, and Spring logs the body and the arguments it reads (BR-24). Accepted in this version: the demo never runs that logger at DEBUG or TRACE and has no real card token; open until a real CardPay adapter comes; no contract change (TL, 2026-10-19). Owner: TL.
 
 ### Attack — 2026-10-19 — feature "the accountant issues the invoice of a confirmed order, and anyone can read it back"
