@@ -32,6 +32,13 @@ final class InvoiceClient {
                 .build());
     }
 
+    HttpResponse<String> cancel(String invoiceId) {
+        return send(HttpRequest.newBuilder(URI.create(base + "/invoices/" + invoiceId + "/cancel"))
+                .header("Accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build());
+    }
+
     private HttpResponse<String> send(HttpRequest request) {
         try {
             return http.send(request, HttpResponse.BodyHandlers.ofString());

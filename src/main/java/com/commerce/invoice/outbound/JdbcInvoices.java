@@ -14,7 +14,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-/** The invoices in the database, through {@link JdbcClient}; BR-1 is held by the unique key on the order. */
+/** The invoices in the database, through {@link JdbcClient}; BR-1 is held by the unique key on the order of the invoices not cancelled (V2). */
 @Repository
 class JdbcInvoices implements Invoices {
 
@@ -57,6 +57,14 @@ class JdbcInvoices implements Invoices {
                         .query((rs, n) -> new Line(rs.getString("label"),
                                 new Money(rs.getLong("price_minor"), rs.getString("price_currency"))))
                         .list()));
+    }
+
+    @Override
+    @Transactional
+    public boolean changeStatus(UUID id, InvoiceStatus from, InvoiceStatus to) {
+        return jdbc.sql("UPDATE invoice SET status = ? WHERE invoice_id = ? AND status = ?")
+                .params(to.name(), id, from.name())
+                .update() == 1;
     }
 
     private record Header(String orderId, String customerId, String status) {

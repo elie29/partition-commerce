@@ -19,7 +19,7 @@ sequenceDiagram
     accountant->>invoicing: POST /invoices (orderId, customerId, lines)
     invoicing-->>accountant: content refused (contract, BR-7 to BR-12): 400, no body
     invoicing->>h2: insert the invoice and its lines, one transaction
-    h2-->>invoicing: order already invoiced: unique key refused
+    h2-->>invoicing: order has an invoice not cancelled: unique key refused
     invoicing-->>accountant: BR-1: 409, no body
     h2-->>invoicing: inserted
     invoicing-->>accountant: 201, the issued invoice

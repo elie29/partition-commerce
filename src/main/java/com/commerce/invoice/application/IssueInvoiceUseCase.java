@@ -23,7 +23,7 @@ public class IssueInvoiceUseCase {
 
     /**
      * @throws InvoiceContentRefused when the content breaks a business rule, before BR-1 is checked (BR-13)
-     * @throws OrderAlreadyInvoiced when the order already has an invoice (BR-1)
+     * @throws OrderAlreadyInvoiced when the order already has an invoice that is not cancelled (BR-1)
      */
     public InvoiceView issue(IssueInvoiceCommand command) {
         Invoice invoice;

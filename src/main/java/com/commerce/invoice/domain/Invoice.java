@@ -6,7 +6,7 @@ import java.util.UUID;
 
 /**
  * What the customer owes for one confirmed order, line by line. Issued, it is never modified (BR-3): the class has no
- * setter and its lines are an unmodifiable copy.
+ * setter and its lines are an unmodifiable copy; a change of status returns a new instance (P-1).
  */
 public final class Invoice {
 
@@ -22,7 +22,7 @@ public final class Invoice {
         this.orderId = Text.require(orderId, "BR-11: an order identifier is non-blank, at most 255 characters");
         this.customerId = Text.require(customerId, "BR-11: a customer identifier is non-blank, at most 255 characters");
         this.status = Objects.requireNonNull(status);
-        if (lines == null || lines.isEmpty() || lines.contains(null)) {
+        if (lines == null || lines.isEmpty() || lines.stream().anyMatch(Objects::isNull)) {
             throw new InvalidInvoice("BR-16: an invoice has at least one line");
         }
         this.lines = List.copyOf(lines);
@@ -37,6 +37,19 @@ public final class Invoice {
     /** An invoice already issued, as it was recorded. */
     public static Invoice restore(UUID id, String orderId, String customerId, InvoiceStatus status, List<Line> lines) {
         return new Invoice(id, orderId, customerId, status, lines);
+    }
+
+    /**
+     * Cancels the invoice before any payment, at no fee (BR-4): the same invoice with its status changed and nothing
+     * else (BR-3).
+     *
+     * @throws InvoiceNotCancellable when the invoice is already cancelled (BR-18)
+     */
+    public Invoice cancel() {
+        if (status != InvoiceStatus.ISSUED) {
+            throw new InvoiceNotCancellable("BR-18: a cancelled invoice is not cancelled again");
+        }
+        return new Invoice(id, orderId, customerId, InvoiceStatus.CANCELLED, lines);
     }
 
     public UUID id() {

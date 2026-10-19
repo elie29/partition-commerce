@@ -23,7 +23,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
-/** The use case "issue an invoice": BR-1, BR-2, BR-7 to BR-14, BR-16 of the spec of {@code invoice}. */
+/** The use case "issue an invoice", a correction included: BR-1, BR-2, BR-7 to BR-14, BR-16 of the spec of {@code invoice}. */
 @InvoiceApiTest
 @ExtendWith(OutputCaptureExtension.class)
 class IssueInvoiceTest {
@@ -86,6 +86,62 @@ class IssueInvoiceTest {
             Future<Integer> second = pool.submit(issue);
             start.countDown();
             statuses = List.of(first.get(), second.get());
+        }
+
+        assertThat(statuses).containsExactlyInAnyOrder(201, 409);
+    }
+
+    @Test
+    void issues_the_correction_of_a_cancelled_invoice_for_the_same_order_with_what_it_is_given() {
+        String orderId = newOrderId();
+        HttpResponse<String> cancelledIssue = client.issue(request(orderId, "customer-1", line("Book", 1250, "EUR")));
+        String cancelledId = json.readTree(cancelledIssue.body()).get("invoiceId").asString();
+        assertThat(client.cancel(cancelledId).statusCode()).isEqualTo(200);
+
+        HttpResponse<String> correction = client.issue(request(orderId, "customer-2",
+                line("Book", 1100, "USD"), line("Pen", 199, "USD")));
+
+        assertThat(correction.statusCode()).isEqualTo(201);
+        JsonNode invoice = json.readTree(correction.body());
+        assertThat(invoice.get("invoiceId").asString()).isNotEqualTo(cancelledId);
+        assertThat(invoice.get("orderId").asString()).isEqualTo(orderId);
+        assertThat(invoice.get("status").asString()).isEqualTo("ISSUED");
+        assertThat(invoice.get("amount").get("amountMinor").asLong()).isEqualTo(1299);
+        assertThat(invoice.get("amount").get("currency").asString()).isEqualTo("USD");
+        assertThat(json.readTree(client.read(cancelledId).body()).get("status").asString()).isEqualTo("CANCELLED");
+    }
+
+    @Test
+    void refuses_an_issue_for_an_order_whose_correction_is_not_cancelled_with_409_and_no_body() {
+        String orderId = newOrderId();
+        HttpResponse<String> first = client.issue(request(orderId, "customer-1", line("Book", 1250, "EUR")));
+        client.cancel(json.readTree(first.body()).get("invoiceId").asString());
+        assertThat(client.issue(request(orderId, "customer-1", line("Book", 1100, "EUR"))).statusCode())
+                .isEqualTo(201);
+
+        HttpResponse<String> third = client.issue(request(orderId, "customer-1", line("Book", 1000, "EUR")));
+
+        assertThat(third.statusCode()).isEqualTo(409);
+        assertThat(third.body()).isEmpty();
+    }
+
+    @Test
+    void of_two_simultaneous_corrections_of_one_order_the_second_is_refused() throws Exception {
+        String orderId = newOrderId();
+        HttpResponse<String> first = client.issue(request(orderId, "customer-1", line("Book", 1250, "EUR")));
+        client.cancel(json.readTree(first.body()).get("invoiceId").asString());
+        String body = request(orderId, "customer-1", line("Book", 1100, "EUR"));
+        CountDownLatch start = new CountDownLatch(1);
+        Callable<Integer> issue = () -> {
+            start.await();
+            return client.issue(body).statusCode();
+        };
+        List<Integer> statuses;
+        try (ExecutorService pool = Executors.newFixedThreadPool(2)) {
+            Future<Integer> one = pool.submit(issue);
+            Future<Integer> two = pool.submit(issue);
+            start.countDown();
+            statuses = List.of(one.get(), two.get());
         }
 
         assertThat(statuses).containsExactlyInAnyOrder(201, 409);

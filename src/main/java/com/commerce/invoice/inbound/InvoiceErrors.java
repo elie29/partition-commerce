@@ -1,5 +1,6 @@
 package com.commerce.invoice.inbound;
 
+import com.commerce.invoice.application.CancelRefused;
 import com.commerce.invoice.application.InvoiceContentRefused;
 import com.commerce.invoice.application.InvoiceNotFound;
 import com.commerce.invoice.application.OrderAlreadyInvoiced;
@@ -31,7 +32,13 @@ class InvoiceErrors {
         return ResponseEntity.status(409).build();
     }
 
-    /** BR-15. */
+    /** BR-18. */
+    @ExceptionHandler(CancelRefused.class)
+    ResponseEntity<Void> cancelRefused() {
+        return ResponseEntity.status(409).build();
+    }
+
+    /** BR-15, BR-19. */
     @ExceptionHandler(InvoiceNotFound.class)
     ResponseEntity<Void> notFound() {
         return ResponseEntity.notFound().build();

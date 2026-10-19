@@ -2,9 +2,9 @@
 
 > **Source:** `docs/sources/billing.md`
 >
-> **Source version:** 1.0
+> **Source version:** 1.0.1
 >
-> **Provenance:** 2026-10-19 · dc3486014a598118fa1b59468483e82314e63e7f
+> **Provenance:** 2026-10-19 · dff137fa31edf80bc498c2617ec2883ce74c9be9
 >
 > **Scope:** whole source
 >
@@ -53,7 +53,7 @@ None.
 
 ## Gaps detected
 
-- REQ-1 against REQ-2: "An invoice is issued once per order" against "A correction is made by cancelling the invoice and issuing a new one". Open: a later version of the PRD settles it (PO, 2026-10-19).
+- REQ-1 against REQ-2: "An invoice is issued once per order" against "A correction is made by cancelling the invoice and issuing a new one". Open: a later version of the PRD settles it (PO, 2026-10-19). Resolved on 2026-10-19 (version 1.0.1): REQ-1 now reads "An order has at most one invoice that is not cancelled".
 - REQ-3 against REQ-5: "An invoice is cancelled only before any payment" against "The customer can cancel a paid invoice". Kept as written in 1.0, knowingly (PO, 2026-10-19); no rule reworded.
 - REQ-2 against REQ-4 and REQ-5: "An issued invoice is never modified" against an invoice becoming paid, then "unpaid again". Kept as written in 1.0, knowingly (PO, 2026-10-19); no rule reworded.
 - No couplings outside the scope, no orphan entity: the scope is the whole source.
@@ -72,3 +72,4 @@ None.
 
 | Date | Version | Provenance | Nature | Detail |
 | ---- | ------- | ---------- | ------ | ------ |
+| 2026-10-19 | 1.0 → 1.0.1 | dff137f | breaking | REQ-1: "An invoice is issued once per order" became "An order has at most one invoice that is not cancelled"; decomposition unchanged; BR-1 of `invoice` reported, not rewritten |

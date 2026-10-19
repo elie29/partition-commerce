@@ -1,5 +1,6 @@
 package com.commerce.invoice.inbound;
 
+import com.commerce.invoice.application.CancelInvoiceUseCase;
 import com.commerce.invoice.application.GetInvoiceUseCase;
 import com.commerce.invoice.application.InvoiceView;
 import com.commerce.invoice.application.IssueInvoiceCommand;
@@ -21,15 +22,23 @@ public class InvoiceController implements InvoicesApi {
 
     private final IssueInvoiceUseCase issueInvoice;
     private final GetInvoiceUseCase getInvoice;
+    private final CancelInvoiceUseCase cancelInvoice;
 
-    public InvoiceController(IssueInvoiceUseCase issueInvoice, GetInvoiceUseCase getInvoice) {
+    public InvoiceController(
+            IssueInvoiceUseCase issueInvoice, GetInvoiceUseCase getInvoice, CancelInvoiceUseCase cancelInvoice) {
         this.issueInvoice = issueInvoice;
         this.getInvoice = getInvoice;
+        this.cancelInvoice = cancelInvoice;
     }
 
     @Override
     public ResponseEntity<Invoice> getInvoice(String invoiceId) {
         return ResponseEntity.ok(toInvoice(getInvoice.read(invoiceId)));
+    }
+
+    @Override
+    public ResponseEntity<Invoice> cancelInvoice(String invoiceId) {
+        return ResponseEntity.ok(toInvoice(cancelInvoice.cancel(invoiceId)));
     }
 
     @Override
