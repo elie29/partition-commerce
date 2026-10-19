@@ -114,15 +114,20 @@ class ArchitectureTest {
 
     /**
      * The contracts in process between hexagons, as {@code Contracts with neighbours} of both specs declare them
-     * ({@code docs/specs/billing/payment/spec.md}, {@code docs/specs/billing/invoice/spec.md}); {@code docs/partition.yml}
-     * declares no dependency between contexts (architect, 2026-10-19).
+     * ({@code docs/specs/billing/payment/spec.md}, {@code docs/specs/billing/invoice/spec.md},
+     * {@code docs/specs/billing/refund/spec.md}); {@code docs/partition.yml} declares no dependency between contexts
+     * (architect, 2026-10-19).
      */
-    private static final List<Contract> CONTRACTS = List.of(new Contract(
-            "payment/payment", "outbound", "invoice/invoice",
-            Set.of("com.commerce.invoice.application.InvoicePayments",
-                    "com.commerce.invoice.application.InvoiceView",
-                    "com.commerce.invoice.application.LineData",
-                    "com.commerce.invoice.application.InvoiceNotIssued")));
+    private static final List<Contract> CONTRACTS = List.of(
+            new Contract("payment/payment", "outbound", "invoice/invoice",
+                    Set.of("com.commerce.invoice.application.InvoicePayments",
+                            "com.commerce.invoice.application.InvoiceView",
+                            "com.commerce.invoice.application.LineData",
+                            "com.commerce.invoice.application.InvoiceNotIssued")),
+            new Contract("refund/refund", "outbound", "payment/payment",
+                    Set.of("com.commerce.payment.application.PaymentRefunds",
+                            "com.commerce.payment.application.RefundableInvoice",
+                            "com.commerce.payment.application.PaidPayment")));
 
     private record Contract(String from, String fromLayer, String to, Set<String> types) {
     }

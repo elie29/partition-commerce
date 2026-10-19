@@ -26,7 +26,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The contract {@code InvoicePayments} through which {@code payment} reaches {@code invoice}: read an invoice as
- * {@code getInvoice} shows it, record a payment on an invoice still issued (BR-3, BR-23), record a payment cancelled
+ * {@code getInvoice} shows it, give its customer (AR-3), record a payment on an invoice still issued (BR-3, BR-23), record a payment cancelled
  * (REQ-5, not built yet). A payment is recorded in a transaction the test rolls back: it joins the caller's transaction.
  */
 @InvoiceApiTest
@@ -71,6 +71,12 @@ class InvoicePaymentsTest {
     @Test
     void finds_nothing_for_an_identifier_that_names_no_invoice() {
         assertThat(invoicePayments.find(UUID.randomUUID())).isEmpty();
+        assertThat(invoicePayments.customerOf(UUID.randomUUID())).isEmpty();
+    }
+
+    @Test
+    void gives_the_customer_of_an_invoice_for_the_fraud_review() {
+        assertThat(invoicePayments.customerOf(issue())).contains("customer-1");
     }
 
     @Test

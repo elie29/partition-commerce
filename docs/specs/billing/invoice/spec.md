@@ -95,8 +95,8 @@ None: CardPay is `payment`'s (fission, 2026-10-19).
 
 | Neighbour | Direction | Contract | What crosses |
 | --------- | --------- | -------- | ------------ |
-| Callers: the accountant (issue), anyone holding an identifier (read, cancel) | inbound | `docs/contracts/billing.openapi.json` 1.2.0: `issueInvoice`, `getInvoice`, `cancelInvoice` (tag `Invoice`) | in: `orderId`, `customerId`, the lines; the identifier to cancel; out: the invoice, without its customer |
-| `payment` | inbound, in process | `InvoicePayments`, in `invoice`'s application layer, frozen 2026-10-19 | read an invoice as `getInvoice` shows it; record a payment (BR-23); record a payment cancelled (REQ-5, not built). Used from `payment`'s outbound adapter only (architect, 2026-10-19) |
+| Callers: the accountant (issue), anyone holding an identifier (read, cancel) | inbound | `docs/contracts/billing.openapi.json` 1.3.0: `issueInvoice`, `getInvoice`, `cancelInvoice` (tag `Invoice`) | in: `orderId`, `customerId`, the lines; the identifier to cancel; out: the invoice, without its customer |
+| `payment` | inbound, in process | `InvoicePayments`, in `invoice`'s application layer, frozen 2026-10-19 | read an invoice as `getInvoice` shows it, with its customer, its `customerId` (agreed by `invoice` and `payment`: architect, 2026-10-19); record a payment (BR-23); record a payment cancelled (REQ-5, not built). Used from `payment`'s outbound adapter only (architect, 2026-10-19) |
 
 What the contract does not declare (the 400, the bound of AR-1, no body on a refusal) the code enforces (architect, 2026-10-19).
 

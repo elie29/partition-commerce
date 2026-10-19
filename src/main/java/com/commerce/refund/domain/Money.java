@@ -1,0 +1,25 @@
+package com.commerce.refund.domain;
+
+/** An amount in minor units, with its currency, a three-letter code (AR-2). */
+public record Money(long amountMinor, String currency) {
+
+    public Money {
+        if (currency == null || !currency.matches("[A-Z]{3}")) {
+            throw new InvalidRefund("AR-2: an amount is stored with a three-letter ISO 4217 code");
+        }
+    }
+
+    /** The amount of a refund: a positive whole number of minor units, with its currency (BR-26). */
+    public static Money ofRefund(long amountMinor, String currency) {
+        if (amountMinor <= 0) {
+            throw new InvalidRefund("BR-26: a refund amount is a positive whole number of minor units");
+        }
+        return new Money(amountMinor, currency);
+    }
+
+    /** Hides the amount: a refund writes its identifiers and its status only (BR-31). */
+    @Override
+    public String toString() {
+        return "Money[hidden]";
+    }
+}

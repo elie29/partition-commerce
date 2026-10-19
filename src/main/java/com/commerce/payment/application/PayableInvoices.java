@@ -9,6 +9,9 @@ public interface PayableInvoices {
     /** The invoice; empty when the identifier names no invoice. */
     Optional<InvoiceToPay> find(UUID invoiceId);
 
+    /** The customer of the invoice, for the fraud review (AR-3); empty when the identifier names no invoice. */
+    Optional<String> customerOf(UUID invoiceId);
+
     /**
      * Has the invoice recorded paid, in the caller's transaction.
      *

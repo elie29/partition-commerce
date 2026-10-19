@@ -1,7 +1,10 @@
 package com.commerce.payment.outbound;
 
 import com.commerce.payment.application.Payments;
+import com.commerce.payment.domain.Money;
 import com.commerce.payment.domain.Payment;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,5 +28,16 @@ class JdbcPayments implements Payments {
                 .params(payment.id(), payment.invoiceId(), payment.amount().amountMinor(),
                         payment.amount().currency(), payment.chargeReference())
                 .update();
+    }
+
+    @Override
+    public Optional<Payment> findOf(UUID invoiceId) {
+        return jdbc.sql("SELECT payment_id, amount_minor, amount_currency, charge_reference FROM payment"
+                        + " WHERE invoice_id = ? ORDER BY paid_at DESC LIMIT 1")
+                .param(invoiceId)
+                .query((rs, n) -> new Payment(rs.getObject("payment_id", UUID.class), invoiceId,
+                        new Money(rs.getLong("amount_minor"), rs.getString("amount_currency")),
+                        rs.getString("charge_reference")))
+                .optional();
     }
 }

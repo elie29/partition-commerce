@@ -54,8 +54,11 @@ What this bounded context owns in its source. The source says what each part hol
 | BR-6 | A paid invoice is cancelled only within 24 hours of being paid; the invoice is then unpaid again. | — | — | from source: REQ-5 |
 | BR-20 | Only an invoice whose status is `ISSUED` is paid. | A pay of an invoice whose status is `PAID` or `CANCELLED` | Refused: 409, no body; nothing changes; CardPay is not called: it is called only for an invoice whose status is `ISSUED` | PO, 2026-10-19; CardPay not called: architect, 2026-10-19 |
 | BR-21 | An invoice is paid by anyone holding its identifier. | A pay | An identifier that names no invoice, one that is not a UUID included: 404, no body | PO, 2026-10-19 |
-| BR-22 | A card token is bounded by AR-1. | A pay with a card token AR-1 refuses; a pay the contract refuses: no body (a JSON request with an empty body), a body that is not JSON, no `cardToken`, a `cardToken` `null` or not a string | Refused: 400, no body. The content of a pay is checked first (400), then the invoice (404, BR-21; 409, BR-20). A request with no content type keeps the framework's 415 | TL, 2026-10-19; contract refusals, order and 415: architect, 2026-10-19 |
+| BR-22 | A card token is bounded by AR-1. | A pay with a card token AR-1 refuses; a pay the contract refuses: no body (a JSON request with an empty body), a body that is not JSON, no `cardToken`, a `cardToken` `null` or not a string | Refused: 400, no body. The content of a pay is checked first (400), then the invoice (404, BR-21), the fraud review (403, AR-3), then its state (409, BR-20) (fraud review: architect, 2026-10-19). A request with no content type keeps the framework's 415 | TL, 2026-10-19; contract refusals, order and 415: architect, 2026-10-19 |
 | BR-24 | A payment records its time, its charge reference and the amount charged, never the card token. | A pay accepted (BR-5) | The time of the payment, the charge reference and the amount charged are recorded by `payment`; the card token appears in no log, no error and no trace (TL, 2026-10-19) | PO, 2026-10-19 (the pay part of BR-3 of `invoice`); the amount charged: architect, 2026-10-19 |
+| BR-30 | A payment with a refund is not cancelled. | A cancel (REQ-5, not built) of the payment of an invoice that has a refund not refused (`refund`) | — (REQ-5 has no operation yet) | PO, 2026-10-19 |
+
+The rule on fraud review REQ-4 states is AR-3 of `../area.md`, shared with `refund`. AR-3 says what it refuses and how the list is kept; no API edits the list in this version (PO, 2026-10-19). `payment` reads the list through a port of its own, `FraudReview` (architect, 2026-10-19). A cancel (REQ-5) by a customer under fraud review is not refused by AR-3, which names paying and being refunded only (PO, 2026-10-19).
 
 ## Decisions
 
@@ -77,8 +80,9 @@ No schema documents are declared for this project.
 
 | Neighbour | Direction | Contract | What crosses |
 | --------- | --------- | -------- | ------------ |
-| Callers: anyone holding an identifier | inbound | `docs/contracts/billing.openapi.json` 1.2.0: `payInvoice` (tag `Payment`) | in: the identifier to pay and a `cardToken`; out: the contract's `Invoice`, without its customer, its time of payment and its charge reference |
-| `invoice` | outbound, in process | `InvoicePayments`, in `invoice`'s application layer, frozen 2026-10-19 | read an invoice as `getInvoice` shows it; record a payment, refused when the invoice is no longer `ISSUED`; record a payment cancelled (REQ-5, not built). Used from `payment`'s outbound adapter only (architect, 2026-10-19) |
+| Callers: anyone holding an identifier | inbound | `docs/contracts/billing.openapi.json` 1.3.0: `payInvoice` (tag `Payment`) | in: the identifier to pay and a `cardToken`; out: the contract's `Invoice`, without its customer, its time of payment and its charge reference |
+| `invoice` | outbound, in process | `InvoicePayments`, in `invoice`'s application layer, frozen 2026-10-19 | read an invoice as `getInvoice` shows it, with its customer, its `customerId` (agreed by `invoice` and `payment`: architect, 2026-10-19); record a payment, refused when the invoice is no longer `ISSUED`; record a payment cancelled (REQ-5, not built). Used from `payment`'s outbound adapter only (architect, 2026-10-19) |
+| `refund` | inbound, in process | `PaymentRefunds`, in `payment`'s application layer | for any invoice: whether it exists, the customer of the invoice, and its payment when it is paid: its charge reference, the amount charged; `payment` reads the invoice and its customer through `InvoicePayments` (architect, 2026-10-19) |
 
 What the contract does not declare (the 400, the bound of AR-1, no body on a refusal) the code enforces (architect, 2026-10-19).
 
@@ -92,14 +96,11 @@ What the contract does not declare (the 400, the bound of AR-1, no body on a ref
 
 ## Open questions
 
-- BR-6 has no trigger and no expected effect; REQ-5 has no operation in contract 1.2.0 (architect, 2026-10-19). Owner: PO.
+- BR-6 has no trigger and no expected effect; REQ-5 has no operation in contract 1.3.0 (architect, 2026-10-19). Owner: PO.
 - Does cancelling a payment (REQ-5) carry a fee? Owner: PO.
 - CardPay does not answer, or answers out of bounds (BR-5): open until CardPay is reachable; its fake always answers (architect, 2026-10-19). Owner: architect.
 - A charge accepted whose record loses to another pay or to a cancel, or fails otherwise (BR-5), is kept nowhere in this version: the card is charged and no payment is recorded. Reversed with REQ-5: open until then (architect, 2026-10-19). Owner: architect.
 - Anyone may retry a pay after a 402 and so test card tokens: accepted in this version, there is no login (PO, 2026-10-19). Owner: PO.
-- What does a pay refused by AR-3 answer, and is AR-3 checked before or after BR-22, BR-21 and BR-20? (1.1, 2026-10-19). Owner: PO, architect.
-- AR-3 needs the invoice's `customerId` (PO, 2026-10-19), yet `InvoicePayments`, frozen 2026-10-19, shows the invoice without its customer. How does `payment` read it? (2026-10-19). Owner: architect.
-- Can a payment refunded in part or whole (REQ-6, `refund`) still be cancelled within 24 hours (REQ-5), and can a cancelled payment be refunded? (1.1, 2026-10-19). Owner: PO.
 - The card token reaches the log when `org.springframework.web` runs at DEBUG or TRACE: the request model generated from the contract prints it, and Spring logs the body and the arguments it reads (BR-24). Accepted in this version: the demo never runs that logger at DEBUG or TRACE and has no real card token; open until a real CardPay adapter comes; no contract change (TL, 2026-10-19). Owner: TL.
 
 ### Attack — 2026-10-19 — feature "the accountant issues the invoice of a confirmed order, and anyone can read it back"

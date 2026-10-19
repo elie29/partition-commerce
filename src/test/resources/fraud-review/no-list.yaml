@@ -1,0 +1,4 @@
+# The configuration of a start whose list of AR-3, commerce.fraud-review.customers, is missing.
+spring:
+  application:
+    name: commerce

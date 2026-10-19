@@ -62,3 +62,17 @@ contexts:                     # one entry per bounded context, declared by parti
     area: billing
     code:
       - src/main/java/com/commerce/refund/**
+    hexagons:
+      - id: refund
+        form: rich
+        reason: a refund is bounded by what was paid, and it moves from requested to sent to settled (architect, 2026-10-19)
+        layers:
+          domain: src/main/java/com/commerce/refund/domain/**
+          application: src/main/java/com/commerce/refund/application/**
+          inbound: src/main/java/com/commerce/refund/inbound/**
+          outbound: src/main/java/com/commerce/refund/outbound/**
+        allowed:
+          - application -> domain
+          - inbound -> application
+          - outbound -> application
+          - outbound -> domain

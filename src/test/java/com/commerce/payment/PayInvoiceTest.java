@@ -13,6 +13,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.commerce.CommerceApplication;
 import com.commerce.payment.application.CardPay;
 import com.commerce.payment.application.Charge;
 import com.commerce.payment.application.Payments;
@@ -30,16 +31,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 
-/** The use case "pay an invoice by card": BR-5, BR-20, BR-21, BR-22, BR-24 of the spec of {@code payment}. */
+/**
+ * The use case "pay an invoice by card": BR-5, BR-20, BR-21, BR-22, BR-24 and AR-3 of the spec of {@code payment},
+ * the list of AR-3 included.
+ */
 @PaymentApiTest
 @ExtendWith(OutputCaptureExtension.class)
 class PayInvoiceTest {
@@ -265,9 +272,105 @@ class PayInvoiceTest {
         assertThat(output.getAll()).doesNotContain(token);
     }
 
+    @Test
+    void refuses_to_pay_for_a_customer_under_fraud_review_with_403_without_calling_cardpay() {
+        String invoiceId = invoiceId(issueFor(PaymentApiTest.UNDER_REVIEW));
+
+        HttpResponse<String> pay = client.pay(invoiceId, payRequest(TOKEN));
+
+        assertThat(pay.statusCode()).isEqualTo(403);
+        assertThat(pay.body()).isEmpty();
+        verify(cardPay, never()).charge(any(), any());
+        assertThat(status(invoiceId)).isEqualTo("ISSUED");
+    }
+
+    @Test
+    void matches_a_customer_under_fraud_review_exactly() {
+        for (String customerId : List.of("CUSTOMER-UNDER-REVIEW", PaymentApiTest.UNDER_REVIEW + " ", "customer-under")) {
+            HttpResponse<String> pay = client.pay(invoiceId(issueFor(customerId)), payRequest(TOKEN));
+            assertThat(pay.statusCode()).as(customerId).isEqualTo(200);
+        }
+    }
+
+    @Test
+    void answers_400_and_404_before_403_and_403_before_409() {
+        String underReview = invoiceId(issueFor(PaymentApiTest.UNDER_REVIEW));
+        assertThat(client.pay(underReview, "{}").statusCode()).isEqualTo(400);
+        assertThat(client.pay(underReview, payRequest("")).statusCode()).isEqualTo(400);
+        assertThat(client.pay(UUID.randomUUID().toString(), payRequest(TOKEN)).statusCode()).isEqualTo(404);
+
+        assertThat(client.cancel(underReview).statusCode()).isEqualTo(200);
+        HttpResponse<String> cancelled = client.pay(underReview, payRequest(TOKEN));
+
+        assertThat(cancelled.statusCode()).isEqualTo(403);
+        verify(cardPay, never()).charge(any(), any());
+    }
+
+    @Test
+    void no_output_names_a_customer_under_fraud_review(CapturedOutput output) {
+        String invoiceId = invoiceId(issueFor(PaymentApiTest.UNDER_REVIEW));
+
+        HttpResponse<String> pay = client.pay(invoiceId, payRequest(TOKEN));
+
+        assertThat(pay.statusCode()).isEqualTo(403);
+        assertThat(output.getAll()).doesNotContain(PaymentApiTest.UNDER_REVIEW);
+    }
+
+    @Test
+    void a_missing_fraud_review_list_stops_the_start() {
+        assertThat(startFailure("--spring.config.location=classpath:fraud-review/no-list.yaml"))
+                .isEqualTo("AR-3: commerce.fraud-review.customers is missing");
+    }
+
+    @Test
+    void a_blank_or_overlong_entry_of_the_fraud_review_list_stops_the_start_naming_no_entry(CapturedOutput output) {
+        String overlong = "secret-" + "x".repeat(249);
+        for (String entry : List.of(" ", " ", overlong)) {
+            assertThat(startFailure("--commerce.fraud-review.customers[0]=customer-1",
+                            "--commerce.fraud-review.customers[1]=" + entry))
+                    .as("entry of " + entry.length() + " characters")
+                    .isEqualTo("AR-3: an entry of commerce.fraud-review.customers is blank or longer than 255 characters");
+        }
+        assertThat(output.getAll()).doesNotContain(overlong);
+    }
+
+    @Test
+    void reads_an_entry_of_255_characters_counted_as_code_points() {
+        String longest = "😀".repeat(255);
+        try (ConfigurableApplicationContext started = start("--commerce.fraud-review.customers[0]=" + longest)) {
+            assertThat(started.isActive()).isTrue();
+        }
+    }
+
+    /** The message of the root cause when the application does not start with these arguments. */
+    private static String startFailure(String... args) {
+        try (ConfigurableApplicationContext started = start(args)) {
+            throw new AssertionError("the application started");
+        } catch (RuntimeException e) {
+            Throwable root = e;
+            while (root.getCause() != null) {
+                root = root.getCause();
+            }
+            return root.getMessage();
+        }
+    }
+
+    private static ConfigurableApplicationContext start(String... args) {
+        String[] all = new String[args.length + 1];
+        all[0] = "--spring.datasource.url=jdbc:h2:mem:payment-start-" + UUID.randomUUID() + ";MODE=PostgreSQL";
+        System.arraycopy(args, 0, all, 1, args.length);
+        return new SpringApplicationBuilder(CommerceApplication.class).web(WebApplicationType.NONE).run(all);
+    }
+
     private HttpResponse<String> issue(String... lines) {
         String[] issuedLines = lines.length == 0 ? new String[] {line("Book", 1250, "EUR")} : lines;
         HttpResponse<String> issued = client.issue(request(newOrderId(), "customer-1", issuedLines));
+        assertThat(issued.statusCode()).isEqualTo(201);
+        return issued;
+    }
+
+    private HttpResponse<String> issueFor(String customerId) {
+        HttpResponse<String> issued = client.issue(request(newOrderId(), customerId, line("Book", 1250, "EUR")));
         assertThat(issued.statusCode()).isEqualTo(201);
         return issued;
     }

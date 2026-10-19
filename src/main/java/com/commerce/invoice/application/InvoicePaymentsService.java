@@ -27,6 +27,11 @@ class InvoicePaymentsService implements InvoicePayments {
     }
 
     @Override
+    public Optional<String> customerOf(UUID invoiceId) {
+        return invoices.find(invoiceId).map(Invoice::customerId);
+    }
+
+    @Override
     @Transactional
     public InvoiceView recordPayment(UUID invoiceId) {
         Invoice invoice = invoices.find(invoiceId).orElseThrow(InvoiceNotIssued::new);

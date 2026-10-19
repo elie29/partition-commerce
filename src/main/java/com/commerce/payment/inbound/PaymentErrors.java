@@ -2,6 +2,7 @@ package com.commerce.payment.inbound;
 
 import com.commerce.payment.application.CardDeclined;
 import com.commerce.payment.application.InvoiceNotFound;
+import com.commerce.payment.application.PayForbidden;
 import com.commerce.payment.application.PayRefused;
 import com.commerce.payment.application.PaymentContentRefused;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,12 @@ class PaymentErrors {
     @ExceptionHandler(PayRefused.class)
     ResponseEntity<Void> payRefused() {
         return ResponseEntity.status(409).build();
+    }
+
+    /** AR-3: the customer of the invoice is under fraud review. */
+    @ExceptionHandler(PayForbidden.class)
+    ResponseEntity<Void> payForbidden() {
+        return ResponseEntity.status(403).build();
     }
 
     /** BR-5: CardPay declined the card. */

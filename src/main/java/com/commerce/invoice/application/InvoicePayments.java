@@ -14,6 +14,13 @@ public interface InvoicePayments {
     Optional<InvoiceView> find(UUID invoiceId);
 
     /**
+     * The customer of the invoice, its {@code customerId}, for the fraud review (AR-3), which {@link #find} does not
+     * show; empty when the identifier names no invoice. Added 2026-10-19, agreed by {@code invoice} and {@code payment}
+     * (architect).
+     */
+    Optional<String> customerOf(UUID invoiceId);
+
+    /**
      * Records the invoice paid: its status {@code ISSUED} becomes {@code PAID}, and nothing else (BR-3), in the
      * caller's transaction.
      *

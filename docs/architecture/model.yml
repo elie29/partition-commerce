@@ -30,6 +30,11 @@ elements:
     in: commerce-app
     name: Payment
     context: payment
+  - id: refund
+    kind: component
+    in: commerce-app
+    name: Refund
+    context: refund
   - id: h2
     kind: container
     in: commerce
@@ -42,11 +47,14 @@ elements:
 
 relations:
   - customer -> commerce-app: pays
-  - accountant -> commerce-app: issues, cancels
+  - accountant -> commerce-app: issues, cancels, refunds
   - invoicing -> h2: SQL
   - payment -> invoicing: InvoicePayments, in process
   - payment -> h2: SQL
   - payment -> cardpay: charges, reverses
+  - refund -> payment: PaymentRefunds, in process
+  - refund -> h2: SQL
+  - refund -> cardpay: sends refunds
 
 views:
   - id: context
@@ -97,6 +105,8 @@ views:
       - "payment -> invoicing: InvoicePayments.find"
       - "invoicing --> payment: the invoice, or none"
       - "payment --> customer: not a UUID, or no such invoice (BR-21): 404, no body"
+      - "payment -> invoicing: InvoicePayments.customerOf"
+      - "payment --> customer: customer under fraud review (AR-3): 403, no body; CardPay not called"
       - "payment --> customer: paid or cancelled (BR-20): 409, no body"
       - "payment -> cardpay: charge the card token for the whole amount"
       - "cardpay --> payment: declined"
@@ -108,3 +118,24 @@ views:
       - "payment --> customer: BR-5: 409, no body; the charge is not kept"
       - "payment -> h2: insert the payment: amount, charge reference, time (BR-24); commit"
       - "payment --> customer: 200, the paid invoice"
+  - id: refund-invoice
+    kind: dynamic
+    title: Dynamic - Refund a paid invoice
+    participants: [accountant, refund, payment, h2, cardpay]
+    steps:
+      - "accountant -> refund: POST /invoices/{invoiceId}/refunds (amount)"
+      - "refund --> accountant: content refused (contract, BR-26): 400, no body"
+      - "refund -> payment: PaymentRefunds.find"
+      - "payment --> refund: the invoice, its customer, its payment when paid; or none"
+      - "refund --> accountant: not a UUID, or no such invoice (BR-27): 404, no body"
+      - "refund --> accountant: customer under fraud review (AR-3): 403, no body"
+      - "refund --> accountant: not paid (BR-25, BR-29): 409, no body"
+      - "refund --> accountant: another currency than the amount paid's (BR-25): 400, no body"
+      - "refund -> h2: open the cap of the invoice at its amount paid, if not open"
+      - "refund -> h2: add to the running total if it stays within the amount paid; insert the refund REQUESTED; commit"
+      - "h2 --> refund: no row changed: it exceeds what remains"
+      - "refund --> accountant: BR-25: 409, no body"
+      - "refund -> cardpay: send the refund: charge reference, amount (BR-28)"
+      - "refund -> h2: set the refund SENT"
+      - "refund --> accountant: SENT not recorded: 500; the refund stays REQUESTED and counts"
+      - "refund --> accountant: 201, the refund, SENT"

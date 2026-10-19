@@ -62,11 +62,11 @@ Option 2 of the first decomposition, rejected on 2026-10-19, was taken by the fi
 - REQ-2 against REQ-4 and REQ-5: "An issued invoice is never modified" against an invoice becoming paid, then "unpaid again". Kept as written in 1.0, knowingly (PO, 2026-10-19); no rule reworded.
 - No couplings outside the scope, no orphan entity: the scope is the whole source.
 - REQ-4 and REQ-6 (1.1) both state "A customer under fraud review can neither pay nor be refunded.": copied once, as AR-3 of `area.md`, binding `payment` and `refund` (2026-10-19).
-- REQ-5 against REQ-6 (1.1): a paid invoice cancelled within 24 hours "is then unpaid again", while REQ-6 refunds "all or part of a paid invoice"; whether a refunded payment can be cancelled, or a cancelled one refunded, is not stated. Open (2026-10-19). Owner: PO.
-- REQ-6 (1.1) caps refunds by the "amount paid" and refunds "all or part" of a paid invoice; neither the source nor `area.md` defines the amount paid, and `invoice`'s "Paid" means "its amount has been paid in full". Open (2026-10-19). Owner: PO, BA.
+- REQ-5 against REQ-6 (1.1): a paid invoice cancelled within 24 hours "is then unpaid again", while REQ-6 refunds "all or part of a paid invoice"; whether a refunded payment can be cancelled, or a cancelled one refunded, is not stated. Resolved on 2026-10-19 (PO): the invoice stays `PAID` after a refund; a payment with a refund is not cancelled (BR-30 of `payment`), a cancelled payment is not refunded (BR-29 of `refund`).
+- REQ-6 (1.1) caps refunds by the "amount paid" and refunds "all or part" of a paid invoice; neither the source nor `area.md` defines the amount paid, and `invoice`'s "Paid" means "its amount has been paid in full". Resolved on 2026-10-19 (PO, BA, architect): the amount paid is the amount charged held by `payment`, in its currency; one term (Language of `refund`).
 - `payment` and `refund` share AR-3, the amount paid and CardPay (R4); kept apart by option 2 of version 1.1 (2026-10-19).
 - `payment` was kept against C2 on the ground that "the PRD will name the payment": version 1.1 names no payment entity yet (2026-10-19).
-- The customer of AR-3 is the invoice's `customerId` (PO, 2026-10-19), yet `InvoicePayments`, frozen 2026-10-19, shows the invoice "as `getInvoice` shows it", without its customer. Open (2026-10-19). Owner: architect.
+- The customer of AR-3 is the invoice's `customerId` (PO, 2026-10-19), yet `InvoicePayments`, frozen 2026-10-19, shows the invoice "as `getInvoice` shows it", without its customer. Resolved on 2026-10-19 (architect): `InvoicePayments` gains the `customerId`, agreed by `invoice` and `payment`; `refund` reads it through `PaymentRefunds` of `payment`.
 
 ## Coverage
 

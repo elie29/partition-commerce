@@ -17,20 +17,25 @@ public class PayInvoiceUseCase {
 
     private static final Logger LOG = LoggerFactory.getLogger(PayInvoiceUseCase.class);
     private final PayableInvoices invoices;
+    private final FraudReview fraudReview;
     private final CardPay cardPay;
     private final RecordPayment recordPayment;
 
-    public PayInvoiceUseCase(PayableInvoices invoices, CardPay cardPay, RecordPayment recordPayment) {
+    public PayInvoiceUseCase(
+            PayableInvoices invoices, FraudReview fraudReview, CardPay cardPay, RecordPayment recordPayment) {
         this.invoices = invoices;
+        this.fraudReview = fraudReview;
         this.cardPay = cardPay;
         this.recordPayment = recordPayment;
     }
 
     /**
-     * Checks the content, then the invoice, then charges the whole amount once and records the payment (BR-5, BR-22).
+     * Checks the content, then the invoice, then the fraud review, then the state; charges the whole amount once and
+     * records the payment (BR-5, BR-22, AR-3).
      *
      * @throws PaymentContentRefused when the card token is not bounded by AR-1, before the invoice is read (BR-22)
      * @throws InvoiceNotFound when the identifier names no invoice, or is not a UUID (BR-21)
+     * @throws PayForbidden when the invoice's customer is under fraud review, before its state is checked (AR-3)
      * @throws PayRefused when the invoice is paid or cancelled, before CardPay is called (BR-20), or when a
      *     simultaneous pay or cancel was recorded first (BR-5): the charge is then kept nowhere
      * @throws CardDeclined when CardPay declines the card; nothing is recorded (BR-5)
@@ -46,6 +51,9 @@ public class PayInvoiceUseCase {
         InvoiceToPay invoice = InvoiceIds.parse(invoiceId)
                 .flatMap(invoices::find)
                 .orElseThrow(InvoiceNotFound::new);
+        if (invoices.customerOf(invoice.invoiceId()).filter(fraudReview::underReview).isPresent()) {
+            throw new PayForbidden();
+        }
         if (!invoice.issued()) {
             throw new PayRefused("BR-20: only an invoice whose status is ISSUED is paid", null);
         }

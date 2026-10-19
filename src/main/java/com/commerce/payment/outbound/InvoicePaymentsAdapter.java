@@ -31,6 +31,11 @@ class InvoicePaymentsAdapter implements PayableInvoices {
     }
 
     @Override
+    public Optional<String> customerOf(UUID invoiceId) {
+        return invoicePayments.customerOf(invoiceId);
+    }
+
+    @Override
     public InvoiceToPay recordPaid(UUID invoiceId) {
         try {
             return toPay(invoicePayments.recordPayment(invoiceId));
