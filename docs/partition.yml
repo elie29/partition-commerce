@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=../.claude/skills/partition-budget/assets/partition.schema.json
+# Partition - project configuration.
+# Strict YAML subset: block maps and lists, one value per line, flow lists [a, b] of plain values.
+# Put quotes around a value that holds ": " or starts with * & !
+
+version: 1
+target: claude                # whose loading rules the gauges follow: claude | copilot
+bridge: none                  # none | superpowers (the plugin writes the plans' body; paths.plans keeps the folder)
+
+paths:
+  specs: docs/specs
+  invariants: docs/specs/invariants.md
+  designs: docs/designs
+  plans: docs/plans
+  contracts: docs/contracts
+  sources: docs/sources        # PRDs and described contexts, decomposed by partition-shape
+  # schemas: docs/schema      # declare it only if the project documents its persistence
+
+budget:
+  always: 32000               # the owner's limit: no bounded context may load more tokens than this before reading code
+  chars_per_token: 4
+  review: quarterly           # when the assessment is held, e.g. quarterly, every six sprints
+
+contexts: []                  # one entry per bounded context, declared by partition-shape or partition-reshape
