@@ -76,3 +76,11 @@ contexts:                     # one entry per bounded context, declared by parti
           - inbound -> application
           - outbound -> application
           - outbound -> domain
+  - id: product
+    area: catalog
+    code:
+      - src/main/java/com/commerce/product/**
+  - id: price-list
+    area: catalog
+    code:
+      - src/main/java/com/commerce/pricelist/**

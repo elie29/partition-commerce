@@ -102,7 +102,7 @@ What the contract does not declare (the 400, the bound of AR-1, no body on a ref
 
 ## Applicable area rules and invariants
 
-AR-1, AR-2 of `../area.md`, with its language.
+AR-1 of `../area.md`, with its language; INV-DATA-001 of `../../invariants.md` (architect, 2026-10-19).
 
 ## Open questions
 

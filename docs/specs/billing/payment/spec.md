@@ -91,7 +91,7 @@ What the contract does not declare (the 400, the bound of AR-1, no body on a ref
 | Entry | What it constrains here |
 | ----- | ----------------------- |
 | AR-1 | The card token (BR-22) and the charge reference (BR-5) |
-| AR-2 | The amount charged, stored (BR-24) |
+| INV-DATA-001 of `../../invariants.md` | The amount charged, stored (BR-24) (architect, 2026-10-19) |
 | AR-3 | A pay (BR-5) of an invoice whose customer is under fraud review |
 
 ## Open questions

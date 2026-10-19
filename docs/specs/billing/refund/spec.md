@@ -87,7 +87,7 @@ What the contract does not declare (the 400, the bound of AR-1, no body on a ref
 | Entry | What it constrains here |
 | ----- | ----------------------- |
 | AR-1 | The charge reference it stores (architect, 2026-10-19) |
-| AR-2 | The amount of a refund, stored (architect, 2026-10-19) |
+| INV-DATA-001 of `../../invariants.md` | The amount of a refund, stored (architect, 2026-10-19) |
 | AR-3 | A refund of an invoice whose customer is under fraud review |
 
 ## Open questions
