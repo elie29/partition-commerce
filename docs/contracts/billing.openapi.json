@@ -1,6 +1,6 @@
 {
   "openapi": "3.1.0",
-  "info": { "title": "Billing API", "version": "1.0.0" },
+  "info": { "title": "Billing API", "version": "1.1.0" },
   "paths": {
     "/invoices": {
       "post": {
@@ -15,7 +15,7 @@
             "description": "The issued invoice",
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Invoice" } } }
           },
-          "409": { "description": "An invoice was already issued for this order" }
+          "409": { "description": "This order already has an invoice that is not cancelled" }
         }
       }
     },
@@ -30,6 +30,21 @@
             "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Invoice" } } }
           },
           "404": { "description": "No such invoice" }
+        }
+      }
+    },
+    "/invoices/{invoiceId}/cancel": {
+      "post": {
+        "operationId": "cancelInvoice",
+        "tags": ["Invoice"],
+        "parameters": [{ "name": "invoiceId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "The cancelled invoice",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Invoice" } } }
+          },
+          "404": { "description": "No such invoice" },
+          "409": { "description": "The invoice is paid or already cancelled" }
         }
       }
     }
