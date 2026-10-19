@@ -1,0 +1,56 @@
+# C4 model of commerce. The source of the architecture views: change it here, then regenerate.
+# Strict YAML subset: one value per line, quotes around a value holding ": " or starting with * & !
+# Written once from the hand-drawn docs/architecture/commerce.drawio (2026-10-19); kinds and parents from the architect.
+
+title: Commerce
+
+elements:
+  - id: customer
+    kind: person
+    name: Customer
+  - id: accountant
+    kind: person
+    name: Accountant
+  - id: commerce
+    kind: system
+    name: Commerce
+    description: Sells products from price lists and bills them
+  - id: commerce-app
+    kind: container
+    in: commerce
+    name: Commerce app
+    technology: Spring Boot 4.1, jar
+  - id: invoicing
+    kind: component
+    in: commerce-app
+    name: Invoicing
+    context: invoice
+  - id: h2
+    kind: container
+    in: commerce
+    name: H2
+    description: The database
+  - id: cardpay
+    kind: system
+    external: true
+    name: CardPay
+
+relations:
+  - customer -> commerce-app: pays
+  - accountant -> commerce-app: issues, cancels
+  - invoicing -> h2: SQL
+  - invoicing -> cardpay: charges, reverses
+
+views:
+  - id: context
+    kind: context
+    of: commerce
+    title: C4 1 - Context
+  - id: containers
+    kind: containers
+    of: commerce
+    title: C4 2 - Containers
+  - id: components
+    kind: components
+    of: commerce-app
+    title: C4 3 - Components of Commerce app

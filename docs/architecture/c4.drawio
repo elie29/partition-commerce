@@ -1,0 +1,149 @@
+<mxfile host="partition" agent="c4-drawio.mjs" compressed="false">
+  <diagram id="context" name="C4 1 - Context">
+    <mxGraphModel dx="1434" dy="836" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1728" pageHeight="700" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="context--e--commerce" value="&lt;span style=&quot;font-size:21px;font-weight:600;color:#000000&quot;&gt;Commerce&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-family:IBM Plex Mono;font-size:14px;color:#666666&quot;&gt;[System]&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px;color:#333333;line-height:1.3&quot;&gt;Sells products from price lists and bills them&lt;/span&gt;" style="rounded=1;absoluteArcSize=1;arcSize=14;html=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;fontFamily=IBM Plex Sans;align=left;verticalAlign=top;spacingLeft=14;spacingRight=10;spacingTop=10;partition=8UICxrTyGL;" parent="1" vertex="1">
+          <mxGeometry x="720" y="290" width="270" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="context--e--customer" value="&lt;span style=&quot;font-size:21px;font-weight:600;color:#000000&quot;&gt;Customer&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-family:IBM Plex Mono;font-size:14px;color:#666666&quot;&gt;[Person]&lt;/span&gt;" style="rounded=1;absoluteArcSize=1;arcSize=14;html=1;whiteSpace=wrap;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;fontFamily=IBM Plex Sans;align=left;verticalAlign=top;spacingLeft=14;spacingRight=10;spacingTop=10;partition=4vRrjfbs1-;" parent="1" vertex="1">
+          <mxGeometry x="540" y="40" width="270" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="context--e--accountant" value="&lt;span style=&quot;font-size:21px;font-weight:600;color:#000000&quot;&gt;Accountant&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-family:IBM Plex Mono;font-size:14px;color:#666666&quot;&gt;[Person]&lt;/span&gt;" style="rounded=1;absoluteArcSize=1;arcSize=14;html=1;whiteSpace=wrap;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;fontFamily=IBM Plex Sans;align=left;verticalAlign=top;spacingLeft=14;spacingRight=10;spacingTop=10;partition=hqKT2AtbgB;" parent="1" vertex="1">
+          <mxGeometry x="900" y="40" width="270" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="context--e--cardpay" value="&lt;span style=&quot;font-size:21px;font-weight:600;color:#000000&quot;&gt;CardPay&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-family:IBM Plex Mono;font-size:14px;color:#666666&quot;&gt;[External system]&lt;/span&gt;" style="rounded=1;absoluteArcSize=1;arcSize=14;html=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=2;fontFamily=IBM Plex Sans;align=left;verticalAlign=top;spacingLeft=14;spacingRight=10;spacingTop=10;partition=2LmVOq51Ln;" parent="1" vertex="1">
+          <mxGeometry x="720" y="540" width="270" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="context--r--customer--commerce--1" value="pays" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;fontFamily=IBM Plex Sans;fontSize=15;fontColor=#000000;labelBackgroundColor=#FFFFFF;spacing=3;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.33;entryY=0;entryPerimeter=0;partition=xNEBoLaS1c;" parent="1" edge="1" source="context--e--customer" target="context--e--commerce">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="675" y="205"/>
+              <mxPoint x="809" y="205"/>
+              <mxPoint x="809" y="265"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="context--r--accountant--commerce--1" value="issues, cancels" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;fontFamily=IBM Plex Sans;fontSize=15;fontColor=#000000;labelBackgroundColor=#FFFFFF;spacing=3;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.67;entryY=0;entryPerimeter=0;partition=liw0UY-cbi;" parent="1" edge="1" source="context--e--accountant" target="context--e--commerce">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1035" y="205"/>
+              <mxPoint x="901" y="205"/>
+              <mxPoint x="901" y="265"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="context--r--commerce--cardpay--1" value="charges, reverses" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;fontFamily=IBM Plex Sans;fontSize=15;fontColor=#000000;labelBackgroundColor=#FFFFFF;spacing=3;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;partition=jiSUEbTEbW;" parent="1" edge="1" source="context--e--commerce" target="context--e--cardpay">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="855" y="455"/>
+              <mxPoint x="855" y="515"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="containers" name="C4 2 - Containers">
+    <mxGraphModel dx="1434" dy="836" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1728" pageHeight="700" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="containers--b--commerce" value="&lt;b&gt;Commerce&lt;/b&gt; [System]" style="rounded=1;absoluteArcSize=1;arcSize=20;html=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=2;fontFamily=IBM Plex Sans;fontSize=20;verticalAlign=bottom;spacingTop=6;spacingBottom=6;partition=Ocw2Pv0vhq;" parent="1" vertex="1">
+          <mxGeometry x="680" y="290" width="350" height="500" as="geometry"/>
+        </mxCell>
+        <mxCell id="containers--e--commerce-app" value="&lt;span style=&quot;font-size:21px;font-weight:600;color:#000000&quot;&gt;Commerce app&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-family:IBM Plex Mono;font-size:14px;color:#666666&quot;&gt;[Container: Spring Boot 4.1, jar]&lt;/span&gt;" style="rounded=1;absoluteArcSize=1;arcSize=14;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontFamily=IBM Plex Sans;align=left;verticalAlign=top;spacingLeft=14;spacingRight=10;spacingTop=10;partition=rwtB4VHL-5;" parent="1" vertex="1">
+          <mxGeometry x="720" y="330" width="270" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="containers--e--h2" value="&lt;span style=&quot;font-size:21px;font-weight:600;color:#000000&quot;&gt;H2&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-family:IBM Plex Mono;font-size:14px;color:#666666&quot;&gt;[Container]&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px;color:#333333;line-height:1.3&quot;&gt;The database&lt;/span&gt;" style="rounded=1;absoluteArcSize=1;arcSize=14;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontFamily=IBM Plex Sans;align=left;verticalAlign=top;spacingLeft=14;spacingRight=10;spacingTop=10;partition=NwpGBdmDzl;" parent="1" vertex="1">
+          <mxGeometry x="720" y="580" width="270" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="containers--e--customer" value="&lt;span style=&quot;font-size:21px;font-weight:600;color:#000000&quot;&gt;Customer&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-family:IBM Plex Mono;font-size:14px;color:#666666&quot;&gt;[Person]&lt;/span&gt;" style="rounded=1;absoluteArcSize=1;arcSize=14;html=1;whiteSpace=wrap;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;fontFamily=IBM Plex Sans;align=left;verticalAlign=top;spacingLeft=14;spacingRight=10;spacingTop=10;partition=4vRrjfbs1-;" parent="1" vertex="1">
+          <mxGeometry x="540" y="40" width="270" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="containers--e--accountant" value="&lt;span style=&quot;font-size:21px;font-weight:600;color:#000000&quot;&gt;Accountant&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-family:IBM Plex Mono;font-size:14px;color:#666666&quot;&gt;[Person]&lt;/span&gt;" style="rounded=1;absoluteArcSize=1;arcSize=14;html=1;whiteSpace=wrap;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;fontFamily=IBM Plex Sans;align=left;verticalAlign=top;spacingLeft=14;spacingRight=10;spacingTop=10;partition=hqKT2AtbgB;" parent="1" vertex="1">
+          <mxGeometry x="900" y="40" width="270" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="containers--e--cardpay" value="&lt;span style=&quot;font-size:21px;font-weight:600;color:#000000&quot;&gt;CardPay&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-family:IBM Plex Mono;font-size:14px;color:#666666&quot;&gt;[External system]&lt;/span&gt;" style="rounded=1;absoluteArcSize=1;arcSize=14;html=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=2;fontFamily=IBM Plex Sans;align=left;verticalAlign=top;spacingLeft=14;spacingRight=10;spacingTop=10;partition=c4JJ-WUTu-;" parent="1" vertex="1">
+          <mxGeometry x="720" y="900" width="270" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="containers--r--customer--commerce-app--1" value="pays" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;fontFamily=IBM Plex Sans;fontSize=15;fontColor=#000000;labelBackgroundColor=#FFFFFF;spacing=3;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.33;entryY=0;entryPerimeter=0;partition=iD6O3KLFFr;" parent="1" edge="1" source="containers--e--customer" target="containers--e--commerce-app">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="675" y="205"/>
+              <mxPoint x="809" y="205"/>
+              <mxPoint x="809" y="305"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="containers--r--accountant--commerce-app--1" value="issues, cancels" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;fontFamily=IBM Plex Sans;fontSize=15;fontColor=#000000;labelBackgroundColor=#FFFFFF;spacing=3;exitX=0.5;exitY=1;exitPerimeter=0;entryX=0.67;entryY=0;entryPerimeter=0;partition=k4nemHLJR3;" parent="1" edge="1" source="containers--e--accountant" target="containers--e--commerce-app">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1035" y="205"/>
+              <mxPoint x="901" y="205"/>
+              <mxPoint x="901" y="305"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="containers--r--commerce-app--h2--1" value="SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;fontFamily=IBM Plex Sans;fontSize=15;fontColor=#000000;labelBackgroundColor=#FFFFFF;spacing=3;exitX=0.33;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;partition=UJO0UVgNk-;" parent="1" edge="1" source="containers--e--commerce-app" target="containers--e--h2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="809" y="495"/>
+              <mxPoint x="855" y="495"/>
+              <mxPoint x="855" y="555"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="containers--r--commerce-app--cardpay--1" value="charges, reverses" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;fontFamily=IBM Plex Sans;fontSize=15;fontColor=#000000;labelBackgroundColor=#FFFFFF;spacing=3;exitX=0.67;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;partition=kbnsbZbsmi;" parent="1" edge="1" source="containers--e--commerce-app" target="containers--e--cardpay">
+          <mxGeometry x="0.4" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="901" y="495"/>
+              <mxPoint x="1015" y="495"/>
+              <mxPoint x="1015" y="875"/>
+              <mxPoint x="855" y="875"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="components" name="C4 3 - Components of Commerce app">
+    <mxGraphModel dx="1434" dy="836" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1728" pageHeight="700" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="components--b--commerce-app" value="&lt;b&gt;Commerce app&lt;/b&gt; [Container]" style="rounded=1;absoluteArcSize=1;arcSize=20;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontFamily=IBM Plex Sans;fontSize=20;verticalAlign=bottom;spacingTop=6;spacingBottom=6;partition=AXqBmcf5CD;" parent="1" vertex="1">
+          <mxGeometry x="680" y="290" width="350" height="250" as="geometry"/>
+        </mxCell>
+        <mxCell id="components--e--invoicing" value="&lt;span style=&quot;font-size:21px;font-weight:600;color:#000000&quot;&gt;Invoicing&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-family:IBM Plex Mono;font-size:14px;color:#666666&quot;&gt;[Component · invoice]&lt;/span&gt;" style="rounded=1;absoluteArcSize=1;arcSize=14;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#b85450;strokeWidth=2;fontFamily=IBM Plex Sans;align=left;verticalAlign=top;spacingLeft=14;spacingRight=10;spacingTop=10;partition=rwtB4VHL-5;" parent="1" vertex="1">
+          <mxGeometry x="720" y="330" width="270" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="components--e--h2" value="&lt;span style=&quot;font-size:21px;font-weight:600;color:#000000&quot;&gt;H2&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-family:IBM Plex Mono;font-size:14px;color:#666666&quot;&gt;[Container]&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-size:16px;color:#333333;line-height:1.3&quot;&gt;The database&lt;/span&gt;" style="rounded=1;absoluteArcSize=1;arcSize=14;html=1;whiteSpace=wrap;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontFamily=IBM Plex Sans;align=left;verticalAlign=top;spacingLeft=14;spacingRight=10;spacingTop=10;partition=kLMOCPrtCz;" parent="1" vertex="1">
+          <mxGeometry x="540" y="650" width="270" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="components--e--cardpay" value="&lt;span style=&quot;font-size:21px;font-weight:600;color:#000000&quot;&gt;CardPay&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;font-family:IBM Plex Mono;font-size:14px;color:#666666&quot;&gt;[External system]&lt;/span&gt;" style="rounded=1;absoluteArcSize=1;arcSize=14;html=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=2;fontFamily=IBM Plex Sans;align=left;verticalAlign=top;spacingLeft=14;spacingRight=10;spacingTop=10;partition=Ft1pSTxyiS;" parent="1" vertex="1">
+          <mxGeometry x="900" y="650" width="270" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="components--r--invoicing--h2--1" value="SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;fontFamily=IBM Plex Sans;fontSize=15;fontColor=#000000;labelBackgroundColor=#FFFFFF;spacing=3;exitX=0.33;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;partition=Yue-fEabzA;" parent="1" edge="1" source="components--e--invoicing" target="components--e--h2">
+          <mxGeometry x="0.4" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="809" y="495"/>
+              <mxPoint x="675" y="495"/>
+              <mxPoint x="675" y="625"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="components--r--invoicing--cardpay--1" value="charges, reverses" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;fontFamily=IBM Plex Sans;fontSize=15;fontColor=#000000;labelBackgroundColor=#FFFFFF;spacing=3;exitX=0.67;exitY=1;exitPerimeter=0;entryX=0.5;entryY=0;entryPerimeter=0;partition=WyWkksMd5o;" parent="1" edge="1" source="components--e--invoicing" target="components--e--cardpay">
+          <mxGeometry x="0.4" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="901" y="495"/>
+              <mxPoint x="1035" y="495"/>
+              <mxPoint x="1035" y="625"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -26,3 +26,17 @@ contexts:                     # one entry per bounded context, declared by parti
     area: billing
     code:
       - src/main/java/com/commerce/invoice/**
+    hexagons:
+      - id: invoice
+        form: rich
+        reason: an invoice moves from issued to paid or cancelled under BR-3 to BR-6, and some transitions are forbidden
+        layers:
+          domain: src/main/java/com/commerce/invoice/domain/**
+          application: src/main/java/com/commerce/invoice/application/**
+          inbound: src/main/java/com/commerce/invoice/inbound/**
+          outbound: src/main/java/com/commerce/invoice/outbound/**
+        allowed:
+          - application -> domain
+          - inbound -> application
+          - outbound -> application
+          - outbound -> domain
