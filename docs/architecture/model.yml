@@ -74,9 +74,28 @@ views:
       - "accountant -> invoicing: POST /invoices/{invoiceId}/cancel"
       - "invoicing -> h2: read the invoice"
       - "invoicing --> accountant: not a UUID, or no such invoice (BR-19): 404, no body"
-      - "invoicing --> accountant: already cancelled (BR-18): 409, no body"
+      - "invoicing --> accountant: paid (BR-4) or already cancelled (BR-18): 409, no body"
       - "invoicing -> h2: set the status to cancelled, if still issued"
-      - "h2 --> invoicing: no row changed: a simultaneous cancel came first"
-      - "invoicing --> accountant: BR-18: 409, no body"
+      - "h2 --> invoicing: no row changed: a simultaneous pay or cancel came first"
+      - "invoicing --> accountant: BR-4, BR-18: 409, no body"
       - "h2 --> invoicing: changed"
       - "invoicing --> accountant: 200, the cancelled invoice"
+  - id: pay-invoice
+    kind: dynamic
+    title: Dynamic - Pay an invoice by card
+    participants: [customer, invoicing, h2, cardpay]
+    steps:
+      - "customer -> invoicing: POST /invoices/{invoiceId}/pay (cardToken)"
+      - "invoicing --> customer: content refused (contract, BR-22): 400, no body"
+      - "invoicing -> h2: read the invoice"
+      - "invoicing --> customer: not a UUID, or no such invoice (BR-21): 404, no body"
+      - "invoicing --> customer: paid or cancelled (BR-20): 409, no body"
+      - "invoicing -> cardpay: charge the card token for the whole amount"
+      - "cardpay --> invoicing: declined"
+      - "invoicing --> customer: 402, no body; still issued"
+      - "cardpay --> invoicing: accepted, charge reference"
+      - "invoicing -> h2: set paid, the charge reference and the time, if still issued"
+      - "h2 --> invoicing: no row changed: a pay or a cancel came first"
+      - "invoicing --> customer: BR-5: 409, no body; the charge is not kept"
+      - "h2 --> invoicing: changed"
+      - "invoicing --> customer: 200, the paid invoice"

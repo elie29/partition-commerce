@@ -231,11 +231,11 @@
         <mxCell id="cancel-invoice--p--accountant" value="&lt;b&gt;Accountant&lt;/b&gt;" style="rounded=1;absoluteArcSize=1;arcSize=10;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;fontColor=#000000;fontFamily=IBM Plex Sans;fontSize=19;partition=QE_JvAnkiK;" parent="1" vertex="1">
           <mxGeometry x="129" y="0" width="260" height="42" as="geometry"/>
         </mxCell>
-        <mxCell id="cancel-invoice--p--invoicing" value="&lt;b&gt;Invoicing&lt;/b&gt;" style="rounded=1;absoluteArcSize=1;arcSize=10;html=1;fillColor=#ffffff;strokeColor=#b85450;strokeWidth=2;fontColor=#000000;fontFamily=IBM Plex Sans;fontSize=19;partition=zqTPp1a1vt;" parent="1" vertex="1">
-          <mxGeometry x="720" y="0" width="260" height="42" as="geometry"/>
+        <mxCell id="cancel-invoice--p--invoicing" value="&lt;b&gt;Invoicing&lt;/b&gt;" style="rounded=1;absoluteArcSize=1;arcSize=10;html=1;fillColor=#ffffff;strokeColor=#b85450;strokeWidth=2;fontColor=#000000;fontFamily=IBM Plex Sans;fontSize=19;partition=g_7NoDNKTt;" parent="1" vertex="1">
+          <mxGeometry x="740" y="0" width="260" height="42" as="geometry"/>
         </mxCell>
-        <mxCell id="cancel-invoice--p--h2" value="&lt;b&gt;H2&lt;/b&gt;" style="rounded=1;absoluteArcSize=1;arcSize=10;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontColor=#000000;fontFamily=IBM Plex Sans;fontSize=19;partition=Rte4g5RvHy;" parent="1" vertex="1">
-          <mxGeometry x="1271" y="0" width="260" height="42" as="geometry"/>
+        <mxCell id="cancel-invoice--p--h2" value="&lt;b&gt;H2&lt;/b&gt;" style="rounded=1;absoluteArcSize=1;arcSize=10;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontColor=#000000;fontFamily=IBM Plex Sans;fontSize=19;partition=4y7O7Tu078;" parent="1" vertex="1">
+          <mxGeometry x="1361" y="0" width="260" height="42" as="geometry"/>
         </mxCell>
         <mxCell id="cancel-invoice--l--accountant" value="" style="endArrow=none;strokeColor=#999999;strokeWidth=1;html=1;dashed=1;dashPattern=4 4;partition=DYVg1g6yhd;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
@@ -243,70 +243,198 @@
             <mxPoint x="259" y="700" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cancel-invoice--l--invoicing" value="" style="endArrow=none;strokeColor=#999999;strokeWidth=1;html=1;dashed=1;dashPattern=4 4;partition=2EGOuoxV2e;" parent="1" edge="1">
+        <mxCell id="cancel-invoice--l--invoicing" value="" style="endArrow=none;strokeColor=#999999;strokeWidth=1;html=1;dashed=1;dashPattern=4 4;partition=OZQnLquWKF;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="870" y="42" as="sourcePoint"/>
+            <mxPoint x="870" y="700" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cancel-invoice--l--h2" value="" style="endArrow=none;strokeColor=#999999;strokeWidth=1;html=1;dashed=1;dashPattern=4 4;partition=aK3HO2o7RT;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1491" y="42" as="sourcePoint"/>
+            <mxPoint x="1491" y="700" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cancel-invoice--s--1" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;1&lt;/span&gt;POST /invoices/{invoiceId}/cancel" style="endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;dashed=0;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=6Xu4JedfjY;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="259" y="100" as="sourcePoint"/>
+            <mxPoint x="870" y="100" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cancel-invoice--s--2" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;2&lt;/span&gt;read the invoice" style="endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;dashed=0;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=Ia9gJLEiOH;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="870" y="170" as="sourcePoint"/>
+            <mxPoint x="1491" y="170" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cancel-invoice--s--3" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;3&lt;/span&gt;not a UUID, or no such invoice (BR-19): 404, no body" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=TPS1_TdJeu;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="870" y="240" as="sourcePoint"/>
+            <mxPoint x="259" y="240" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cancel-invoice--s--4" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;4&lt;/span&gt;paid (BR-4) or already cancelled (BR-18): 409, no body" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=fZHxqoOmQ-;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="870" y="310" as="sourcePoint"/>
+            <mxPoint x="259" y="310" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cancel-invoice--s--5" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;5&lt;/span&gt;set the status to cancelled, if still issued" style="endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;dashed=0;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=xxoZU4VI3c;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="870" y="380" as="sourcePoint"/>
+            <mxPoint x="1491" y="380" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cancel-invoice--s--6" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;6&lt;/span&gt;no row changed: a simultaneous pay or cancel came first" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=lflRXusxoB;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1491" y="450" as="sourcePoint"/>
+            <mxPoint x="870" y="450" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cancel-invoice--s--7" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;7&lt;/span&gt;BR-4, BR-18: 409, no body" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=QtHrc9fKeY;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="870" y="520" as="sourcePoint"/>
+            <mxPoint x="259" y="520" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cancel-invoice--s--8" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;8&lt;/span&gt;changed" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=IdsO2hvBRj;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1491" y="590" as="sourcePoint"/>
+            <mxPoint x="870" y="590" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cancel-invoice--s--9" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;9&lt;/span&gt;200, the cancelled invoice" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=ZOzOQZkDZB;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="870" y="660" as="sourcePoint"/>
+            <mxPoint x="259" y="660" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="pay-invoice" name="Dynamic - Pay an invoice by card">
+    <mxGraphModel dx="1434" dy="836" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1728" pageHeight="700" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="pay-invoice--p--customer" value="&lt;b&gt;Customer&lt;/b&gt;" style="rounded=1;absoluteArcSize=1;arcSize=10;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;strokeWidth=2;fontColor=#000000;fontFamily=IBM Plex Sans;fontSize=19;partition=QE_JvAnkiK;" parent="1" vertex="1">
+          <mxGeometry x="129" y="0" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="pay-invoice--p--invoicing" value="&lt;b&gt;Invoicing&lt;/b&gt;" style="rounded=1;absoluteArcSize=1;arcSize=10;html=1;fillColor=#ffffff;strokeColor=#b85450;strokeWidth=2;fontColor=#000000;fontFamily=IBM Plex Sans;fontSize=19;partition=zqTPp1a1vt;" parent="1" vertex="1">
+          <mxGeometry x="720" y="0" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="pay-invoice--p--h2" value="&lt;b&gt;H2&lt;/b&gt;" style="rounded=1;absoluteArcSize=1;arcSize=10;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;fontColor=#000000;fontFamily=IBM Plex Sans;fontSize=19;partition=FhXYfe6zY-;" parent="1" vertex="1">
+          <mxGeometry x="1391" y="0" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="pay-invoice--p--cardpay" value="&lt;b&gt;CardPay&lt;/b&gt;" style="rounded=1;absoluteArcSize=1;arcSize=10;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=2;fontColor=#000000;fontFamily=IBM Plex Sans;fontSize=19;partition=gifpCul4P5;" parent="1" vertex="1">
+          <mxGeometry x="1823" y="0" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="pay-invoice--l--customer" value="" style="endArrow=none;strokeColor=#999999;strokeWidth=1;html=1;dashed=1;dashPattern=4 4;partition=Y2y41tr2kk;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="259" y="42" as="sourcePoint"/>
+            <mxPoint x="259" y="1050" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pay-invoice--l--invoicing" value="" style="endArrow=none;strokeColor=#999999;strokeWidth=1;html=1;dashed=1;dashPattern=4 4;partition=knyCBjvCCH;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="850" y="42" as="sourcePoint"/>
-            <mxPoint x="850" y="700" as="targetPoint"/>
+            <mxPoint x="850" y="1050" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cancel-invoice--l--h2" value="" style="endArrow=none;strokeColor=#999999;strokeWidth=1;html=1;dashed=1;dashPattern=4 4;partition=mj0jENERsk;" parent="1" edge="1">
+        <mxCell id="pay-invoice--l--h2" value="" style="endArrow=none;strokeColor=#999999;strokeWidth=1;html=1;dashed=1;dashPattern=4 4;partition=HBBFXs8MLI;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1401" y="42" as="sourcePoint"/>
-            <mxPoint x="1401" y="700" as="targetPoint"/>
+            <mxPoint x="1521" y="42" as="sourcePoint"/>
+            <mxPoint x="1521" y="1050" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cancel-invoice--s--1" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;1&lt;/span&gt;POST /invoices/{invoiceId}/cancel" style="endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;dashed=0;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=ltbPL8pfmf;" parent="1" edge="1">
+        <mxCell id="pay-invoice--l--cardpay" value="" style="endArrow=none;strokeColor=#999999;strokeWidth=1;html=1;dashed=1;dashPattern=4 4;partition=TGynRRwgCH;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1953" y="42" as="sourcePoint"/>
+            <mxPoint x="1953" y="1050" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pay-invoice--s--1" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;1&lt;/span&gt;POST /invoices/{invoiceId}/pay (cardToken)" style="endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;dashed=0;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=ltbPL8pfmf;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="259" y="100" as="sourcePoint"/>
             <mxPoint x="850" y="100" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cancel-invoice--s--2" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;2&lt;/span&gt;read the invoice" style="endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;dashed=0;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=h7Bb5fZrZv;" parent="1" edge="1">
+        <mxCell id="pay-invoice--s--2" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;2&lt;/span&gt;content refused (contract, BR-22): 400, no body" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=l9L60as4gr;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="850" y="170" as="sourcePoint"/>
-            <mxPoint x="1401" y="170" as="targetPoint"/>
+            <mxPoint x="259" y="170" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cancel-invoice--s--3" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;3&lt;/span&gt;not a UUID, or no such invoice (BR-19): 404, no body" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=AWSuAgisvD;" parent="1" edge="1">
+        <mxCell id="pay-invoice--s--3" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;3&lt;/span&gt;read the invoice" style="endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;dashed=0;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=FVSv8Ix0qN;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="850" y="240" as="sourcePoint"/>
-            <mxPoint x="259" y="240" as="targetPoint"/>
+            <mxPoint x="1521" y="240" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cancel-invoice--s--4" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;4&lt;/span&gt;already cancelled (BR-18): 409, no body" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=_b4hrtDJsB;" parent="1" edge="1">
+        <mxCell id="pay-invoice--s--4" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;4&lt;/span&gt;not a UUID, or no such invoice (BR-21): 404, no body" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=_b4hrtDJsB;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="850" y="310" as="sourcePoint"/>
             <mxPoint x="259" y="310" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cancel-invoice--s--5" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;5&lt;/span&gt;set the status to cancelled, if still issued" style="endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;dashed=0;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=TuYjLfpkox;" parent="1" edge="1">
+        <mxCell id="pay-invoice--s--5" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;5&lt;/span&gt;paid or cancelled (BR-20): 409, no body" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=A_KrvtGLOl;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="850" y="380" as="sourcePoint"/>
-            <mxPoint x="1401" y="380" as="targetPoint"/>
+            <mxPoint x="259" y="380" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cancel-invoice--s--6" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;6&lt;/span&gt;no row changed: a simultaneous cancel came first" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=QxmZd66zna;" parent="1" edge="1">
+        <mxCell id="pay-invoice--s--6" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;6&lt;/span&gt;charge the card token for the whole amount" style="endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;dashed=0;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=LskWmvXB05;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1401" y="450" as="sourcePoint"/>
-            <mxPoint x="850" y="450" as="targetPoint"/>
+            <mxPoint x="850" y="450" as="sourcePoint"/>
+            <mxPoint x="1953" y="450" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cancel-invoice--s--7" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;7&lt;/span&gt;BR-18: 409, no body" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=gWidiIx4Ar;" parent="1" edge="1">
+        <mxCell id="pay-invoice--s--7" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;7&lt;/span&gt;declined" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=B3ogeFRAuB;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="850" y="520" as="sourcePoint"/>
-            <mxPoint x="259" y="520" as="targetPoint"/>
+            <mxPoint x="1953" y="520" as="sourcePoint"/>
+            <mxPoint x="850" y="520" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cancel-invoice--s--8" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;8&lt;/span&gt;changed" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=IRVx6xMT3q;" parent="1" edge="1">
+        <mxCell id="pay-invoice--s--8" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;8&lt;/span&gt;402, no body; still issued" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=12R0LYgUW-;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1401" y="590" as="sourcePoint"/>
-            <mxPoint x="850" y="590" as="targetPoint"/>
+            <mxPoint x="850" y="590" as="sourcePoint"/>
+            <mxPoint x="259" y="590" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cancel-invoice--s--9" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;9&lt;/span&gt;200, the cancelled invoice" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=gD222RIQL-;" parent="1" edge="1">
+        <mxCell id="pay-invoice--s--9" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;9&lt;/span&gt;accepted, charge reference" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=C6xqv6xmZK;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="850" y="660" as="sourcePoint"/>
-            <mxPoint x="259" y="660" as="targetPoint"/>
+            <mxPoint x="1953" y="660" as="sourcePoint"/>
+            <mxPoint x="850" y="660" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pay-invoice--s--10" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;10&lt;/span&gt;set paid, the charge reference and the time, if still issued" style="endArrow=block;endFill=1;endSize=9;strokeColor=#333333;strokeWidth=2;dashed=0;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=xLCMLUfgOA;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="850" y="730" as="sourcePoint"/>
+            <mxPoint x="1521" y="730" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pay-invoice--s--11" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;11&lt;/span&gt;no row changed: a pay or a cancel came first" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=3AFkayjTB3;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1521" y="800" as="sourcePoint"/>
+            <mxPoint x="850" y="800" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pay-invoice--s--12" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;12&lt;/span&gt;BR-5: 409, no body; the charge is not kept" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=S3yRMPM_R5;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="850" y="870" as="sourcePoint"/>
+            <mxPoint x="259" y="870" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pay-invoice--s--13" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;13&lt;/span&gt;changed" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=DKwwV09d8l;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1521" y="940" as="sourcePoint"/>
+            <mxPoint x="850" y="940" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pay-invoice--s--14" value="&lt;span style=&quot;display:inline-block;width:24px;height:24px;line-height:24px;border-radius:12px;background:#333333;color:#fff;font-weight:600;font-size:13px;text-align:center;margin-right:7px;vertical-align:middle&quot;&gt;14&lt;/span&gt;200, the paid invoice" style="endArrow=open;endFill=1;endSize=9;strokeColor=#666666;strokeWidth=2;dashed=1;html=1;fontFamily=IBM Plex Sans;fontSize=17;fontColor=#000000;verticalAlign=bottom;align=center;labelBackgroundColor=none;spacingBottom=4;partition=kI8d6WJX88;" parent="1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="850" y="1010" as="sourcePoint"/>
+            <mxPoint x="259" y="1010" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
       </root>

@@ -75,6 +75,43 @@ class CancelInvoiceTest {
     }
 
     @Test
+    void refuses_to_cancel_a_paid_invoice_with_409_and_no_body() {
+        String invoiceId = invoiceId(issue());
+        assertThat(client.pay(invoiceId, InvoiceClient.payRequest("tok_visa")).statusCode()).isEqualTo(200);
+
+        HttpResponse<String> cancel = client.cancel(invoiceId);
+
+        assertThat(cancel.statusCode()).isEqualTo(409);
+        assertThat(cancel.body()).isEmpty();
+        assertThat(json.readTree(client.read(invoiceId).body()).get("status").asString()).isEqualTo("PAID");
+    }
+
+    @Test
+    void of_a_simultaneous_pay_and_cancel_of_one_invoice_the_second_is_refused() throws Exception {
+        String invoiceId = invoiceId(issue());
+        CountDownLatch start = new CountDownLatch(1);
+        Callable<Integer> cancel = () -> {
+            start.await();
+            return client.cancel(invoiceId).statusCode();
+        };
+        Callable<Integer> pay = () -> {
+            start.await();
+            return client.pay(invoiceId, InvoiceClient.payRequest("tok_visa")).statusCode();
+        };
+        List<Integer> statuses;
+        try (ExecutorService pool = Executors.newFixedThreadPool(2)) {
+            Future<Integer> cancelled = pool.submit(cancel);
+            Future<Integer> paid = pool.submit(pay);
+            start.countDown();
+            statuses = List.of(cancelled.get(), paid.get());
+        }
+
+        assertThat(statuses).containsExactlyInAnyOrder(200, 409);
+        String status = json.readTree(client.read(invoiceId).body()).get("status").asString();
+        assertThat(status).isEqualTo(statuses.get(0) == 200 ? "CANCELLED" : "PAID");
+    }
+
+    @Test
     void of_two_simultaneous_cancels_of_one_invoice_the_second_is_refused() throws Exception {
         String invoiceId = invoiceId(issue());
         CountDownLatch start = new CountDownLatch(1);

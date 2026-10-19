@@ -39,6 +39,30 @@ final class InvoiceClient {
                 .build());
     }
 
+    /**
+     * A pay of JSON with the body as given, so that a test can send what the contract refuses; {@code null} sends no
+     * body.
+     */
+    HttpResponse<String> pay(String invoiceId, String body) {
+        return send(HttpRequest.newBuilder(URI.create(base + "/invoices/" + invoiceId + "/pay"))
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .POST(body == null ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofString(body))
+                .build());
+    }
+
+    /** A POST with no content type and no body, to a path under the base, such as {@code /invoices}. */
+    HttpResponse<String> postWithoutContentType(String path) {
+        return send(HttpRequest.newBuilder(URI.create(base + path))
+                .header("Accept", "application/json")
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build());
+    }
+
+    static String payRequest(String cardToken) {
+        return "{\"cardToken\":" + quoted(cardToken) + "}";
+    }
+
     private HttpResponse<String> send(HttpRequest request) {
         try {
             return http.send(request, HttpResponse.BodyHandlers.ofString());

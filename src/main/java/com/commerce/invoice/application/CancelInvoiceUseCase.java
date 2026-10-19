@@ -20,7 +20,8 @@ public class CancelInvoiceUseCase {
 
     /**
      * @throws InvoiceNotFound when the identifier names no invoice, or is not a UUID (BR-19)
-     * @throws CancelRefused when the invoice is already cancelled, a simultaneous cancel included (BR-18)
+     * @throws CancelRefused when the invoice is paid (BR-4) or already cancelled (BR-18), a simultaneous pay or cancel
+     *     included
      */
     public InvoiceView cancel(String invoiceId) {
         Invoice invoice = InvoiceIds.parse(invoiceId)
@@ -33,7 +34,7 @@ public class CancelInvoiceUseCase {
             throw new CancelRefused(e.getMessage(), e);
         }
         if (!invoices.changeStatus(invoice.id(), invoice.status(), cancelled.status())) {
-            throw new CancelRefused("BR-18: a simultaneous cancel came first", null);
+            throw new CancelRefused("BR-4, BR-18: a simultaneous pay or cancel came first", null);
         }
         LOG.info("Invoice {} cancelled for order {}", cancelled.id(), cancelled.orderId());
         return InvoiceView.of(cancelled);

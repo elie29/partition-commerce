@@ -2,6 +2,7 @@ package com.commerce.invoice.domain;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -16,40 +17,72 @@ public final class Invoice {
     private final InvoiceStatus status;
     private final List<Line> lines;
     private final Money amount;
+    private final String chargeReference;
 
-    private Invoice(UUID id, String orderId, String customerId, InvoiceStatus status, List<Line> lines) {
+    private Invoice(
+            UUID id, String orderId, String customerId, InvoiceStatus status, List<Line> lines, String chargeReference) {
         this.id = Objects.requireNonNull(id);
-        this.orderId = Text.require(orderId, "BR-11: an order identifier is non-blank, at most 255 characters");
-        this.customerId = Text.require(customerId, "BR-11: a customer identifier is non-blank, at most 255 characters");
+        this.orderId = Text.require(orderId, "BR-11: an order identifier is bounded as a label is (BR-12)");
+        this.customerId = Text.require(customerId, "BR-11: a customer identifier is bounded as a label is (BR-12)");
         this.status = Objects.requireNonNull(status);
         if (lines == null || lines.isEmpty() || lines.stream().anyMatch(Objects::isNull)) {
             throw new InvalidInvoice("BR-16: an invoice has at least one line");
         }
         this.lines = List.copyOf(lines);
         this.amount = this.lines.stream().map(Line::price).reduce(Money::plus).orElseThrow();
+        this.chargeReference = status == InvoiceStatus.PAID
+                ? Text.require(chargeReference, "BR-5: a charge reference is bounded as a label is (BR-12)")
+                : null;
     }
 
     /** Issues the invoice of an order, with an identifier of its own (BR-14). */
     public static Invoice issue(String orderId, String customerId, List<Line> lines) {
-        return new Invoice(UUID.randomUUID(), orderId, customerId, InvoiceStatus.ISSUED, lines);
+        return new Invoice(UUID.randomUUID(), orderId, customerId, InvoiceStatus.ISSUED, lines, null);
     }
 
-    /** An invoice already issued, as it was recorded. */
-    public static Invoice restore(UUID id, String orderId, String customerId, InvoiceStatus status, List<Line> lines) {
-        return new Invoice(id, orderId, customerId, status, lines);
+    /** An invoice already issued, as it was recorded; the charge reference is read for a paid invoice only. */
+    public static Invoice restore(
+            UUID id, String orderId, String customerId, InvoiceStatus status, List<Line> lines, String chargeReference) {
+        return new Invoice(id, orderId, customerId, status, lines, chargeReference);
     }
 
     /**
      * Cancels the invoice before any payment, at no fee (BR-4): the same invoice with its status changed and nothing
      * else (BR-3).
      *
-     * @throws InvoiceNotCancellable when the invoice is already cancelled (BR-18)
+     * @throws InvoiceNotCancellable when the invoice is paid (BR-4) or already cancelled (BR-18)
      */
     public Invoice cancel() {
+        if (status == InvoiceStatus.PAID) {
+            throw new InvoiceNotCancellable("BR-4: an invoice is cancelled only before any payment");
+        }
         if (status != InvoiceStatus.ISSUED) {
             throw new InvoiceNotCancellable("BR-18: a cancelled invoice is not cancelled again");
         }
-        return new Invoice(id, orderId, customerId, InvoiceStatus.CANCELLED, lines);
+        return new Invoice(id, orderId, customerId, InvoiceStatus.CANCELLED, lines, null);
+    }
+
+    /**
+     * The guard of a pay, checked before CardPay is called (BR-20).
+     *
+     * @throws InvoiceNotPayable when the invoice is paid or cancelled
+     */
+    public void requirePayable() {
+        if (status != InvoiceStatus.ISSUED) {
+            throw new InvoiceNotPayable("BR-20: only an invoice whose status is ISSUED is paid");
+        }
+    }
+
+    /**
+     * Pays the invoice once CardPay has accepted its charge (BR-5): the same invoice with its status changed and its
+     * charge reference, nothing else (BR-3).
+     *
+     * @throws InvoiceNotPayable when the invoice is paid or cancelled (BR-20)
+     * @throws InvalidInvoice when the charge reference is not bounded as a label is: a defect of CardPay
+     */
+    public Invoice pay(String chargeReference) {
+        requirePayable();
+        return new Invoice(id, orderId, customerId, InvoiceStatus.PAID, lines, chargeReference);
     }
 
     public UUID id() {
@@ -76,5 +109,10 @@ public final class Invoice {
     /** The sum of the prices of the lines, in their currency (BR-2). */
     public Money amount() {
         return amount;
+    }
+
+    /** What CardPay answered when it accepted the charge; empty unless the invoice is paid. */
+    public Optional<String> chargeReference() {
+        return Optional.ofNullable(chargeReference);
     }
 }

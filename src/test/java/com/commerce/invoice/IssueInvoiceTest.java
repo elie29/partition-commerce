@@ -126,6 +126,24 @@ class IssueInvoiceTest {
     }
 
     @Test
+    void keeps_the_framework_415_for_an_issue_with_no_content_type() {
+        assertThat(client.postWithoutContentType("/invoices").statusCode()).isEqualTo(415);
+    }
+
+    @Test
+    void refuses_an_issue_for_an_order_whose_invoice_is_paid_with_409_and_no_body() {
+        String orderId = newOrderId();
+        HttpResponse<String> first = client.issue(request(orderId, "customer-1", line("Book", 1250, "EUR")));
+        String paidId = json.readTree(first.body()).get("invoiceId").asString();
+        assertThat(client.pay(paidId, InvoiceClient.payRequest("tok_visa")).statusCode()).isEqualTo(200);
+
+        HttpResponse<String> second = client.issue(request(orderId, "customer-1", line("Book", 1250, "EUR")));
+
+        assertThat(second.statusCode()).isEqualTo(409);
+        assertThat(second.body()).isEmpty();
+    }
+
+    @Test
     void of_two_simultaneous_corrections_of_one_order_the_second_is_refused() throws Exception {
         String orderId = newOrderId();
         HttpResponse<String> first = client.issue(request(orderId, "customer-1", line("Book", 1250, "EUR")));

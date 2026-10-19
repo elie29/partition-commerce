@@ -47,16 +47,19 @@ class JdbcInvoices implements Invoices {
     @Override
     @Transactional(readOnly = true)
     public Optional<Invoice> find(UUID id) {
-        Optional<Header> header = jdbc.sql("SELECT order_id, customer_id, status FROM invoice WHERE invoice_id = ?")
+        Optional<Header> header = jdbc.sql(
+                        "SELECT order_id, customer_id, status, charge_reference FROM invoice WHERE invoice_id = ?")
                 .param(id)
-                .query((rs, n) -> new Header(rs.getString("order_id"), rs.getString("customer_id"), rs.getString("status")))
+                .query((rs, n) -> new Header(rs.getString("order_id"), rs.getString("customer_id"),
+                        rs.getString("status"), rs.getString("charge_reference")))
                 .optional();
         return header.map(h -> Invoice.restore(id, h.orderId(), h.customerId(), InvoiceStatus.valueOf(h.status()),
                 jdbc.sql("SELECT label, price_minor, price_currency FROM invoice_line WHERE invoice_id = ? ORDER BY line_no")
                         .param(id)
                         .query((rs, n) -> new Line(rs.getString("label"),
                                 new Money(rs.getLong("price_minor"), rs.getString("price_currency"))))
-                        .list()));
+                        .list(),
+                h.chargeReference()));
     }
 
     @Override
@@ -67,6 +70,17 @@ class JdbcInvoices implements Invoices {
                 .update() == 1;
     }
 
-    private record Header(String orderId, String customerId, String status) {
+    /** The time of the payment is the database's, in the one statement this transaction commits. */
+    @Override
+    @Transactional
+    public boolean recordPayment(Invoice paid) {
+        return jdbc.sql("UPDATE invoice SET status = ?, charge_reference = ?, paid_at = CURRENT_TIMESTAMP"
+                        + " WHERE invoice_id = ? AND status = ?")
+                .params(paid.status().name(), paid.chargeReference().orElseThrow(), paid.id(),
+                        InvoiceStatus.ISSUED.name())
+                .update() == 1;
+    }
+
+    private record Header(String orderId, String customerId, String status, String chargeReference) {
     }
 }

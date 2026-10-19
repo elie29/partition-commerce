@@ -6,11 +6,13 @@ import com.commerce.invoice.application.InvoiceView;
 import com.commerce.invoice.application.IssueInvoiceCommand;
 import com.commerce.invoice.application.IssueInvoiceUseCase;
 import com.commerce.invoice.application.LineData;
+import com.commerce.invoice.application.PayInvoiceUseCase;
 import com.commerce.invoice.inbound.api.InvoicesApi;
 import com.commerce.invoice.inbound.api.model.Invoice;
 import com.commerce.invoice.inbound.api.model.IssueInvoice;
 import com.commerce.invoice.inbound.api.model.Line;
 import com.commerce.invoice.inbound.api.model.Money;
+import com.commerce.invoice.inbound.api.model.PayInvoice;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +25,17 @@ public class InvoiceController implements InvoicesApi {
     private final IssueInvoiceUseCase issueInvoice;
     private final GetInvoiceUseCase getInvoice;
     private final CancelInvoiceUseCase cancelInvoice;
+    private final PayInvoiceUseCase payInvoice;
 
     public InvoiceController(
-            IssueInvoiceUseCase issueInvoice, GetInvoiceUseCase getInvoice, CancelInvoiceUseCase cancelInvoice) {
+            IssueInvoiceUseCase issueInvoice,
+            GetInvoiceUseCase getInvoice,
+            CancelInvoiceUseCase cancelInvoice,
+            PayInvoiceUseCase payInvoice) {
         this.issueInvoice = issueInvoice;
         this.getInvoice = getInvoice;
         this.cancelInvoice = cancelInvoice;
+        this.payInvoice = payInvoice;
     }
 
     @Override
@@ -39,6 +46,12 @@ public class InvoiceController implements InvoicesApi {
     @Override
     public ResponseEntity<Invoice> cancelInvoice(String invoiceId) {
         return ResponseEntity.ok(toInvoice(cancelInvoice.cancel(invoiceId)));
+    }
+
+    /** The request model prints its card token: it is handed to the use case and never logged (BR-3). */
+    @Override
+    public ResponseEntity<Invoice> payInvoice(String invoiceId, PayInvoice request) {
+        return ResponseEntity.ok(toInvoice(payInvoice.pay(invoiceId, request.getCardToken())));
     }
 
     @Override

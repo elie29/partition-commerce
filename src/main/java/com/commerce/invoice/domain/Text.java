@@ -1,6 +1,6 @@
 package com.commerce.invoice.domain;
 
-/** The one definition of a text the spec bounds: non-blank, at most 255 characters (BR-11, BR-12). */
+/** The one definition of a text the spec bounds as a label (BR-12): BR-11, BR-22, the charge reference (BR-5). */
 final class Text {
 
     static final int MAX_CHARACTERS = 255;
