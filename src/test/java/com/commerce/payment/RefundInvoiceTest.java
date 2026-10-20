@@ -10,6 +10,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.commerce.fraud.application.CustomerStatus;
+import com.commerce.fraud.application.LiftReviewUseCase;
+import com.commerce.fraud.application.PlaceReviewUseCase;
 import com.commerce.payment.application.CardPayRefunds;
 import com.commerce.payment.application.FraudReview;
 import com.commerce.payment.application.Refunds;
@@ -37,8 +40,9 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * The use case "refund a paid invoice": BR-25 to BR-29, BR-31 and AR-3 of the spec of {@code refund}, the list of AR-3
- * included.
+ * The use case "refund a paid invoice": BR-25 to BR-29, BR-31 and BR-32 of the spec of {@code payment}, the customer
+ * under fraud review placed and lifted through {@code fraud}, which {@code payment} asks through
+ * {@code CustomerStatus}.
  */
 @RefundApiTest
 @ExtendWith(OutputCaptureExtension.class)
@@ -62,15 +66,27 @@ class RefundInvoiceTest {
     @MockitoSpyBean
     Refunds refunds;
 
-    /** Spied on: a test puts the customer of a paid invoice under review, as a restart after an edit would. */
+    /** Spied on: a test puts the customer of a paid invoice under review, after its pay. */
     @MockitoSpyBean
     FraudReview fraudReview;
+
+    /** {@code fraud}'s contract, spied on: a test makes it fail (BR-32). */
+    @MockitoSpyBean
+    CustomerStatus customerStatus;
+
+    /** {@code fraud}'s use cases, as the risk team would place and lift a review (test code only, TL, 2026-10-20). */
+    @Autowired
+    PlaceReviewUseCase placeReview;
+
+    @Autowired
+    LiftReviewUseCase liftReview;
 
     RefundClient client;
 
     @BeforeEach
     void client() {
         client = new RefundClient(port);
+        placeReview.place(RefundApiTest.UNDER_REVIEW);
     }
 
     @Test
@@ -202,7 +218,7 @@ class RefundInvoiceTest {
     }
 
     @Test
-    void reads_the_list_of_application_yaml_and_answers_400_and_404_before_403_and_403_before_409() {
+    void asks_fraud_and_answers_400_and_404_before_403_and_403_before_409() {
         String underReview = invoiceId(client.issue(RefundApiTest.UNDER_REVIEW, 1250, "EUR"));
         assertThat(client.refund(underReview, refundRequest(0, "EUR")).statusCode()).isEqualTo(400);
         assertThat(client.refund(UUID.randomUUID().toString(), refundRequest(100, "EUR")).statusCode())
@@ -220,6 +236,35 @@ class RefundInvoiceTest {
             HttpResponse<String> refund = client.refund(paid(customerId, 1250), refundRequest(100, "EUR"));
             assertThat(refund.statusCode()).as(customerId).isEqualTo(201);
         }
+    }
+
+    @Test
+    void refuses_a_customer_placed_under_review_after_its_pay_and_refunds_it_once_the_review_is_lifted() {
+        String customerId = "customer-" + UUID.randomUUID();
+        String invoiceId = paid(customerId, 1250);
+        placeReview.place(customerId);
+        assertThat(client.refund(invoiceId, refundRequest(100, "EUR")).statusCode()).isEqualTo(403);
+        assertThat(refundsOf(invoiceId)).isZero();
+
+        liftReview.lift(customerId);
+        HttpResponse<String> refund = client.refund(invoiceId, refundRequest(100, "EUR"));
+
+        assertThat(refund.statusCode()).isEqualTo(201);
+        assertThat(refundsOf(invoiceId)).isEqualTo(1);
+    }
+
+    @Test
+    void answers_500_without_sending_or_recording_when_customer_status_cannot_answer() {
+        String invoiceId = paid("customer-1", 1250);
+        doThrow(new DataAccessResourceFailureException("the database is down"))
+                .when(customerStatus).blocked(any());
+
+        HttpResponse<String> refund = client.refund(invoiceId, refundRequest(100, "EUR"));
+
+        assertThat(refund.statusCode()).isEqualTo(500);
+        verify(cardPay, never()).send(any(), any());
+        assertThat(refundsOf(invoiceId)).isZero();
+        assertThat(status(invoiceId)).isEqualTo("PAID");
     }
 
     @Test

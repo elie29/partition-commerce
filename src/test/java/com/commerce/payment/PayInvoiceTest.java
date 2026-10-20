@@ -13,7 +13,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.commerce.CommerceApplication;
+import com.commerce.fraud.application.CustomerStatus;
+import com.commerce.fraud.application.LiftReviewUseCase;
+import com.commerce.fraud.application.PlaceReviewUseCase;
 import com.commerce.payment.application.CardPay;
 import com.commerce.payment.application.Charge;
 import com.commerce.payment.application.Payments;
@@ -31,12 +33,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import tools.jackson.databind.JsonNode;
@@ -44,8 +43,9 @@ import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.node.ObjectNode;
 
 /**
- * The use case "pay an invoice by card": BR-5, BR-20, BR-21, BR-22, BR-24 and AR-3 of the spec of {@code payment},
- * the list of AR-3 included.
+ * The use case "pay an invoice by card": BR-5, BR-20, BR-21, BR-22, BR-24 and BR-32 of the spec of {@code payment},
+ * the customer under fraud review placed and lifted through {@code fraud}, which {@code payment} asks through
+ * {@code CustomerStatus}.
  */
 @PaymentApiTest
 @ExtendWith(OutputCaptureExtension.class)
@@ -67,11 +67,23 @@ class PayInvoiceTest {
     @MockitoSpyBean
     Payments payments;
 
+    /** {@code fraud}'s contract, spied on: a test makes it fail (BR-32). */
+    @MockitoSpyBean
+    CustomerStatus customerStatus;
+
+    /** {@code fraud}'s use cases, as the risk team would place and lift a review (test code only, TL, 2026-10-20). */
+    @Autowired
+    PlaceReviewUseCase placeReview;
+
+    @Autowired
+    LiftReviewUseCase liftReview;
+
     PaymentClient client;
 
     @BeforeEach
     void client() {
         client = new PaymentClient(port);
+        placeReview.place(PaymentApiTest.UNDER_REVIEW);
     }
 
     @Test
@@ -317,49 +329,31 @@ class PayInvoiceTest {
     }
 
     @Test
-    void a_missing_fraud_review_list_stops_the_start() {
-        assertThat(startFailure("--spring.config.location=classpath:fraud-review/no-list.yaml"))
-                .isEqualTo("AR-3: commerce.fraud-review.customers is missing");
+    void pays_once_the_review_of_its_customer_is_lifted() {
+        String customerId = "customer-" + UUID.randomUUID();
+        placeReview.place(customerId);
+        String invoiceId = invoiceId(issueFor(customerId));
+        assertThat(client.pay(invoiceId, payRequest(TOKEN)).statusCode()).isEqualTo(403);
+
+        liftReview.lift(customerId);
+        HttpResponse<String> pay = client.pay(invoiceId, payRequest(TOKEN));
+
+        assertThat(pay.statusCode()).isEqualTo(200);
+        assertThat(status(invoiceId)).isEqualTo("PAID");
     }
 
     @Test
-    void a_blank_or_overlong_entry_of_the_fraud_review_list_stops_the_start_naming_no_entry(CapturedOutput output) {
-        String overlong = "secret-" + "x".repeat(249);
-        for (String entry : List.of(" ", " ", overlong)) {
-            assertThat(startFailure("--commerce.fraud-review.customers[0]=customer-1",
-                            "--commerce.fraud-review.customers[1]=" + entry))
-                    .as("entry of " + entry.length() + " characters")
-                    .isEqualTo("AR-3: an entry of commerce.fraud-review.customers is blank or longer than 255 characters");
-        }
-        assertThat(output.getAll()).doesNotContain(overlong);
-    }
+    void answers_500_without_calling_cardpay_or_recording_when_customer_status_cannot_answer() {
+        doThrow(new DataAccessResourceFailureException("the database is down"))
+                .when(customerStatus).blocked(any());
+        String invoiceId = invoiceId(issue());
 
-    @Test
-    void reads_an_entry_of_255_characters_counted_as_code_points() {
-        String longest = "😀".repeat(255);
-        try (ConfigurableApplicationContext started = start("--commerce.fraud-review.customers[0]=" + longest)) {
-            assertThat(started.isActive()).isTrue();
-        }
-    }
+        HttpResponse<String> pay = client.pay(invoiceId, payRequest(TOKEN));
 
-    /** The message of the root cause when the application does not start with these arguments. */
-    private static String startFailure(String... args) {
-        try (ConfigurableApplicationContext started = start(args)) {
-            throw new AssertionError("the application started");
-        } catch (RuntimeException e) {
-            Throwable root = e;
-            while (root.getCause() != null) {
-                root = root.getCause();
-            }
-            return root.getMessage();
-        }
-    }
-
-    private static ConfigurableApplicationContext start(String... args) {
-        String[] all = new String[args.length + 1];
-        all[0] = "--spring.datasource.url=jdbc:h2:mem:payment-start-" + UUID.randomUUID() + ";MODE=PostgreSQL";
-        System.arraycopy(args, 0, all, 1, args.length);
-        return new SpringApplicationBuilder(CommerceApplication.class).web(WebApplicationType.NONE).run(all);
+        assertThat(pay.statusCode()).isEqualTo(500);
+        verify(cardPay, never()).charge(any(), any());
+        verify(payments, never()).add(any());
+        assertThat(status(invoiceId)).isEqualTo("ISSUED");
     }
 
     private HttpResponse<String> issue(String... lines) {

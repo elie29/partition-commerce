@@ -14,13 +14,6 @@ spring:
       enabled: true
       path: /h2-console
 
-commerce:
-  fraud-review:
-    # AR-3: the customers (an invoice's customerId, matched exactly) who can neither pay nor be refunded. The risk team
-    # edits this list until it has a system; it is read at start-up, so an edit counts at the next restart. A missing
-    # list, or an entry blank or longer than 255 characters, stops the start.
-    customers: []
-
 management:
   endpoints:
     web:

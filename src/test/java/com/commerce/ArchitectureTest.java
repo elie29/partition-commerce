@@ -117,14 +117,18 @@ class ArchitectureTest {
      * ({@code docs/specs/billing/payment/spec.md}, {@code docs/specs/billing/invoice/spec.md}); {@code docs/partition.yml}
      * declares no dependency between contexts (architect, 2026-10-19). The catalog's contexts call none another
      * (architect, 2026-10-20). {@code refund} merged into {@code payment} on 2026-10-20: its contract went with it.
-     * {@code price-list} merged into {@code product} on 2026-10-20: no contract stood between them.
+     * {@code price-list} merged into {@code product} on 2026-10-20: no contract stood between them. {@code payment} asks
+     * {@code fraud} through {@code CustomerStatus} ({@code docs/specs/billing/payment/spec.md},
+     * {@code docs/specs/customer/fraud/spec.md}; architect, 2026-10-20).
      */
     private static final List<Contract> CONTRACTS = List.of(
             new Contract("payment/payment", "outbound", "invoice/invoice",
                     Set.of("com.commerce.invoice.application.InvoicePayments",
                             "com.commerce.invoice.application.InvoiceView",
                             "com.commerce.invoice.application.LineData",
-                            "com.commerce.invoice.application.InvoiceNotIssued")));
+                            "com.commerce.invoice.application.InvoiceNotIssued")),
+            new Contract("payment/payment", "outbound", "fraud/fraud",
+                    Set.of("com.commerce.fraud.application.CustomerStatus")));
 
     private record Contract(String from, String fromLayer, String to, Set<String> types) {
     }

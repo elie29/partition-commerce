@@ -56,6 +56,7 @@ relations:
   - accountant -> commerce-app: issues, cancels, refunds
   - invoicing -> h2: SQL
   - payment -> invoicing: InvoicePayments, in process
+  - payment -> fraud: CustomerStatus, in process
   - payment -> h2: SQL
   - payment -> cardpay: charges, reverses, sends refunds
   - product -> h2: SQL
@@ -103,7 +104,7 @@ views:
   - id: pay-invoice
     kind: dynamic
     title: Dynamic - Pay an invoice by card
-    participants: [customer, payment, invoicing, h2, cardpay]
+    participants: [customer, payment, invoicing, fraud, h2, cardpay]
     steps:
       - "customer -> payment: POST /invoices/{invoiceId}/pay (cardToken)"
       - "payment --> customer: content refused (contract, BR-22): 400, no body"
@@ -111,7 +112,10 @@ views:
       - "invoicing --> payment: the invoice, or none"
       - "payment --> customer: not a UUID, or no such invoice (BR-21): 404, no body"
       - "payment -> invoicing: InvoicePayments.customerOf"
-      - "payment --> customer: customer under fraud review (AR-3): 403, no body; CardPay not called"
+      - "payment -> fraud: CustomerStatus.blocked, the invoice's customerId"
+      - "fraud --> payment: yes while a review of it is open (BR-4); or no answer"
+      - "payment --> customer: no answer (BR-32): 500; nothing charged, nothing recorded"
+      - "payment --> customer: customer under fraud review (BR-32): 403, no body; CardPay not called"
       - "payment --> customer: paid or cancelled (BR-20): 409, no body"
       - "payment -> cardpay: charge the card token for the whole amount"
       - "cardpay --> payment: declined"
@@ -126,7 +130,7 @@ views:
   - id: refund-invoice
     kind: dynamic
     title: Dynamic - Refund a paid invoice
-    participants: [accountant, payment, invoicing, h2, cardpay]
+    participants: [accountant, payment, invoicing, fraud, h2, cardpay]
     steps:
       - "accountant -> payment: POST /invoices/{invoiceId}/refunds (amount)"
       - "payment --> accountant: content refused (contract, BR-26): 400, no body"
@@ -134,7 +138,10 @@ views:
       - "invoicing --> payment: the invoice, or none"
       - "payment --> accountant: not a UUID, or no such invoice (BR-27): 404, no body"
       - "payment -> invoicing: InvoicePayments.customerOf"
-      - "payment --> accountant: customer under fraud review (AR-3): 403, no body"
+      - "payment -> fraud: CustomerStatus.blocked, the invoice's customerId"
+      - "fraud --> payment: yes while a review of it is open (BR-4); or no answer"
+      - "payment --> accountant: no answer (BR-32): 500; nothing sent, nothing recorded"
+      - "payment --> accountant: customer under fraud review (BR-32): 403, no body"
       - "payment -> h2: read the payment of the invoice, when it is paid"
       - "payment --> accountant: not paid (BR-25, BR-29): 409, no body"
       - "payment --> accountant: another currency than the amount paid's (BR-25): 400, no body"
