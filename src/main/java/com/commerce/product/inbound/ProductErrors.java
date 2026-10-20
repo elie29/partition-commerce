@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * The error answers of {@code product}, each with the common error envelope of AR-1 and one log line of AR-2: the
+ * The error answers of {@code product}, each with the common error envelope of BR-27 and one log line of BR-28: the
  * {@code errorId}, the {@code X-Request-Id} when well formed, the path, the status; never a value of the request (P-4:
  * one handler per context).
  */
@@ -61,8 +61,8 @@ class ProductErrors {
     }
 
     /**
-     * Any other failure: the envelope with its {@code detail} and {@code errorId}, {@code errors} empty (AR-1); the log
-     * adds the class and the stack frames of the exception and of its causes, never a message (AR-2).
+     * Any other failure: the envelope with its {@code detail} and {@code errorId}, {@code errors} empty (BR-27); the log
+     * adds the class and the stack frames of the exception and of its causes, never a message (BR-28).
      */
     @ExceptionHandler(RuntimeException.class)
     ResponseEntity<ListProducts400Response> failure(RuntimeException failure, HttpServletRequest request) {

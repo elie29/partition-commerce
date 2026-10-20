@@ -25,7 +25,7 @@ public class GetProductPriceUseCase {
     /**
      * {@code at} absent is today, the day in UTC.
      *
-     * @throws PriceNotFound when an identifier is not a UUID (AR-3), or the list holds no price that applies
+     * @throws PriceNotFound when an identifier is not a UUID (BR-29), or the list holds no price that applies
      */
     public PriceView get(String priceListId, String productId, LocalDate at) {
         UUID list = Identifiers.parse(priceListId).orElseThrow(PriceNotFound::new);

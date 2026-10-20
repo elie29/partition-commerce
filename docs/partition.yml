@@ -76,5 +76,3 @@ contexts:                     # one entry per bounded context, declared by parti
           - inbound -> application
           - outbound -> application
           - outbound -> domain
-  - id: discount
-    area: catalog

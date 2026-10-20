@@ -16,7 +16,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
-/** The use case "list the products": BR-6 and BR-7 of the spec of {@code product}, AR-1. */
+/** The use case "list the products": BR-6 and BR-7 of the spec of {@code product}, BR-27. */
 @ProductApiTest
 class ListProductsTest {
 

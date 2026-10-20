@@ -3,13 +3,13 @@ package com.commerce.product.inbound;
 import com.commerce.product.application.Fault;
 import java.util.List;
 
-/** A 400 of {@code product}: the fields at fault of the first group refused (AR-1). Carries no value sent. */
+/** A 400 of {@code product}: the fields at fault of the first group refused (BR-27). Carries no value sent. */
 class RequestRefused extends RuntimeException {
 
     private final transient List<Fault> faults;
 
     RequestRefused(List<Fault> faults) {
-        super("AR-1: the request is refused");
+        super("BR-27: the request is refused");
         this.faults = List.copyOf(faults);
     }
 

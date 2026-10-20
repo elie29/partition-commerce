@@ -11,7 +11,7 @@ public record ProductView(UUID productId, String reference, String label, Instan
         return new ProductView(product.productId(), product.reference(), product.label(), product.createdAt());
     }
 
-    /** The label and the reference are never written to a log (AR-2). */
+    /** The label and the reference are never written to a log (BR-28). */
     @Override
     public String toString() {
         return "ProductView[" + productId + "]";

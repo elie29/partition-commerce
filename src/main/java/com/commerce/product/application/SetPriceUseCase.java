@@ -48,7 +48,7 @@ public class SetPriceUseCase {
 
     /**
      * A content {@link #contentFaults} and the contract accept. The product is not read: a price is set for the
-     * identifier given (BR-21). {@code effectiveFrom} absent is now; kept to the millisecond, in UTC (BR-17, AR-5).
+     * identifier given (BR-21). {@code effectiveFrom} absent is now; kept to the millisecond, in UTC (BR-17, BR-26).
      *
      * @throws PriceListNotFound when an identifier of the path is not a UUID or the list does not exist
      * @throws PriceRefused when the currency is not the list's (BR-12)

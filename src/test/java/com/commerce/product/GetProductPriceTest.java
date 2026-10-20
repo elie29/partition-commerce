@@ -25,13 +25,13 @@ import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The use case "read the price of a product": BR-21, BR-23 and BR-24 of the spec of {@code product}, its Applies
- * and Day; AR-1 to AR-3 of the area. A product is an identifier only: {@code price-list} does not read {@code product}.
+ * and Day; BR-27 to BR-29. A product is an identifier only: {@code price-list} does not read {@code product}.
  */
 @PriceListApiTest
 @ExtendWith(OutputCaptureExtension.class)
 class GetProductPriceTest {
 
-    private static final String NOT_FOUND_DETAIL = "No such product, or no price for it in that price list.";
+    private static final String NOT_FOUND_DETAIL = "No such product, or no price for it.";
 
     @LocalServerPort
     int port;

@@ -13,7 +13,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
- * The first two groups of a request of {@code price-list}, checked before Spring binds a parameter (AR-1): its
+ * The first two groups of a request of {@code price-list}, checked before Spring binds a parameter (BR-27): its
  * headers, then its query. Only {@code getProductPrice} takes a query, its {@code at} (BR-24).
  */
 @Component
@@ -35,7 +35,7 @@ class PriceListRequestCheck implements HandlerInterceptor {
         return true;
     }
 
-    /** The well-formed {@code X-Request-Id} of a request, or none: a malformed one is never logged (AR-2). */
+    /** The well-formed {@code X-Request-Id} of a request, or none: a malformed one is never logged (BR-28). */
     static String wellFormedRequestId(HttpServletRequest request) {
         String requestId = request.getHeader(REQUEST_ID);
         return Identifiers.isUuid(requestId) ? requestId : null;

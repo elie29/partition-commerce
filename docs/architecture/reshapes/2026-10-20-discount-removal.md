@@ -29,9 +29,9 @@ Proposal: no workshop result to challenge.
 
 | Rule | Was in | Goes to |
 | ---- | ------ | ------- |
-| BR-1 to BR-10 | `discount/spec.md` | to archive or reassign, by a person; none is copied by the assistant |
-| AR-1 to AR-4, bind `product` and `discount` | `docs/specs/catalog/area.md` | bind `product` alone after the removal: to bring down to `product/spec.md`, by a person, and to leave the area file |
-| Area words Product, Price list, Currency, Amount, Identifier, Minor units, Refused | `docs/specs/catalog/area.md` | used by `product` alone after the removal: to bring down to `product/spec.md`, by a person |
+| BR-1 to BR-10 | `discount/spec.md` | gone with the folder, deleted by Léa Petit (BA), 2026-10-20; the history keeps them (`28acef3`) |
+| AR-1 to AR-4, bind `product` and `discount` | `docs/specs/catalog/area.md` | BR-27 to BR-30 of `product/spec.md`, carried by Léa Petit (BA), 2026-10-20; the area file deleted |
+| Area words Product, Price list, Currency, Amount, Identifier, Minor units, Refused | `docs/specs/catalog/area.md` | the Language of `product/spec.md`, carried by Léa Petit (BA), 2026-10-20 |
 | "A currency is a known ISO 4217 code" (`product` BR-13, `discount` BR-4) | both specs | `product` BR-13 only; the gap of `bounded-contexts.md` to settle with the removal |
 | `Persistence` | no schema documents declared | unchanged |
 
@@ -58,6 +58,6 @@ Ruled on 2026-10-20: the code, its tests and its generator execution deleted (PO
 ## After
 
 - [x] C4 model updated and regenerated: the component `discount` and its relation `discount -> h2: SQL` gone; `model.yml` 9 elements, 7 relations, 7 views, no error; `c4.drawio` seven pages, 2026-10-20
-- [x] `docs/partition.yml` keeps `discount`, with its area only, while `docs/specs/catalog/discount/` exists; its entry is taken out once a person has deleted the folder (Léa Petit, BA, after the hand moves), 2026-10-20
+- [x] `docs/partition.yml` kept `discount`, with its area only, while `docs/specs/catalog/discount/` existed; the folder deleted by Léa Petit (BA) and the entry taken out, 2026-10-20 (`docs/plans/discount-removal-after-carry-over.md`)
 - [x] Budget measured again: `docs/budget/2026-10-20.md` — `discount` 5 190 (16 %) while its spec exists, `product` 8 169 (26 %); the removal was raised by the delta of a source, not a gauge
 - P-4 of `docs/architecture/patterns-grid.md` still names `discount` among the contexts with one error handler each: raised to the architect, not rewritten (architect, 2026-10-20)

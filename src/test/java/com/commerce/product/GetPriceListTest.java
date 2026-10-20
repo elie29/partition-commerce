@@ -24,7 +24,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
-/** The use case "read a price list": BR-13, BR-15, BR-18 and BR-22 of the spec of {@code product}, AR-1 to AR-3. */
+/** The use case "read a price list": BR-13, BR-15, BR-18 and BR-22 of the spec of {@code product}, BR-27 to BR-29. */
 @PriceListApiTest
 @ExtendWith(OutputCaptureExtension.class)
 class GetPriceListTest {

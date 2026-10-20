@@ -17,7 +17,7 @@ public record Money(long amountMinor, Currency currency) {
         return amountMinor >= 0;
     }
 
-    /** Hides the amount: {@code price-list} never logs an amount (AR-2). */
+    /** Hides the amount: {@code price-list} never logs an amount (BR-28). */
     @Override
     public String toString() {
         return "Money[hidden]";

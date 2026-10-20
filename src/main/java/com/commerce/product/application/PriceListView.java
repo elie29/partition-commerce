@@ -10,7 +10,7 @@ public record PriceListView(UUID priceListId, String name, String currency, Stri
         return new PriceListView(list.id(), list.name(), list.currency().code(), list.channel().name());
     }
 
-    /** The name is never written to a log (AR-2). */
+    /** The name is never written to a log (BR-28). */
     @Override
     public String toString() {
         return "PriceListView[" + priceListId + "]";

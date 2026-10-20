@@ -12,7 +12,7 @@ public record PriceView(UUID productId, long amountMinor, String currency, Insta
                 price.effectiveFrom());
     }
 
-    /** The amount is never written to a log (AR-2). */
+    /** The amount is never written to a log (BR-28). */
     @Override
     public String toString() {
         return "PriceView[" + productId + "]";

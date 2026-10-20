@@ -23,7 +23,7 @@ public class CreateProductUseCase {
 
     /**
      * The faults of the content this use case judges, beyond the contract's schema: a blank label (BR-3). The caller
-     * answers them with the schema's in one 400 (AR-1: one item per field at fault within the content).
+     * answers them with the schema's in one 400 (BR-27: one item per field at fault within the content).
      */
     public List<Fault> contentFaults(String label) {
         return label != null && Blank.is(label) ? List.of(new Fault("label", "The label is blank.")) : List.of();

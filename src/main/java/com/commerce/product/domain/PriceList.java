@@ -18,7 +18,7 @@ public record PriceList(UUID id, String name, Currency currency, Channel channel
         }
     }
 
-    /** Blank (`docs/specs/catalog/area.md`): empty or only white space, non-breaking spaces included. */
+    /** Blank (`docs/specs/catalog/product/spec.md`): empty or only white space, non-breaking spaces included. */
     public static boolean isBlankName(String name) {
         return name.codePoints().allMatch(c -> Character.isWhitespace(c) || Character.isSpaceChar(c));
     }
@@ -35,7 +35,7 @@ public record PriceList(UUID id, String name, Currency currency, Channel channel
         return new Price(id, productId, amount, effectiveFrom);
     }
 
-    /** The name is never written to a log (AR-2). */
+    /** The name is never written to a log (BR-28). */
     @Override
     public String toString() {
         return "PriceList[" + id + "]";

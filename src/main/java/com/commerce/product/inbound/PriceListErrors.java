@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * The error answers of {@code price-list}, each with the common error envelope of AR-1 and one log line of AR-2: the
+ * The error answers of {@code price-list}, each with the common error envelope of BR-27 and one log line of BR-28: the
  * {@code errorId}, the {@code X-Request-Id} when well formed, the path, the status; never a value of the request, an
  * amount least of all (P-4: one handler per context).
  */
@@ -66,13 +66,13 @@ class PriceListErrors {
     /** BR-23: no such price list, no price for the product in it, or no price that applies, told apart by nothing. */
     @ExceptionHandler(PriceNotFound.class)
     ResponseEntity<ListProducts400Response> priceNotFound(HttpServletRequest request) {
-        return answer(request, HttpStatus.NOT_FOUND, "No such product, or no price for it in that price list.",
+        return answer(request, HttpStatus.NOT_FOUND, "No such product, or no price for it.",
                 List.of(item("PRICE_NOT_FOUND", "No price applies for this product in this price list.", null)));
     }
 
     /**
-     * Any other failure: the envelope with its {@code detail} and {@code errorId}, {@code errors} empty (AR-1); the log
-     * adds the class and the stack frames of the exception and of its causes, never a message (AR-2).
+     * Any other failure: the envelope with its {@code detail} and {@code errorId}, {@code errors} empty (BR-27); the log
+     * adds the class and the stack frames of the exception and of its causes, never a message (BR-28).
      */
     @ExceptionHandler(RuntimeException.class)
     ResponseEntity<ListProducts400Response> failure(RuntimeException failure, HttpServletRequest request) {

@@ -29,7 +29,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The use case "set the price of a product in a price list": BR-10 to BR-13, BR-17 to BR-19 and BR-21 of the spec of
- * {@code product}, AR-1 to AR-5 and P-5.
+ * {@code product}, BR-26 to BR-30 and P-5.
  */
 @PriceListApiTest
 @ExtendWith(OutputCaptureExtension.class)

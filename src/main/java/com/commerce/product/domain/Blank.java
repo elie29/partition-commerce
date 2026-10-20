@@ -1,6 +1,6 @@
 package com.commerce.product.domain;
 
-/** The one definition in {@code product} of Blank (`docs/specs/catalog/area.md`). */
+/** The one definition in {@code product} of Blank (`docs/specs/catalog/product/spec.md`). */
 public final class Blank {
 
     private Blank() {

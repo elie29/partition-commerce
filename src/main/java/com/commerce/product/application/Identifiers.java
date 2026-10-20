@@ -5,7 +5,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
- * The one definition in {@code product} of an identifier: a UUID in its 8-4-4-4-12 hexadecimal form (AR-3), which
+ * The one definition in {@code product} of an identifier: a UUID in its 8-4-4-4-12 hexadecimal form (BR-29), which
  * {@link UUID#fromString} alone does not hold ({@code 1-1-1-1-1} passes it).
  */
 public final class Identifiers {

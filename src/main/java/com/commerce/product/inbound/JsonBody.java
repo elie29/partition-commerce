@@ -13,8 +13,8 @@ import tools.jackson.databind.JsonNode;
 
 /**
  * The contract's schema of a body, read on its JSON tree before any binding, so that every field at fault in the
- * content is answered, a value of the wrong type included (AR-1). A length counts Characters, code points
- * (`docs/specs/catalog/area.md`), as JSON Schema counts them. Field names are paths without the leading {@code /}.
+ * content is answered, a value of the wrong type included (BR-27). A length counts Characters, code points
+ * (`docs/specs/catalog/product/spec.md`), as JSON Schema counts them. Field names are paths without the leading {@code /}.
  */
 final class JsonBody {
 

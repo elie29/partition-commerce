@@ -30,8 +30,8 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * The use case "create a product": BR-1 to BR-5 of the spec of {@code product}, and AR-1 to AR-5 of
- * {@code docs/specs/catalog/area.md} as they bind it.
+ * The use case "create a product": BR-1 to BR-5 of the spec of {@code product}, and BR-26 to BR-30 of
+ * {@code docs/specs/catalog/product/spec.md} as they bind it.
  */
 @ProductApiTest
 @ExtendWith(OutputCaptureExtension.class)

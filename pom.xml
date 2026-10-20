@@ -140,11 +140,11 @@
 							<apiPackage>com.commerce.product.inbound.api</apiPackage>
 							<modelPackage>com.commerce.product.inbound.api.model</modelPackage>
 							<openapiNormalizer>FILTER=tag:Product|PriceList</openapiNormalizer>
-							<!-- AR-3: an identifier is checked by its 8-4-4-4-12 form, which UUID.fromString does not hold. -->
+							<!-- BR-29: an identifier is checked by its 8-4-4-4-12 form, which UUID.fromString does not hold. -->
 							<typeMappings>UUID=String</typeMappings>
 							<!-- No modelsToGenerate: it drops the inline models (bodies, page, envelope) the operations use. -->
 							<configOptions>
-								<!-- AR-1: every field at fault within a group is answered, a Character is a code point. -->
+								<!-- BR-27: every field at fault within a group is answered, a Character is a code point. -->
 								<useBeanValidation>false</useBeanValidation>
 								<interfaceOnly>true</interfaceOnly>
 								<useTags>true</useTags>

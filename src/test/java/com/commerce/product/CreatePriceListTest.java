@@ -22,8 +22,8 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * The use case "create a price list": BR-13 to BR-16 and BR-22 of the spec of {@code product}, and AR-1 to AR-4 of
- * {@code docs/specs/catalog/area.md} as they bind it.
+ * The use case "create a price list": BR-13 to BR-16 and BR-22 of the spec of {@code product}, and BR-27 to BR-30 of
+ * {@code docs/specs/catalog/product/spec.md} as they bind it.
  */
 @PriceListApiTest
 @ExtendWith(OutputCaptureExtension.class)

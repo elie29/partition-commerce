@@ -24,7 +24,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
-/** The use case "read a product": BR-5, BR-6 and BR-8 of the spec of {@code product}, AR-1 to AR-3. */
+/** The use case "read a product": BR-5, BR-6 and BR-8 of the spec of {@code product}, BR-27 to BR-29. */
 @ProductApiTest
 @ExtendWith(OutputCaptureExtension.class)
 class GetProductTest {

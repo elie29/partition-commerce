@@ -12,7 +12,7 @@ public class GetPriceListUseCase {
         this.priceLists = priceLists;
     }
 
-    /** @throws PriceListNotFound when the identifier is not a UUID (AR-3) or names no list */
+    /** @throws PriceListNotFound when the identifier is not a UUID (BR-29) or names no list */
     public PriceListView get(String priceListId) {
         return Identifiers.parse(priceListId)
                 .flatMap(priceLists::find)

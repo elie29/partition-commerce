@@ -26,7 +26,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * The content of a body of {@code price-list}, judged whole before it is bound (AR-1: one item per field at fault in
+ * The content of a body of {@code price-list}, judged whole before it is bound (BR-27: one item per field at fault in
  * the content): the contract's schema on the JSON tree, then what the use case judges, merged by field. A body that
  * is not JSON, or not an object, is one item with no field.
  */

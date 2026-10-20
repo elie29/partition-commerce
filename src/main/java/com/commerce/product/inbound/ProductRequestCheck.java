@@ -11,7 +11,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
- * The first two groups of a request of {@code product}, checked before Spring binds a parameter (AR-1): the headers,
+ * The first two groups of a request of {@code product}, checked before Spring binds a parameter (BR-27): the headers,
  * then the query. Each group answers every field at fault in it; the first group refused stops the checks.
  */
 @Component
@@ -37,7 +37,7 @@ class ProductRequestCheck implements HandlerInterceptor {
         return true;
     }
 
-    /** The well-formed {@code X-Request-Id} of a request, or none: a malformed one is never logged (AR-2). */
+    /** The well-formed {@code X-Request-Id} of a request, or none: a malformed one is never logged (BR-28). */
     static String wellFormedRequestId(HttpServletRequest request) {
         String requestId = request.getHeader(REQUEST_ID);
         return Identifiers.isUuid(requestId) ? requestId : null;

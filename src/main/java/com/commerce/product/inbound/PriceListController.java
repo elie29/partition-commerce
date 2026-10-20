@@ -47,7 +47,7 @@ public class PriceListController implements PriceListApi {
         this.getProductPrice = getProductPrice;
     }
 
-    /** The request model prints its amount: it is handed to the use case and never logged (AR-2). */
+    /** The request model prints its amount: it is handed to the use case and never logged (BR-28). */
     @Override
     public ResponseEntity<Price> setPrice(
             String xRequestId, String priceListId, String productId, SetPriceRequest request, String acceptLanguage) {

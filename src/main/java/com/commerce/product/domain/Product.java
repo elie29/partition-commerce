@@ -22,7 +22,7 @@ public record Product(UUID productId, String reference, String label, Instant cr
         return status == ProductStatus.RETIRED;
     }
 
-    /** The label and the reference are never written to a log (AR-2). */
+    /** The label and the reference are never written to a log (BR-28). */
     @Override
     public String toString() {
         return "Product[" + productId + "]";
