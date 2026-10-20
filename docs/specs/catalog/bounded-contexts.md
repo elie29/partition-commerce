@@ -10,7 +10,7 @@
 >
 > **Units covered:** 9 / 9
 >
-> **Decided:** 2026-10-20 · Claire Martin, architect · proposal: option 1 (delta 1.0.0 → 1.1.0: `getProductPrice` moves from `product` to `price-list`)
+> **Decided:** 2026-10-20 · Claire Martin (architect), Paul Durand (PO), Léa Petit (BA) · workshop: `docs/sources/workshop-price-list-into-product.md` (merge: `product` absorbs `price-list`)
 
 The **Scope** line fixes the units analysed; the others appear in the `Coverage` table with the mention "out of scope". Change it only when a scope extension has been validated.
 
@@ -33,25 +33,29 @@ Decision rules: **R1** a bounded context needs C2 and one of C3–C5; **R2** C1 
 
 | Bounded context | Units | Criteria satisfied | Justification |
 | --- | --- | --- | --- |
-| product | listProducts, createProduct, getProduct | C2, C3, C4 (hint: C1, tag `Product`) | The terminal resource is `products`. Its vocabulary (reference, label, attributes, translations) stands apart from the price lists'; a price list knows a product only by its `productId`. No named third party (C5 no). |
-| price-list | createPriceList, getPriceList, setPrice, getProductPrice | C2, C3, C4 (hint: C1, tag `PriceList`) | The terminal resource is `price-lists`; `setPrice` (`…/price-lists/{priceListId}/prices/{productId}`) and, since 1.1.0, `getProductPrice` (`…/price-lists/{priceListId}/product-prices/{productId}`) are sub-resources of `price-lists` (C2, R3; moved from `product`, Claire Martin, architect, 2026-10-20). Its vocabulary (name, currency, channel, validity, price, effectiveFrom) stands apart from the products'. No named third party (C5 no). |
+| product | listProducts, createProduct, getProduct, createPriceList, getPriceList, setPrice, getProductPrice | C2, C3, C4 (hint: C1, tags `Product`, `PriceList`) | The terminal resource is `products`. Its vocabulary (reference, label, attributes, translations) stands apart from the price lists'; a price list knows a product only by its `productId`. No named third party (C5 no). Absorbed `price-list` (createPriceList, getPriceList, setPrice, getProductPrice), 2026-10-20: two root aggregates, `products` and `price-lists`, kept together against C2, C3 and C4, see `Kept against the criteria` and `Decisions not to split`. |
 | discount | createDiscount, getDiscount | C2, C3, C4 (hint: C1, tag `Discount`) | The terminal resource is `discounts`, not a sub-resource. Its vocabulary (percent, minimumOrder, period, order) stands apart from the products' and the price lists'. A `Discount` names no `productId` and no `priceListId`: it evolves without them. No named third party (C5 no). Against R4: it shares only the value `Money` with `setPrice` and `getProductPrice`; weak sharing, it does not prevail. "A discount is its own aggregate, created and read by its own operations; no price list holds it." (Claire Martin, architect, 2026-10-20) |
 
 ## Decisions not to split
 
-None.
+| Units kept together | Criteria | Rule and reason | Decided by | Date |
+| --- | --- | --- | --- | --- |
+| listProducts, createProduct, getProduct / createPriceList, getPriceList, setPrice, getProductPrice | the price list's units against the products': C2 (the terminal resource `price-lists`; `setPrice`, `getProductPrice` its sub-resources), C3 (name, currency, channel, validity, price, effectiveFrom), C4; R1 still holds, the source is unchanged (1.1.0) | No rule calls it, neither R6 (R1 holds) nor R4 (`Product` and `Price` share `productId` only): kept against C2, C3 and C4, see `Kept against the criteria`. Merge of 2026-10-20 into `product`: "a price is never managed apart from its product; every change of one is a change of the other" | Claire Martin (architect), Paul Durand (PO), Léa Petit (BA); workshop `docs/sources/workshop-price-list-into-product.md` | 2026-10-20 |
 
 ## Alternatives rejected
 
+Option 3 of 2026-10-19, rejected that day, was taken by the merge of 2026-10-20: see `History`.
+
 | Option | Bounded contexts | Why not chosen | Decided by | Date |
 | --- | --- | --- | --- | --- |
-| 3 | `catalog` (all seven operations), under R4 | "one bounded context would hold two root aggregates" | [architect] | 2026-10-19 |
 | 2 (scope extension) | `product` unchanged, `price-list` (createPriceList, getPriceList, setPrice, createDiscount, getDiscount); breaks R1 on createDiscount, getDiscount | "a discount is its own aggregate, created and read by its own operations; no price list holds it" | Claire Martin, architect | 2026-10-20 |
 | 2 (delta 1.0.0 → 1.1.0) | `product` keeps `getProductPrice` beside listProducts, createProduct, getProduct; `price-list` unchanged; breaks C2/R3 on getProductPrice, whose root aggregate is now `price-lists` | No reason stated: option 1 validated by name | Claire Martin, architect | 2026-10-20 |
 
 ## Kept against the criteria
 
-None.
+| Point | Criterion | Decided by | Date | Reason |
+| --- | --- | --- | --- | --- |
+| `product` holds the units of `price-list` (createPriceList, getPriceList, setPrice, getProductPrice) beside its own: two root aggregates, `products` and `price-lists` | C2, C3, C4 (R1): the price list's units satisfy them against the products' (the _Bounded contexts retained_ line of `price-list`, overturned 2026-10-20, see `History`) | Claire Martin (architect) | 2026-10-20 | "a price is never managed apart from its product; every change of one is a change of the other" (workshop `docs/sources/workshop-price-list-into-product.md`) |
 
 ## Gaps detected
 
@@ -81,10 +85,10 @@ None.
 | listProducts | Product | product |
 | createProduct | Product | product |
 | getProduct | Product | product |
-| getProductPrice | PriceList | price-list |
-| createPriceList | PriceList | price-list |
-| getPriceList | PriceList | price-list |
-| setPrice | PriceList | price-list |
+| getProductPrice | PriceList | product |
+| createPriceList | PriceList | product |
+| getPriceList | PriceList | product |
+| setPrice | PriceList | product |
 | createDiscount | Discount | discount |
 | getDiscount | Discount | discount |
 
@@ -95,3 +99,4 @@ None.
 | 2026-10-20 | 1.0.0 | 5016f59 | scope extension | `tag:Discount` added to the scope; createDiscount, getDiscount form the new bounded context `discount` (proposal, option 1 · Claire Martin, architect); the decomposition of 2026-10-19 (proposal, option 1 · [architect]) stands for `product` and `price-list` |
 | 2026-10-20 | 1.0.0 → 1.1.0 | 260ac41 | breaking | `getProductPrice` moves to `GET /price-lists/{priceListId}/product-prices/{productId}`, `priceListId` from the query to the path, tag `Product` → `PriceList`; its root aggregate becomes `price-lists` (C2): move from `product` to `price-list` validated (proposal, option 1 · Claire Martin, architect), to be carried out by `partition-reshape` |
 | 2026-10-20 | 1.1.0 | 260ac41 | move | `getProductPrice` moves from `product` to `price-list` (`../../architecture/reshapes/2026-10-20-get-product-price-move.md`). It overturns option 2 of `Alternatives rejected` of 2026-10-19, `product` (listProducts, createProduct, getProduct), `price-list` (createPriceList, getPriceList, setPrice, getProductPrice), rejected then because "`getProductPrice` is read under `/products`, its root aggregate (C2, R3)" ([architect]); the line leaves that table |
+| 2026-10-20 | 1.1.0 | 260ac41 | merge | `price-list` (createPriceList, getPriceList, setPrice, getProductPrice) absorbed by `product`, both in `catalog`; workshop `docs/sources/workshop-price-list-into-product.md`, record `docs/architecture/reshapes/2026-10-20-price-list-into-product.md`; criteria lost: none, R1 still holds; kept against C2, C3 and C4 (`Kept against the criteria`, `Decisions not to split`); no contract between the two to remove. Overturned the _Bounded contexts retained_ line "price-list — createPriceList, getPriceList, setPrice, getProductPrice — C2, C3, C4 (hint: C1, tag `PriceList`) — The terminal resource is `price-lists`; `setPrice` (`…/price-lists/{priceListId}/prices/{productId}`) and, since 1.1.0, `getProductPrice` (`…/price-lists/{priceListId}/product-prices/{productId}`) are sub-resources of `price-lists` (C2, R3; moved from `product`, Claire Martin, architect, 2026-10-20). Its vocabulary (name, currency, channel, validity, price, effectiveFrom) stands apart from the products'. No named third party (C5 no)."; the _Alternatives rejected_ line "3 — `catalog` (all seven operations), under R4 — "one bounded context would hold two root aggregates" — [architect] — 2026-10-19"; the `product` line of _Bounded contexts retained_ on listProducts, createProduct, getProduct; _Coverage_ "getProductPrice — PriceList — price-list", "createPriceList — PriceList — price-list", "getPriceList — PriceList — price-list", "setPrice — PriceList — price-list". Replaced `Decided` line: "2026-10-20 · Claire Martin, architect · proposal: option 1 (delta 1.0.0 → 1.1.0: `getProductPrice` moves from `product` to `price-list`)" |

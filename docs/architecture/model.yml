@@ -35,11 +35,6 @@ elements:
     in: commerce-app
     name: Product
     context: product
-  - id: price-list
-    kind: component
-    in: commerce-app
-    name: Price list
-    context: price-list
   - id: discount
     kind: component
     in: commerce-app
@@ -63,7 +58,6 @@ relations:
   - payment -> h2: SQL
   - payment -> cardpay: charges, reverses, sends refunds
   - product -> h2: SQL
-  - price-list -> h2: SQL
   - discount -> h2: SQL
 
 views:

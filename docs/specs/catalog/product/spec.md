@@ -13,6 +13,8 @@
 <!-- The header above is filled by partition-shape, or partition-reshape for a fission. -->
 <!-- The empty ">" lines keep each header line on its own line when the Markdown is reformatted. -->
 
+> **Status:** absorbed `price-list` on 2026-10-20. The hand-written sections of `../price-list/spec.md` (objective, scope, language, business rules, dependencies, contracts with neighbours, invariants, questions) are to be carried over here by a human.
+
 ## Business objective
 
 Describe what the shop sells: create a product, read it, list the products, retire it.
@@ -44,8 +46,14 @@ What this bounded context owns in its source. The source says what each part hol
 | listProducts | [GET /products](../../../contracts/catalog.openapi.json) (`/paths/~1products/get`) | List the products, one page at a time |
 | createProduct | [POST /products](../../../contracts/catalog.openapi.json) (`/paths/~1products/post`) | Create a product |
 | getProduct | [GET /products/{productId}](../../../contracts/catalog.openapi.json) (`/paths/~1products~1{productId}/get`) | Read a product |
+| createPriceList | [POST /price-lists](../../../contracts/catalog.openapi.json) (`/paths/~1price-lists/post`) | Create a price list |
+| getPriceList | [GET /price-lists/{priceListId}](../../../contracts/catalog.openapi.json) (`/paths/~1price-lists~1{priceListId}/get`) | Read a price list |
+| setPrice | [PUT /price-lists/{priceListId}/prices/{productId}](../../../contracts/catalog.openapi.json) (`/paths/~1price-lists~1{priceListId}~1prices~1{productId}/put`) | Set the price of a product in a price list |
+| getProductPrice | [GET /price-lists/{priceListId}/product-prices/{productId}](../../../contracts/catalog.openapi.json) (`/paths/~1price-lists~1{priceListId}~1product-prices~1{productId}/get`) | Read the price of a product in a price list |
 | Tag `Product` | [`/tags/0/description`](../../../contracts/catalog.openapi.json) | What the tag groups |
+| Tag `PriceList` | [`/tags/1/description`](../../../contracts/catalog.openapi.json) | What the tag groups |
 | `Product` schema | [`/components/schemas/Product`](../../../contracts/catalog.openapi.json) | The product as the operations return it |
+| `PriceList`, `Price`, `Money` schemas | [`/components/schemas`](../../../contracts/catalog.openapi.json) | The price list, a price and an amount as the operations exchange them; `Money` is also used by the discounts |
 
 ## Business rules
 

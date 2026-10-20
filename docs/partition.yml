@@ -65,7 +65,7 @@ contexts:                     # one entry per bounded context, declared by parti
     hexagons:
       - id: product
         form: rich
-        reason: "a product can be retired and is never reactivated (BR-9); the unique reference (BR-1) stays held by the store's unique constraint (Claire Martin, architect, 2026-10-20)"
+        reason: "a product can be retired and is never reactivated (BR-9); the unique reference (BR-1) stays held by the store's unique constraint (Claire Martin, architect, 2026-10-20); one price per product and list holds at every write (BR-1 of `price-list`, until renumbered) (architect, 2026-10-19); absorbed `price-list` (Claire Martin, architect, 2026-10-20)"
         layers:
           domain: src/main/java/com/commerce/product/domain/**
           application: src/main/java/com/commerce/product/application/**
@@ -78,22 +78,6 @@ contexts:                     # one entry per bounded context, declared by parti
           - outbound -> domain
   - id: price-list
     area: catalog
-    code:
-      - src/main/java/com/commerce/pricelist/**
-    hexagons:
-      - id: price-list
-        form: rich
-        reason: one price per product holds at every write (BR-1) (architect, 2026-10-19)
-        layers:
-          domain: src/main/java/com/commerce/pricelist/domain/**
-          application: src/main/java/com/commerce/pricelist/application/**
-          inbound: src/main/java/com/commerce/pricelist/inbound/**
-          outbound: src/main/java/com/commerce/pricelist/outbound/**
-        allowed:
-          - application -> domain
-          - inbound -> application
-          - outbound -> application
-          - outbound -> domain
   - id: discount
     area: catalog
     code:

@@ -139,35 +139,10 @@
 							<generatorName>spring</generatorName>
 							<apiPackage>com.commerce.product.inbound.api</apiPackage>
 							<modelPackage>com.commerce.product.inbound.api.model</modelPackage>
-							<openapiNormalizer>FILTER=tag:Product</openapiNormalizer>
+							<openapiNormalizer>FILTER=tag:Product|PriceList</openapiNormalizer>
 							<!-- AR-3: an identifier is checked by its 8-4-4-4-12 form, which UUID.fromString does not hold. -->
 							<typeMappings>UUID=String</typeMappings>
 							<!-- No modelsToGenerate: it drops the inline models (bodies, page, envelope) the operations use. -->
-							<configOptions>
-								<!-- AR-1: every field at fault within a group is answered, a Character is a code point. -->
-								<useBeanValidation>false</useBeanValidation>
-								<interfaceOnly>true</interfaceOnly>
-								<useTags>true</useTags>
-								<openApiNullable>false</openApiNullable>
-								<annotationLibrary>none</annotationLibrary>
-								<documentationProvider>none</documentationProvider>
-							</configOptions>
-						</configuration>
-					</execution>
-					<execution>
-						<id>price-list</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/docs/contracts/catalog.openapi.json</inputSpec>
-							<generatorName>spring</generatorName>
-							<apiPackage>com.commerce.pricelist.inbound.api</apiPackage>
-							<modelPackage>com.commerce.pricelist.inbound.api.model</modelPackage>
-							<openapiNormalizer>FILTER=tag:PriceList</openapiNormalizer>
-							<!-- AR-3: an identifier is checked by its 8-4-4-4-12 form, which UUID.fromString does not hold. -->
-							<typeMappings>UUID=String</typeMappings>
-							<!-- No modelsToGenerate: it drops the inline models (bodies, envelope) the operations use. -->
 							<configOptions>
 								<!-- AR-1: every field at fault within a group is answered, a Character is a code point. -->
 								<useBeanValidation>false</useBeanValidation>

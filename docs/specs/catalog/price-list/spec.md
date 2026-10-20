@@ -13,6 +13,8 @@
 <!-- The header above is filled by partition-shape, or partition-reshape for a fission. -->
 <!-- The empty ">" lines keep each header line on its own line when the Markdown is reformatted. -->
 
+> **Status:** merged into `product` on 2026-10-20. Frozen spec: its derived sections are no longer kept up to date. It remains the source of its hand-written sections until they are carried over into `../product/spec.md`. See `../bounded-contexts.md#history`.
+
 ## Business objective
 
 Group prices by list: create a price list, read it, set the price of a product in it, and read the price of a product in it on a day.

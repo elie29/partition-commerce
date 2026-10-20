@@ -117,6 +117,7 @@ class ArchitectureTest {
      * ({@code docs/specs/billing/payment/spec.md}, {@code docs/specs/billing/invoice/spec.md}); {@code docs/partition.yml}
      * declares no dependency between contexts (architect, 2026-10-19). The catalog's contexts call none another
      * (architect, 2026-10-20). {@code refund} merged into {@code payment} on 2026-10-20: its contract went with it.
+     * {@code price-list} merged into {@code product} on 2026-10-20: no contract stood between them.
      */
     private static final List<Contract> CONTRACTS = List.of(
             new Contract("payment/payment", "outbound", "invoice/invoice",

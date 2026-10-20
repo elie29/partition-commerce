@@ -185,7 +185,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:16058c1fe619c6851f08746ec48372a2b11714724357980e0100ebaed3d6369d
+  content_hash: sha256:601e36eae08167c8dd6a5b6f1815cac85a60ced675778558b12fd6fd17460337
 - kind: project-relative
   target: claude
   value: .claude/rules/backend-api-contract.md
@@ -1016,7 +1016,7 @@ local_deployed_files:
 - .claude/rules/backend-security.md
 - .claude/rules/backend-testing.md
 local_deployed_file_hashes:
-  .claude/rules/backend-api-contract-catalog.md: sha256:16058c1fe619c6851f08746ec48372a2b11714724357980e0100ebaed3d6369d
+  .claude/rules/backend-api-contract-catalog.md: sha256:601e36eae08167c8dd6a5b6f1815cac85a60ced675778558b12fd6fd17460337
   .claude/rules/backend-api-contract.md: sha256:f05a1ea2bf76a9455a910570f8344cf35f64b8ecf3d7e668bd7f17e6c41aec4b
   .claude/rules/backend-architecture-invoice.md: sha256:115555652ac20c7a21e5f53aafde6493d5e6f3c7f8d77896b0b77c4b99038d96
   .claude/rules/backend-architecture.md: sha256:b73e6a07f454ffba12cb2c952e9d68839fea425c91ef35418a82586325f520df

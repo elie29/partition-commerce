@@ -1,8 +1,13 @@
 package com.commerce.product.inbound;
 
 import com.commerce.product.application.Fault;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 import tools.jackson.databind.JsonNode;
 
@@ -70,6 +75,67 @@ final class JsonBody {
         if (node != null && (!node.isIntegralNumber() || !node.canConvertToInt())) {
             faults.add(new Fault(path, "The value is not an integer."));
         }
+    }
+
+    /** One of the contract's values, or {@code null} when absent or at fault. */
+    String oneOf(JsonNode parent, String field, String path, boolean required, Set<String> values) {
+        JsonNode node = present(parent, field, path, required);
+        if (node == null) {
+            return null;
+        }
+        if (!node.isString() || !values.contains(node.asString())) {
+            faults.add(new Fault(path, "The value is not one the contract lists."));
+            return null;
+        }
+        return node.asString();
+    }
+
+    /** An integer of 64 bits, or {@code null} when absent or at fault. */
+    Long int64(JsonNode parent, String field, String path, boolean required) {
+        JsonNode node = present(parent, field, path, required);
+        if (node == null) {
+            return null;
+        }
+        if (!node.isIntegralNumber() || !node.canConvertToLong()) {
+            faults.add(new Fault(path, "The value is not an integer."));
+            return null;
+        }
+        return node.longValue();
+    }
+
+    void date(JsonNode parent, String field, String path, boolean required) {
+        String value = text(parent, field, path, required);
+        if (value != null) {
+            try {
+                LocalDate.parse(value, DateTimeFormatter.ISO_LOCAL_DATE);
+            } catch (DateTimeParseException e) {
+                faults.add(new Fault(path, "The value is not a date."));
+            }
+        }
+    }
+
+    /** A date-time carries its offset, as the schema's {@code date-time} requires (BR-8). */
+    void dateTime(JsonNode parent, String field, String path, boolean required) {
+        String value = text(parent, field, path, required);
+        if (value != null) {
+            try {
+                OffsetDateTime.parse(value, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+            } catch (DateTimeParseException e) {
+                faults.add(new Fault(path, "The value is not a date-time with its offset."));
+            }
+        }
+    }
+
+    private String text(JsonNode parent, String field, String path, boolean required) {
+        JsonNode node = present(parent, field, path, required);
+        if (node == null) {
+            return null;
+        }
+        if (!node.isString()) {
+            faults.add(new Fault(path, "The value is not a string."));
+            return null;
+        }
+        return node.asString();
     }
 
     private JsonNode present(JsonNode parent, String field, String path, boolean required) {
