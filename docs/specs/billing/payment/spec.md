@@ -33,7 +33,7 @@ One meaning per word, no synonyms. A word that changes meaning in a neighbour ma
 | Cancelled | Of a payment: reversed within 24 hours of the payment (BA, 2026-10-19). Not `invoice`'s cancelled, an invoice voided before any payment. |
 | Card token | What CardPay makes on the customer's side to stand for a card; never a card number (TL, 2026-10-19). |
 | Charge reference | What CardPay answers when it accepts a charge: text bounded by AR-1 (TL, 2026-10-19). |
-| Customer under fraud review | A customer, the invoice's `customerId`, listed under `commerce.fraud-review.customers` (BR-32) (PO, 2026-10-19). |
+| Customer under fraud review | A customer, the invoice's `customerId`, that `fraud` answers blocked through `CustomerStatus` (BR-32) (PO, 2026-10-19; `CustomerStatus`: PO, TL, architect, 2026-10-20). |
 | Declined | CardPay's answer to a charge it does not accept: CardPay declines a card. Not Refused (`../area.md`) (PO, 2026-10-19). |
 | Refund | All or part of the amount paid, given back to the card through CardPay at the accountant's request: `REQUESTED`, then `SENT`, then `SETTLED` (REQ-6; contract 1.3.0). A refund gives back; it does not reverse: "reversed" is a payment cancelled within 24 hours (BA, 2026-10-20). |
 | Time of the payment | The moment the record of `payment` commits (architect, 2026-10-19). |
@@ -68,11 +68,11 @@ What this bounded context owns in its source. The source says what each part hol
 | BR-28 | A refund is sent to the card through CardPay once recorded. | A refund recorded `REQUESTED` (BR-25) | CardPay is asked to send it, with the charge reference and the amount; accepted: the refund becomes `SENT`. Sent, then the record of `SENT` failing, or the process stopping before the send: 500, as for a pay; the refund stays `REQUESTED` and counts against the amount paid (architect) | TL, architect, 2026-10-19 |
 | BR-29 | A cancelled payment is not refunded. | A refund of an invoice whose payment was cancelled (REQ-5, not built) | Refused as an invoice not `PAID` (BR-25): 409, no body | PO, 2026-10-19 |
 | BR-31 | A refund writes to a log or an error its identifiers and its status only. | Any log or error of a refund | Never the charge reference, never the amount; never a customer under fraud review | TL, 2026-10-19 |
-| BR-32 | A customer under fraud review can neither pay nor be refunded. | A pay (BR-5) or a refund (BR-25) of an invoice whose customer, the invoice's `customerId`, is under fraud review: listed in `application.yaml` under `commerce.fraud-review.customers`, matched exactly, until the risk team has a system. The risk team puts a customer under review and lifts it by editing the list, read at start-up: an edit counts at the next restart. A missing list, or a blank or overlong entry (AR-1), stops the start | Refused: 403, no body; nothing is recorded and CardPay is not called; no log names a customer under review | from source: REQ-4, REQ-6 (1.1); trigger: PO, 2026-10-19; list: PO, TL, architect, 2026-10-19; confirmed: owner, 2026-10-19; was AR-3 of `../area.md`, carried by the BA on 2026-10-20 |
+| BR-32 | A customer under fraud review can neither pay nor be refunded. | A pay (BR-5) or a refund (BR-25) of an invoice whose customer, the invoice's `customerId`, is under fraud review: `fraud` answers it blocked through `CustomerStatus`, asked with the invoice's `customerId`, the same text (BR-3 and BR-4 of `fraud`) | Refused: 403, no body; nothing is recorded and CardPay is not called; no log names a customer under review. `CustomerStatus` cannot answer: refused, 500, nothing charged, CardPay not called (architect, 2026-10-20) | from source: REQ-4, REQ-6 (1.1); trigger: PO, 2026-10-19; `CustomerStatus`: PO, TL, architect, 2026-10-20; confirmed: owner, 2026-10-19; was AR-3 of `../area.md`, carried by the BA on 2026-10-20 |
 
 The order of the answers of a refund: the content (400, BR-26), the invoice (404, BR-27), the fraud review (403, BR-32), then the payment: its currency (400), its state and what remains (409) (BR-25) (architect, 2026-10-19).
 
-No API edits the list of BR-32 in this version (PO, 2026-10-19). `payment` reads it through one port, `FraudReview`, for pays and refunds (architect, 2026-10-20). A cancel (REQ-5) by a customer under fraud review is not refused by BR-32, which names paying and being refunded only (PO, 2026-10-19).
+`payment` asks it through one port, `FraudReview`, for pays and refunds (architect, 2026-10-20), answered by `fraud`'s `CustomerStatus` (PO, TL, architect, 2026-10-20). A cancel (REQ-5) by a customer under fraud review is not refused by BR-32, which names paying and being refunded only (PO, 2026-10-19).
 
 ## Decisions
 
@@ -97,6 +97,7 @@ No schema documents are declared for this project.
 | Callers: anyone holding an identifier | inbound | `docs/contracts/billing.openapi.json` 1.3.0: `payInvoice` (tag `Payment`) | in: the identifier to pay and a `cardToken`; out: the contract's `Invoice`, without its customer, its time of payment and its charge reference |
 | Callers: the accountant; anyone holding an identifier, accepted in this version: there is no login (PO, 2026-10-19) | inbound | `docs/contracts/billing.openapi.json` 1.3.0: `refundInvoice` (tag `Refund`) | in: the identifier of the invoice and the amount; out: the contract's `Refund` |
 | `invoice` | outbound, in process | `InvoicePayments`, in `invoice`'s application layer, frozen 2026-10-19 | read an invoice as `getInvoice` shows it, with its customer, its `customerId` (agreed by `invoice` and `payment`: architect, 2026-10-19); record a payment, refused when the invoice is no longer `ISSUED`; record a payment cancelled (REQ-5, not built). Used from `payment`'s outbound adapter only (architect, 2026-10-19) |
+| `fraud` (`customer`) | outbound, in process | `CustomerStatus`, an interface of `fraud`'s application layer (architect, 2026-10-20) | in: the invoice's `customerId`, the same text; out: is this customer blocked, yes or no (BR-4 of `fraud`) (PO, TL, architect, 2026-10-20) |
 
 What the contract does not declare (the 400, the bound of AR-1, no body on a refusal) the code enforces (architect, 2026-10-19).
 
@@ -113,6 +114,7 @@ What the contract does not declare (the 400, the bound of AR-1, no body on a ref
 - Does cancelling a payment (REQ-5) carry a fee? Owner: PO.
 - CardPay does not answer, or answers out of bounds (BR-5): open until CardPay is reachable; its fake always answers (architect, 2026-10-19). Owner: architect.
 - A charge accepted whose record loses to another pay or to a cancel, or fails otherwise (BR-5), is kept nowhere in this version: the card is charged and no payment is recorded. Reversed with REQ-5: open until then (architect, 2026-10-19). Owner: architect.
+- A review placed between `payment`'s ask of `CustomerStatus` and the record of a pay or a refund lets that pay or refund through (BR-32): one check per pay or refund is accepted for this version (PO, architect, 2026-10-20). Owner: PO, architect.
 - Anyone may retry a pay after a 402 and so test card tokens: accepted in this version, there is no login (PO, 2026-10-19). Owner: PO.
 - The card token reaches the log when `org.springframework.web` runs at DEBUG or TRACE: the request model generated from the contract prints it, and Spring logs the body and the arguments it reads (BR-24). Accepted in this version: the demo never runs that logger at DEBUG or TRACE and has no real card token; open until a real CardPay adapter comes; no contract change (TL, 2026-10-19). Owner: TL.
 

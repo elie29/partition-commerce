@@ -35,6 +35,12 @@ elements:
     in: commerce-app
     name: Product
     context: product
+  - id: fraud
+    kind: component
+    in: commerce-app
+    name: Fraud
+    description: The risk team's fraud reviews; whether a customer is blocked
+    context: fraud
   - id: h2
     kind: container
     in: commerce
@@ -53,6 +59,7 @@ relations:
   - payment -> h2: SQL
   - payment -> cardpay: charges, reverses, sends refunds
   - product -> h2: SQL
+  - fraud -> h2: SQL
 
 views:
   - id: context

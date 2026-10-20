@@ -59,6 +59,7 @@ None.
 - `#4-data` names the tables `customer_account` and `fraud_review`: no schema documents are declared for this project (`paths.schemas`), nothing is mapped.
 - `customer` has no code in this project yet (TL, 2026-10-20): declared in `docs/partition.yml` without a code path.
 - No coupling outside the scope: the scope is the whole source.
+- No area file for `customer`: each spec keeps its own words, as the old spec uses them; no word and no rule goes to an area file (BA, 2026-10-20). The copied rules of `customer` and `fraud` are confirmed as written, with no other rule (BA, 2026-10-20).
 
 ## Coverage
 

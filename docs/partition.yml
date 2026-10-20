@@ -82,3 +82,17 @@ contexts:                     # one entry per bounded context, declared by parti
     area: customer
     code:
       - src/main/java/com/commerce/fraud/**
+    hexagons:
+      - id: fraud
+        form: rich
+        reason: "a review moves from open to lifted, and only the risk team lifts it (architect, 2026-10-20); one open review per customer holds at every write (BR-6) (architect, 2026-10-20)"
+        layers:
+          domain: src/main/java/com/commerce/fraud/domain/**
+          application: src/main/java/com/commerce/fraud/application/**
+          inbound: src/main/java/com/commerce/fraud/inbound/**
+          outbound: src/main/java/com/commerce/fraud/outbound/**
+        allowed:
+          - application -> domain
+          - inbound -> application
+          - outbound -> application
+          - outbound -> domain

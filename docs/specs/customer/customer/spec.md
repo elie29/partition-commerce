@@ -29,6 +29,8 @@ One meaning per word, no synonyms. A word that changes meaning in a neighbour ma
 
 | Term | Meaning in this bounded context |
 | ---- | ------------------------------- |
+| Account | What a customer has: a name, an email, a billing address (#2-customer-accounts). (BA, 2026-10-20) |
+| Customer | Who has an account, and changes its address at any time (#2-customer-accounts). (BA, 2026-10-20) |
 
 ## Source parts owned
 
@@ -42,14 +44,12 @@ What this bounded context owns in its source. The source says what each part hol
 
 ## Business rules
 
-> **TO VALIDATE BEFORE THIS BOUNDED CONTEXT IS USED.** The rules marked "from source" were copied word for word from the source that states them. A person confirms each one, adds the rules the source does not state, then removes this banner. Until then the bounded context is not fit for design or implementation.
-
 | # | Rule | Trigger | Expected effect | Source |
 | --- | --- | --- | --- | --- |
-| BR-1 | The email of an account is unique. | — | — | from source: #2-customer-accounts |
-| BR-2 | A customer changes their address at any time. | — | — | from source: #2-customer-accounts |
+| BR-1 | The email of an account is unique. | — | — | from source: #2-customer-accounts; confirmed: BA, 2026-10-20 |
+| BR-2 | A customer changes their address at any time. | — | — | from source: #2-customer-accounts; confirmed: BA, 2026-10-20 |
 
-Remove the banner once the section is filled and confirmed.
+No other rule (BA, 2026-10-20).
 
 ## Decisions
 
