@@ -7,9 +7,9 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 /**
- * Reads the price of a product in a price list on a day: BR-14 and BR-15 of the spec of {@code price-list}. The query
- * was checked before (content, BR-15); the price is read from the list's own data, {@code product} is not read
- * (BR-12).
+ * Reads the price of a product in a price list on a day: BR-23 and BR-24 of the spec of {@code product}. The query
+ * was checked before (content, BR-24); the price is read from the list's own data, {@code product} is not read
+ * (BR-21).
  */
 @Service
 public class GetProductPriceUseCase {

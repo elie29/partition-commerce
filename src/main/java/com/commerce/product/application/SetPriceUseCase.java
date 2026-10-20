@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Sets the price of a product in a price list: BR-1 to BR-4, BR-8 to BR-10 and BR-12 of the spec of
- * {@code price-list}. The order of BR-10: the content ({@link #contentFaults}, before the call), then the list, then
+ * Sets the price of a product in a price list: BR-10 to BR-13, BR-17 to BR-19 and BR-21 of the spec of
+ * {@code product}. The order of BR-19: the content ({@link #contentFaults}, before the call), then the list, then
  * the product identifier, then the list's currency.
  */
 @Service
@@ -32,8 +32,8 @@ public class SetPriceUseCase {
     }
 
     /**
-     * The faults of the content the domain judges, beyond the contract's schema: a negative amount (BR-2), a currency
-     * that is not a known code (BR-4). A value of the wrong type is passed as {@code null} and judged by the schema.
+     * The faults of the content the domain judges, beyond the contract's schema: a negative amount (BR-11), a currency
+     * that is not a known code (BR-13). A value of the wrong type is passed as {@code null} and judged by the schema.
      */
     public List<Fault> contentFaults(Long amountMinor, String currency) {
         List<Fault> faults = new ArrayList<>();
@@ -48,10 +48,10 @@ public class SetPriceUseCase {
 
     /**
      * A content {@link #contentFaults} and the contract accept. The product is not read: a price is set for the
-     * identifier given (BR-12). {@code effectiveFrom} absent is now; kept to the millisecond, in UTC (BR-8, AR-5).
+     * identifier given (BR-21). {@code effectiveFrom} absent is now; kept to the millisecond, in UTC (BR-17, AR-5).
      *
      * @throws PriceListNotFound when an identifier of the path is not a UUID or the list does not exist
-     * @throws PriceRefused when the currency is not the list's (BR-3)
+     * @throws PriceRefused when the currency is not the list's (BR-12)
      */
     @Transactional
     public PriceView set(String priceListId, String productId, long amountMinor, String currency,

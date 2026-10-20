@@ -40,7 +40,7 @@ class PriceListErrors {
         return answer(request, HttpStatus.BAD_REQUEST, "The request is refused: a field is at fault.", items);
     }
 
-    /** BR-3, checked after the list's identifier (BR-10). */
+    /** BR-12, checked after the list's identifier (BR-19). */
     @ExceptionHandler(PriceRefused.class)
     ResponseEntity<ListProducts400Response> priceRefused(PriceRefused refused, HttpServletRequest request) {
         List<ListProducts400ResponseErrorsInner> items = refused.faults().stream()
@@ -56,14 +56,14 @@ class PriceListErrors {
                 VALIDATION_FAILED, "The body is missing or is not a JSON object the contract accepts.", null)));
     }
 
-    /** BR-9, BR-12. */
+    /** BR-18, BR-21. */
     @ExceptionHandler(PriceListNotFound.class)
     ResponseEntity<ListProducts400Response> priceListNotFound(HttpServletRequest request) {
         return answer(request, HttpStatus.NOT_FOUND, "No such price list.",
                 List.of(item("PRICE_LIST_NOT_FOUND", "No price list holds this identifier.", null)));
     }
 
-    /** BR-14: no such price list, no price for the product in it, or no price that applies, told apart by nothing. */
+    /** BR-23: no such price list, no price for the product in it, or no price that applies, told apart by nothing. */
     @ExceptionHandler(PriceNotFound.class)
     ResponseEntity<ListProducts400Response> priceNotFound(HttpServletRequest request) {
         return answer(request, HttpStatus.NOT_FOUND, "No such product, or no price for it in that price list.",

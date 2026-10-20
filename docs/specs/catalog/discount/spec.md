@@ -21,7 +21,7 @@ Grant reductions on an order: create a discount and read it.
 
 **In scope:** the discounts.
 
-**Out of scope:** the products (`product`); the price lists, the setting and the reading of a price (`price-list`); the order a discount reduces, which no operation of the contract handles.
+**Out of scope:** the products, the price lists, the setting and the reading of a price (`product`); the order a discount reduces, which no operation of the contract handles.
 
 ## Language
 
@@ -40,7 +40,7 @@ What this bounded context owns in its source. The source says what each part hol
 | createDiscount | [POST /discounts](../../../contracts/catalog.openapi.json) (`/paths/~1discounts/post`) | Create a discount |
 | getDiscount | [GET /discounts/{discountId}](../../../contracts/catalog.openapi.json) (`/paths/~1discounts~1{discountId}/get`) | Read a discount |
 | Tag `Discount` | [`/tags/2/description`](../../../contracts/catalog.openapi.json) | What the tag groups |
-| `Discount`, `Money` schemas | [`/components/schemas`](../../../contracts/catalog.openapi.json) | The discount and an amount as the operations exchange them; `Money` is also used by `setPrice` and `getProductPrice` of `price-list` |
+| `Discount`, `Money` schemas | [`/components/schemas`](../../../contracts/catalog.openapi.json) | The discount and an amount as the operations exchange them; `Money` is also used by `setPrice` and `getProductPrice` of `product` |
 
 ## Business rules
 
@@ -49,7 +49,7 @@ What this bounded context owns in its source. The source says what each part hol
 | BR-1 | A discount is between 1 and 90 percent, both bounds included. | A `createDiscount` with a `percent` below 1 or above 90 | Refused: 400, nothing created | BA, 2026-10-20 |
 | BR-2 | The period of a discount governs nothing in this version, as the validity of a price list. | A `createDiscount` | `period` is accepted, not kept, not returned; an end before its start is accepted; a value the contract's schema refuses is still refused, 400 (`backend-api-contract`) | BA, 2026-10-20 |
 | BR-3 | The amount of a minimum order is never negative. | A `createDiscount` whose `minimumOrder` amount is negative | Refused: 400, nothing created; zero is a minimum order | BA, 2026-10-20 |
-| BR-4 | A currency is a known ISO 4217 code, as `price-list`'s BR-4 says. | A `createDiscount` whose `minimumOrder` currency the contract's pattern accepts but is not a known code (`XYZ`) | Refused: 400, nothing created; content, checked with the body (BR-9); incoming requests only | BA, 2026-10-20 |
+| BR-4 | A currency is a known ISO 4217 code, as BR-13 of `product` says (was BR-4 of `price-list`: BA, 2026-10-20). | A `createDiscount` whose `minimumOrder` currency the contract's pattern accepts but is not a known code (`XYZ`) | Refused: 400, nothing created; content, checked with the body (BR-9); incoming requests only | BA, 2026-10-20 |
 | BR-5 | A discount keeps its `minimumOrder`. | A `createDiscount` that sends one | Returned as kept by `createDiscount` and `getDiscount`; it governs nothing in this version | BA, 2026-10-20 |
 | BR-6 | A discount names no product, no price list and no order; nothing applies it in this version. | Any operation | `discount` stores and returns discounts; it reads no neighbour | architect, 2026-10-20 |
 | BR-7 | Two discounts may overlap. | A `createDiscount` like an existing discount | Created; `createDiscount` never answers 409 in this version. A retried `createDiscount` creates another discount: `X-Request-Id` does not make a create idempotent; avoiding a retry is the caller's job | BA, 2026-10-20; the retry: TL, 2026-10-20 |

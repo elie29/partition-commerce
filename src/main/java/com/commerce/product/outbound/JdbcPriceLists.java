@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
-/** The price lists in the database, through {@link JdbcClient} (V7); a stored currency is read as kept (BR-4). */
+/** The price lists in the database, through {@link JdbcClient} (V7); a stored currency is read as kept (BR-13). */
 @Repository
 class JdbcPriceLists implements PriceLists {
 

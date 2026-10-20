@@ -5,7 +5,7 @@ import java.util.UUID;
 
 /**
  * A price list: the prices of products in one currency, for one channel. It holds no collection of prices: one price
- * per product is held by the store's key (BR-1, P-5); it makes each price, in its own currency (BR-3).
+ * per product is held by the store's key (BR-10, P-5); it makes each price, in its own currency (BR-12).
  */
 public record PriceList(UUID id, String name, Currency currency, Channel channel) {
 
@@ -14,7 +14,7 @@ public record PriceList(UUID id, String name, Currency currency, Channel channel
             throw new InvalidPriceList("a price list has its identifier, its currency and its channel");
         }
         if (name == null || isBlankName(name)) {
-            throw new InvalidPriceList("BR-5: a name is not blank");
+            throw new InvalidPriceList("BR-14: a name is not blank");
         }
     }
 
@@ -27,10 +27,10 @@ public record PriceList(UUID id, String name, Currency currency, Channel channel
         return currency.equals(other);
     }
 
-    /** The price of a product in this list (BR-3: in the list's currency), effective from the instant given. */
+    /** The price of a product in this list (BR-12: in the list's currency), effective from the instant given. */
     public Price price(UUID productId, Money amount, Instant effectiveFrom) {
         if (!isInItsCurrency(amount.currency())) {
-            throw new InvalidPriceList("BR-3: a price is in its price list's currency");
+            throw new InvalidPriceList("BR-12: a price is in its price list's currency");
         }
         return new Price(id, productId, amount, effectiveFrom);
     }

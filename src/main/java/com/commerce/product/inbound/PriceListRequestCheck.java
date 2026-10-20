@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * The first two groups of a request of {@code price-list}, checked before Spring binds a parameter (AR-1): its
- * headers, then its query. Only {@code getProductPrice} takes a query, its {@code at} (BR-15).
+ * headers, then its query. Only {@code getProductPrice} takes a query, its {@code at} (BR-24).
  */
 @Component
 class PriceListRequestCheck implements HandlerInterceptor {

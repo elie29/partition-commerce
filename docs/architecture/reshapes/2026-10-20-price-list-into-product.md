@@ -57,7 +57,7 @@ Other consumers: none in the code — `grep -rn "com.commerce.pricelist" src` fi
 - [x] One adapter implements that interface: not a fission, a move or a promotion
 - [x] The contract is written and frozen: not a fission, a move or a promotion
 - [x] For a fission, the new bounded context has its durable spec and its own language: not a fission
-- [ ] Each rule both sides need has one home: the owner's spec, the area file or the register: AR-5 to come down into `product`, the rules renumbered — at the carry-over, Léa Petit (BA)
+- [x] Each rule both sides need has one home: the owner's spec, the area file or the register: AR-5 became BR-26 of `product` and left the area file (its note, `area.md`); the rules of `price-list` are BR-10 to BR-25 of `product`; Blank and Character came down into `product`'s Language — carried over by Léa Petit (BA), 2026-10-20
 - [x] For a merge, the person who carries the hand-written sections over: Léa Petit (business analyst), 2026-10-20
 - [x] For a removal, nothing calls it any more: not a removal
 
@@ -72,5 +72,5 @@ Carried out by `docs/plans/price-list-into-product.md` (Tasks 3 to 5).
 ## After
 
 - [x] C4 model updated and regenerated: the component `price-list` and its relation to `h2` gone; `c4.drawio` seven pages, 2026-10-20
-- [x] `docs/partition.yml` keeps `price-list`, with its area only, while `docs/specs/catalog/price-list/` exists, 2026-10-20; its entry goes once a person has deleted the folder
+- [x] `docs/partition.yml` kept `price-list`, with its area only, while `docs/specs/catalog/price-list/` existed; the folder deleted by a person and the entry taken out, 2026-10-20 (`docs/plans/price-list-into-product-after-carry-over.md`)
 - [x] Budget measured again: `docs/budget/2026-10-20.md` — `product` 6 090 (19 %), `price-list` 6 019 (19 %) while its spec exists; the merge was raised by a workshop, not a gauge

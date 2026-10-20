@@ -2,7 +2,7 @@ package com.commerce.product.application;
 
 import org.springframework.stereotype.Service;
 
-/** Reads a price list: BR-9 of the spec of {@code price-list}. */
+/** Reads a price list: BR-18 of the spec of {@code product}. */
 @Service
 public class GetPriceListUseCase {
 

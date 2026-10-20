@@ -17,7 +17,7 @@ public record Price(UUID priceListId, UUID productId, Money amount, Instant effe
     }
 
     /**
-     * Applies (`docs/specs/catalog/price-list/spec.md`): on a day, its {@code effectiveFrom} is on or before the end of that day,
+     * Applies (`docs/specs/catalog/product/spec.md`): on a day, its {@code effectiveFrom} is on or before the end of that day,
      * in UTC; a day ends before 00:00 UTC of the next day.
      */
     public boolean appliesOn(LocalDate day) {

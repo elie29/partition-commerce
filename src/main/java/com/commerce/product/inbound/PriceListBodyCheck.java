@@ -100,7 +100,7 @@ class PriceListBodyCheck extends RequestBodyAdviceAdapter {
         return merged(schema.faults(), createPriceList.contentFaults(blankable, currency));
     }
 
-    /** BR-10: the body is one group, every field at fault in it answered; BR-3 is checked after the list. */
+    /** BR-19: the body is one group, every field at fault in it answered; BR-12 is checked after the list. */
     private List<Fault> setPriceFaults(JsonNode tree) {
         JsonBody schema = new JsonBody();
         JsonNode price = schema.object(tree, "price", "price", true);

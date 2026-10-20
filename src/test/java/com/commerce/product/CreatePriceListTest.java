@@ -22,7 +22,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * The use case "create a price list": BR-4 to BR-7 and BR-13 of the spec of {@code price-list}, and AR-1 to AR-4 of
+ * The use case "create a price list": BR-13 to BR-16 and BR-22 of the spec of {@code product}, and AR-1 to AR-4 of
  * {@code docs/specs/catalog/area.md} as they bind it.
  */
 @PriceListApiTest

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * The operations of the tag {@code PriceList} of `docs/contracts/catalog.openapi.json`, under its base path. The
  * headers and the query are checked before binding ({@link PriceListRequestCheck}), the body whole before it is bound
- * ({@link PriceListBodyCheck}), then the path's identifiers. {@code Accept-Language} changes nothing (BR-13).
+ * ({@link PriceListBodyCheck}), then the path's identifiers. {@code Accept-Language} changes nothing (BR-22).
  */
 @RestController
 @RequestMapping(PriceListController.BASE_PATH)

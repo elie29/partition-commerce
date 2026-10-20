@@ -114,7 +114,7 @@ final class JsonBody {
         }
     }
 
-    /** A date-time carries its offset, as the schema's {@code date-time} requires (BR-8). */
+    /** A date-time carries its offset, as the schema's {@code date-time} requires (BR-17). */
     void dateTime(JsonNode parent, String field, String path, boolean required) {
         String value = text(parent, field, path, required);
         if (value != null) {

@@ -3,7 +3,7 @@ package com.commerce.product.application;
 import com.commerce.product.domain.PriceList;
 import java.util.UUID;
 
-/** A price list as the operations answer it: its identifier, its name, its currency, its channel (BR-6). */
+/** A price list as the operations answer it: its identifier, its name, its currency, its channel (BR-15). */
 public record PriceListView(UUID priceListId, String name, String currency, String channel) {
 
     static PriceListView of(PriceList list) {

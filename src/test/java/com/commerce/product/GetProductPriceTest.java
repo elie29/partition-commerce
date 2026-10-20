@@ -24,7 +24,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
- * The use case "read the price of a product": BR-12, BR-14 and BR-15 of the spec of {@code price-list}, its Applies
+ * The use case "read the price of a product": BR-21, BR-23 and BR-24 of the spec of {@code product}, its Applies
  * and Day; AR-1 to AR-3 of the area. A product is an identifier only: {@code price-list} does not read {@code product}.
  */
 @PriceListApiTest

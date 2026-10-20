@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
-/** Creates a price list: BR-4 to BR-7 of the spec of {@code price-list}; it never answers 409 (BR-7). */
+/** Creates a price list: BR-13 to BR-16 of the spec of {@code product}; it never answers 409 (BR-16). */
 @Service
 public class CreatePriceListUseCase {
 
@@ -19,8 +19,8 @@ public class CreatePriceListUseCase {
     }
 
     /**
-     * The faults of the content the domain judges, beyond the contract's schema: a blank name (BR-5), a currency that
-     * is not a known code (BR-4). A value of the wrong type is passed as {@code null} and judged by the schema only.
+     * The faults of the content the domain judges, beyond the contract's schema: a blank name (BR-14), a currency that
+     * is not a known code (BR-13). A value of the wrong type is passed as {@code null} and judged by the schema only.
      */
     public List<Fault> contentFaults(String name, String currency) {
         List<Fault> faults = new ArrayList<>();
@@ -33,7 +33,7 @@ public class CreatePriceListUseCase {
         return faults;
     }
 
-    /** A content {@link #contentFaults} and the contract accept; the validity is accepted, not kept (BR-6). */
+    /** A content {@link #contentFaults} and the contract accept; the validity is accepted, not kept (BR-15). */
     public PriceListView create(String name, String currency, String channel) {
         PriceList created = new PriceList(UUID.randomUUID(), name, Currency.of(currency), Channel.valueOf(channel));
         priceLists.add(created);

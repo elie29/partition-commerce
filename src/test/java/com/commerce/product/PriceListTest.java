@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
-/** The domain of {@code price-list}, without Spring or a database: BR-2 to BR-5 and Applies of the area. */
+/** The domain of {@code price-list}, without Spring or a database: BR-11 to BR-14 and Applies of the area. */
 class PriceListTest {
 
     private static final UUID PRODUCT = UUID.randomUUID();

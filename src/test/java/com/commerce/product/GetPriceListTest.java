@@ -24,7 +24,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
 
-/** The use case "read a price list": BR-4, BR-6, BR-9 and BR-13 of the spec of {@code price-list}, AR-1 to AR-3. */
+/** The use case "read a price list": BR-13, BR-15, BR-18 and BR-22 of the spec of {@code product}, AR-1 to AR-3. */
 @PriceListApiTest
 @ExtendWith(OutputCaptureExtension.class)
 class GetPriceListTest {
@@ -60,7 +60,7 @@ class GetPriceListTest {
         assertThat(json.readTree(read.body())).isEqualTo(created);
     }
 
-    /** BR-4 is checked on incoming requests only: a code a later JDK drops is read as it was kept. */
+    /** BR-13 is checked on incoming requests only: a code a later JDK drops is read as it was kept. */
     @Test
     void reads_a_price_list_stored_in_a_code_the_jdk_does_not_list() {
         UUID priceListId = UUID.randomUUID();

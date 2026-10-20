@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 /**
  * The prices in the database, through {@link JdbcClient} (V7). One price per product and list is held by the key
  * {@code (price_list_id, product_id)} and one {@code MERGE}: the last to commit replaces, and two first prices at the
- * same moment both succeed (BR-1, P-5).
+ * same moment both succeed (BR-10, P-5).
  */
 @Repository
 class JdbcPrices implements Prices {
