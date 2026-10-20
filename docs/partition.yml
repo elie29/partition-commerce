@@ -78,16 +78,3 @@ contexts:                     # one entry per bounded context, declared by parti
           - outbound -> domain
   - id: discount
     area: catalog
-    code:
-      - src/main/java/com/commerce/discount/**
-    hexagons:
-      - id: discount
-        form: thin
-        reason: "its rules only check inputs (BR-1, BR-3, BR-4, BR-9): a discount is created and read, never changed, and what it keeps governs nothing (BR-2, BR-5, BR-6) (Claire Martin, architect, 2026-10-20)"
-        layers:
-          application: src/main/java/com/commerce/discount/application/**
-          inbound: src/main/java/com/commerce/discount/inbound/**
-          outbound: src/main/java/com/commerce/discount/outbound/**
-        allowed:
-          - inbound -> application
-          - outbound -> application

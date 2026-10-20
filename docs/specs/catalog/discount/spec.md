@@ -13,6 +13,8 @@
 <!-- The header above is filled by partition-shape, or partition-reshape for a fission. -->
 <!-- The empty ">" lines keep each header line on its own line when the Markdown is reformatted. -->
 
+> **Status:** removed on 2026-10-20 — no unit is attached to it any more. Frozen spec: its hand-written sections (business rules included) are to be archived or reassigned by a human. See `../bounded-contexts.md#history`.
+
 ## Business objective
 
 Grant reductions on an order: create a discount and read it.
