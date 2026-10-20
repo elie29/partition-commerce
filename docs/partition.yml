@@ -47,7 +47,7 @@ contexts:                     # one entry per bounded context, declared by parti
     hexagons:
       - id: payment
         form: rich
-        reason: a payment moves from made to cancelled within 24 hours (workshop, architect, 2026-10-19)
+        reason: "a payment moves from made to cancelled within 24 hours (workshop, architect, 2026-10-19); a refund is bounded by what was paid, and it moves from requested to sent to settled (architect, 2026-10-19); absorbed refund (architect, 2026-10-20)"
         layers:
           domain: src/main/java/com/commerce/payment/domain/**
           application: src/main/java/com/commerce/payment/application/**
@@ -58,24 +58,8 @@ contexts:                     # one entry per bounded context, declared by parti
           - inbound -> application
           - outbound -> application
           - outbound -> domain
-  - id: refund
+  - id: refund                # merged into payment on 2026-10-20; declared until docs/specs/billing/refund/ is deleted by a person
     area: billing
-    code:
-      - src/main/java/com/commerce/refund/**
-    hexagons:
-      - id: refund
-        form: rich
-        reason: a refund is bounded by what was paid, and it moves from requested to sent to settled (architect, 2026-10-19)
-        layers:
-          domain: src/main/java/com/commerce/refund/domain/**
-          application: src/main/java/com/commerce/refund/application/**
-          inbound: src/main/java/com/commerce/refund/inbound/**
-          outbound: src/main/java/com/commerce/refund/outbound/**
-        allowed:
-          - application -> domain
-          - inbound -> application
-          - outbound -> application
-          - outbound -> domain
   - id: product
     area: catalog
     code:

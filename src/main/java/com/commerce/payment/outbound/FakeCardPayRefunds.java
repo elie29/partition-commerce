@@ -1,7 +1,7 @@
-package com.commerce.refund.outbound;
+package com.commerce.payment.outbound;
 
-import com.commerce.refund.application.CardPayRefunds;
-import com.commerce.refund.domain.Money;
+import com.commerce.payment.application.CardPayRefunds;
+import com.commerce.payment.domain.Money;
 import org.springframework.stereotype.Component;
 
 /**

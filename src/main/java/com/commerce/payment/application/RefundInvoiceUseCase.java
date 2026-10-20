@@ -1,8 +1,10 @@
-package com.commerce.refund.application;
+package com.commerce.payment.application;
 
-import com.commerce.refund.domain.InvalidRefund;
-import com.commerce.refund.domain.Money;
-import com.commerce.refund.domain.Refund;
+import com.commerce.payment.domain.InvalidPayment;
+import com.commerce.payment.domain.Money;
+import com.commerce.payment.domain.Payment;
+import com.commerce.payment.domain.Refund;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,14 +17,16 @@ import org.springframework.stereotype.Service;
 public class RefundInvoiceUseCase {
 
     private static final Logger LOG = LoggerFactory.getLogger(RefundInvoiceUseCase.class);
-    private final RefundableInvoices invoices;
+    private final PayableInvoices invoices;
+    private final Payments payments;
     private final FraudReview fraudReview;
     private final Refunds refunds;
     private final CardPayRefunds cardPay;
 
-    public RefundInvoiceUseCase(
-            RefundableInvoices invoices, FraudReview fraudReview, Refunds refunds, CardPayRefunds cardPay) {
+    public RefundInvoiceUseCase(PayableInvoices invoices, Payments payments, FraudReview fraudReview, Refunds refunds,
+            CardPayRefunds cardPay) {
         this.invoices = invoices;
+        this.payments = payments;
         this.fraudReview = fraudReview;
         this.refunds = refunds;
         this.cardPay = cardPay;
@@ -43,22 +47,25 @@ public class RefundInvoiceUseCase {
         Money amount;
         try {
             amount = Money.ofRefund(amountMinor, currency);
-        } catch (InvalidRefund e) {
+        } catch (InvalidPayment e) {
             throw new RefundContentRefused(e.getMessage());
         }
-        InvoiceToRefund invoice = InvoiceIds.parse(invoiceId)
+        InvoiceToPay invoice = InvoiceIds.parse(invoiceId)
                 .flatMap(invoices::find)
                 .orElseThrow(InvoiceNotFound::new);
-        if (fraudReview.underReview(invoice.customerId())) {
+        if (fraudReview.underReview(invoices.customerOf(invoice.invoiceId()).orElseThrow())) {
             throw new RefundForbidden();
         }
-        InvoiceToRefund.Paid paid = invoice.payment()
+        Payment paid = Optional.of(invoice)
+                .filter(i -> "PAID".equals(i.status()))
+                .flatMap(i -> payments.findOf(i.invoiceId()))
                 .orElseThrow(() -> new RefundRefused("BR-25: only a paid invoice is refunded"));
-        if (!amount.currency().equals(paid.amountPaid().currency())) {
+        Money amountPaid = paid.amount();
+        if (!amount.currency().equals(amountPaid.currency())) {
             throw new RefundContentRefused("BR-25: a refund is in the currency of the amount paid");
         }
-        Refund requested = Refund.request(invoice.invoiceId(), amount, paid.amountPaid(), paid.chargeReference());
-        refunds.openCap(invoice.invoiceId(), paid.amountPaid());
+        Refund requested = Refund.request(invoice.invoiceId(), amount, amountPaid, paid.chargeReference());
+        refunds.openCap(invoice.invoiceId(), amountPaid);
         if (!refunds.addUnderCap(requested)) {
             throw new RefundRefused("BR-25: the refunds of an invoice never exceed its amount paid");
         }

@@ -1,6 +1,6 @@
-package com.commerce.refund;
+package com.commerce.payment;
 
-import static com.commerce.refund.RefundClient.refundRequest;
+import static com.commerce.payment.RefundClient.refundRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -10,10 +10,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.commerce.refund.application.CardPayRefunds;
-import com.commerce.refund.application.FraudReview;
-import com.commerce.refund.application.Refunds;
-import com.commerce.refund.domain.Money;
+import com.commerce.payment.application.CardPayRefunds;
+import com.commerce.payment.application.FraudReview;
+import com.commerce.payment.application.Refunds;
+import com.commerce.payment.domain.Money;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;

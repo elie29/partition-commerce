@@ -1,4 +1,4 @@
-package com.commerce.refund.domain;
+package com.commerce.payment.domain;
 
 /** Where a refund stands: requested, sent to the card through CardPay, settled by CardPay (REQ-6; P-2). */
 public enum RefundStatus {

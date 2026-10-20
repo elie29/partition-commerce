@@ -1,6 +1,6 @@
-package com.commerce.refund.application;
+package com.commerce.payment.application;
 
-import com.commerce.refund.domain.Refund;
+import com.commerce.payment.domain.Refund;
 import java.util.UUID;
 
 /** A refund as a refund answers it. {@link #toString()} shows its identifiers and its status only (BR-31). */

@@ -1,4 +1,4 @@
-package com.commerce.refund;
+package com.commerce.payment;
 
 import java.io.IOException;
 import java.net.URI;

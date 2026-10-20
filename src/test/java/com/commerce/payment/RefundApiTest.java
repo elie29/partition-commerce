@@ -1,4 +1,4 @@
-package com.commerce.refund;
+package com.commerce.payment;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

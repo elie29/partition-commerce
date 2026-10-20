@@ -1,7 +1,7 @@
-package com.commerce.refund.application;
+package com.commerce.payment.application;
 
-import com.commerce.refund.domain.Money;
-import com.commerce.refund.domain.Refund;
+import com.commerce.payment.domain.Money;
+import com.commerce.payment.domain.Refund;
 import java.util.UUID;
 
 /** The port to the refunds recorded and to the cap of each invoice (BR-25, P-3); an outbound adapter implements it. */

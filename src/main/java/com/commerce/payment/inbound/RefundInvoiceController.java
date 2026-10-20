@@ -1,11 +1,11 @@
-package com.commerce.refund.inbound;
+package com.commerce.payment.inbound;
 
-import com.commerce.refund.application.RefundInvoiceUseCase;
-import com.commerce.refund.application.RefundView;
-import com.commerce.refund.inbound.api.RefundApi;
-import com.commerce.refund.inbound.api.model.Money;
-import com.commerce.refund.inbound.api.model.Refund;
-import com.commerce.refund.inbound.api.model.RefundInvoice;
+import com.commerce.payment.application.RefundInvoiceUseCase;
+import com.commerce.payment.application.RefundView;
+import com.commerce.payment.inbound.api.RefundApi;
+import com.commerce.payment.inbound.api.model.Money;
+import com.commerce.payment.inbound.api.model.Refund;
+import com.commerce.payment.inbound.api.model.RefundInvoice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;

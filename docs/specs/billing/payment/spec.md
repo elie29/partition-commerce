@@ -6,12 +6,14 @@
 >
 > **Provenance:** 2026-10-19 · 972aeb0000d5498ea82996110ca39366fadffb37
 >
-> **Scope:** REQ-4, REQ-5, DEC-1 of the whole source
+> **Scope:** REQ-4, REQ-5, REQ-6, DEC-1 of the whole source
 >
 > **Decomposition:** see `../bounded-contexts.md`
 
 <!-- The header above is filled by partition-shape, or partition-reshape for a fission. -->
 <!-- The empty ">" lines keep each header line on its own line when the Markdown is reformatted. -->
+
+> **Status:** absorbed `refund` on 2026-10-20. The hand-written sections of `../refund/spec.md` (objective, scope, language, business rules, dependencies, contracts with neighbours, invariants, questions) are to be carried over here by a human.
 
 ## Business objective
 
@@ -43,6 +45,7 @@ What this bounded context owns in its source. The source says what each part hol
 | --- | --- | --- |
 | REQ-4 | [REQ-4](../../../sources/billing.md#req-4--pay-an-invoice) | The customer pays an invoice by card |
 | REQ-5 | [REQ-5](../../../sources/billing.md#req-5--cancel-a-paid-invoice) | The customer cancels a paid invoice |
+| REQ-6 | [REQ-6](../../../sources/billing.md#req-6--refund-a-paid-invoice) | The accountant refunds all or part of a paid invoice |
 | DEC-1 | [DEC-1](../../../sources/billing.md#dec-1--cardpay) | The choice of the card payment provider |
 | Glossary | [Glossary](../../../sources/billing.md#glossary) | "Cancelled" of a paid invoice |
 

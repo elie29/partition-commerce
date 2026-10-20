@@ -118,29 +118,8 @@
 							<generatorName>spring</generatorName>
 							<apiPackage>com.commerce.payment.inbound.api</apiPackage>
 							<modelPackage>com.commerce.payment.inbound.api.model</modelPackage>
-							<openapiNormalizer>FILTER=tag:Payment</openapiNormalizer>
-							<modelsToGenerate>Invoice,Line,Money,PayInvoice</modelsToGenerate>
-							<configOptions>
-								<interfaceOnly>true</interfaceOnly>
-								<useTags>true</useTags>
-								<openApiNullable>false</openApiNullable>
-								<annotationLibrary>none</annotationLibrary>
-								<documentationProvider>none</documentationProvider>
-							</configOptions>
-						</configuration>
-					</execution>
-					<execution>
-						<id>refund</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/docs/contracts/billing.openapi.json</inputSpec>
-							<generatorName>spring</generatorName>
-							<apiPackage>com.commerce.refund.inbound.api</apiPackage>
-							<modelPackage>com.commerce.refund.inbound.api.model</modelPackage>
-							<openapiNormalizer>FILTER=tag:Refund</openapiNormalizer>
-							<modelsToGenerate>Money,Refund,RefundInvoice</modelsToGenerate>
+							<openapiNormalizer>FILTER=tag:Payment|Refund</openapiNormalizer>
+							<modelsToGenerate>Invoice,Line,Money,PayInvoice,Refund,RefundInvoice</modelsToGenerate>
 							<configOptions>
 								<interfaceOnly>true</interfaceOnly>
 								<useTags>true</useTags>

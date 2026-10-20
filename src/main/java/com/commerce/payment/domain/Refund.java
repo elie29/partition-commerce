@@ -1,4 +1,4 @@
-package com.commerce.refund.domain;
+package com.commerce.payment.domain;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -30,7 +30,7 @@ public final class Refund {
      */
     public static Refund request(UUID invoiceId, Money amount, Money amountPaid, String chargeReference) {
         if (!amount.currency().equals(amountPaid.currency())) {
-            throw new InvalidRefund("BR-25: a refund is in the currency of the amount paid");
+            throw new InvalidPayment("BR-25: a refund is in the currency of the amount paid");
         }
         return new Refund(UUID.randomUUID(), invoiceId, amount, chargeReference, RefundStatus.REQUESTED);
     }
@@ -38,7 +38,7 @@ public final class Refund {
     /** The refund once CardPay sent it to the card (BR-28); only a requested refund is sent. */
     public Refund sent() {
         if (status != RefundStatus.REQUESTED) {
-            throw new InvalidRefund("BR-28: only a requested refund is sent");
+            throw new InvalidPayment("BR-28: only a requested refund is sent");
         }
         return new Refund(id, invoiceId, amount, chargeReference, RefundStatus.SENT);
     }

@@ -1,9 +1,9 @@
-package com.commerce.refund.inbound;
+package com.commerce.payment.inbound;
 
-import com.commerce.refund.application.InvoiceNotFound;
-import com.commerce.refund.application.RefundContentRefused;
-import com.commerce.refund.application.RefundForbidden;
-import com.commerce.refund.application.RefundRefused;
+import com.commerce.payment.application.InvoiceNotFound;
+import com.commerce.payment.application.RefundContentRefused;
+import com.commerce.payment.application.RefundForbidden;
+import com.commerce.payment.application.RefundRefused;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
-/** The refusals of the API of {@code refund}: a status and no body, so no value of the request travels back. */
+/** The refusals of the refund (tag {@code Refund}): a status and no body, so no value of the request travels back. */
 @RestControllerAdvice(assignableTypes = RefundInvoiceController.class)
 class RefundErrors {
 

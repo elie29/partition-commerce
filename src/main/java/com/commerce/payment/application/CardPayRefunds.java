@@ -1,6 +1,6 @@
-package com.commerce.refund.application;
+package com.commerce.payment.application;
 
-import com.commerce.refund.domain.Money;
+import com.commerce.payment.domain.Money;
 
 /**
  * The port to CardPay, through which refunds go (DEC-1, BR-28); an outbound adapter implements it. What follows a send
