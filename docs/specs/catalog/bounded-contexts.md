@@ -2,15 +2,15 @@
 
 > **Source:** `docs/contracts/catalog.openapi.json`
 >
-> **Source version:** 1.1.0
+> **Source version:** 2.0.0
 >
-> **Provenance:** 2026-10-20 · 260ac4127d89f0b65d7d1d377f5c429f136716f7
+> **Provenance:** 2026-10-20 · 1e1a06661e4397e05abbb1a87ec7b06e2ad1812d
 >
-> **Scope:** tag:Product; tag:PriceList; tag:Discount
+> **Scope:** tag:Product; tag:PriceList
 >
-> **Units covered:** 9 / 9
+> **Units covered:** 7 / 7
 >
-> **Decided:** 2026-10-20 · Claire Martin (architect), Paul Durand (PO), Léa Petit (BA) · workshop: `docs/sources/workshop-price-list-into-product.md` (merge: `product` absorbs `price-list`)
+> **Decided:** 2026-10-20 · Claire Martin (architect) · proposal: option 1 (delta 1.1.0 → 2.0.0: removal of `discount`)
 
 The **Scope** line fixes the units analysed; the others appear in the `Coverage` table with the mention "out of scope". Change it only when a scope extension has been validated.
 
@@ -77,6 +77,13 @@ Option 3 of 2026-10-19, rejected that day, was taken by the merge of 2026-10-20:
 - Hand-written lines left untrue by 1.1.0 and the validated move, reported, not rewritten: `Business objective`, `Scope`, the `Callers` and `price-list` lines of `Contracts with neighbours` and the INV-DATA-001 line of `product/spec.md`; the `Out of scope` line, BR-1 ("by the day as `product`'s BR-9 reads it"), BR-12 ("`price-list` does not read `product`", still true) and the `product` line of `Contracts with neighbours` of `price-list/spec.md`. Resolved on 2026-10-20 (version 1.1.0): rewritten to fit the move, as approved by the architect; `discount`'s `Out of scope` too.
 - Code / spec divergence: `getProductPrice` is implemented in `product` at the 1.0.0 path, with `priceListId` in the query (`src/main/java/com/commerce/product/inbound/ProductController.java:68`, `application/GetProductPriceUseCase.java`, `inbound/ProductRequestCheck.java:35`, `outbound/PriceListPricesAdapter.java`; `src/test/java/com/commerce/product/GetProductPriceTest.java`; the `product` → `price-list` contract of `src/test/java/com/commerce/ArchitectureTest.java:132`): the break is not absorbed. Resolved on 2026-10-20 (version 1.1.0): `getProductPrice` is served by `price-list` at the 1.1.0 path, `PriceListPrices` and its adapter removed.
 - Delta 1.0.0 → 1.1.0: no schema touched, no coupling outside the scope, no orphan schema.
+- Version 2.0.0 removes `createDiscount` (`POST /discounts`), `getDiscount` (`GET /discounts/{discountId}`), the `Discount` schema and the tag `Discount` (`/tags/2`): breaking for their callers. `discount` owns no unit any more; its removal is validated by name (Claire Martin, architect, 2026-10-20, proposal: option 1) and is carried out by `partition-reshape`, in the specs and in the code: pending. Until then `Bounded contexts retained` keeps its `discount` line.
+- The tag `Discount` of the recorded scope no longer exists in 2.0.0: the scope is rewritten to `tag:Product; tag:PriceList` (owner, 2026-10-20).
+- Code / spec divergence: `createDiscount` and `getDiscount` are still served by `discount` (`src/main/java/com/commerce/discount/inbound/DiscountController.java`, `application/CreateDiscountUseCase.java`, `application/GetDiscountUseCase.java`, `outbound/JdbcDiscounts.java`; `src/main/resources/db/migration/V8__create_discount.sql`; `src/test/java/com/commerce/discount/`): the break is not absorbed. They are also still named by `README.md`, `docs/architecture/model.yml`, `docs/architecture/c4.drawio`, P-4 of `docs/architecture/patterns-grid.md` and the `discount` entry of `docs/partition.yml`.
+- Hand-written lines left untrue by 2.0.0, reported, not rewritten: the `Out of scope` line, BR-9 ("its prices and `discount` are not reached"), the `Callers` line of `Contracts with neighbours` (contract 1.1.0) and open question 1 ("in the prices and `discount` alike") of `product/spec.md`; the `Binds` of AR-1 to AR-4, `DISCOUNT_NOT_FOUND` in AR-1 and the trigger of AR-2 of `area.md`; every hand-written section of `discount/spec.md`.
+- 2.0.0 changes the 404 description of `getProductPrice` from "No such product, or no price for it in that price list" to "No such product, or no price for it" ([`/paths/~1price-lists~1{priceListId}~1product-prices~1{productId}/get/responses/404/description`](../../contracts/catalog.openapi.json)); BR-23 of `product/spec.md` quotes the former as its `detail`. Reported, not rewritten. Neutral for the decomposition: no third party, no vocabulary added or withdrawn.
+- The gap "A currency is a known ISO 4217 code" (`product` BR-13, `discount` BR-4) loses its second holder with the removal of `discount`: to settle with it.
+- Delta 1.1.0 → 2.0.0: `Money` stays, used by `setPrice` and `getProductPrice` only; no coupling outside the scope, no orphan schema.
 
 ## Coverage
 
@@ -89,8 +96,6 @@ Option 3 of 2026-10-19, rejected that day, was taken by the merge of 2026-10-20:
 | createPriceList | PriceList | product |
 | getPriceList | PriceList | product |
 | setPrice | PriceList | product |
-| createDiscount | Discount | discount |
-| getDiscount | Discount | discount |
 
 ## History
 
@@ -100,3 +105,4 @@ Option 3 of 2026-10-19, rejected that day, was taken by the merge of 2026-10-20:
 | 2026-10-20 | 1.0.0 → 1.1.0 | 260ac41 | breaking | `getProductPrice` moves to `GET /price-lists/{priceListId}/product-prices/{productId}`, `priceListId` from the query to the path, tag `Product` → `PriceList`; its root aggregate becomes `price-lists` (C2): move from `product` to `price-list` validated (proposal, option 1 · Claire Martin, architect), to be carried out by `partition-reshape` |
 | 2026-10-20 | 1.1.0 | 260ac41 | move | `getProductPrice` moves from `product` to `price-list` (`../../architecture/reshapes/2026-10-20-get-product-price-move.md`). It overturns option 2 of `Alternatives rejected` of 2026-10-19, `product` (listProducts, createProduct, getProduct), `price-list` (createPriceList, getPriceList, setPrice, getProductPrice), rejected then because "`getProductPrice` is read under `/products`, its root aggregate (C2, R3)" ([architect]); the line leaves that table |
 | 2026-10-20 | 1.1.0 | 260ac41 | merge | `price-list` (createPriceList, getPriceList, setPrice, getProductPrice) absorbed by `product`, both in `catalog`; workshop `docs/sources/workshop-price-list-into-product.md`, record `docs/architecture/reshapes/2026-10-20-price-list-into-product.md`; criteria lost: none, R1 still holds; kept against C2, C3 and C4 (`Kept against the criteria`, `Decisions not to split`); no contract between the two to remove. Overturned the _Bounded contexts retained_ line "price-list — createPriceList, getPriceList, setPrice, getProductPrice — C2, C3, C4 (hint: C1, tag `PriceList`) — The terminal resource is `price-lists`; `setPrice` (`…/price-lists/{priceListId}/prices/{productId}`) and, since 1.1.0, `getProductPrice` (`…/price-lists/{priceListId}/product-prices/{productId}`) are sub-resources of `price-lists` (C2, R3; moved from `product`, Claire Martin, architect, 2026-10-20). Its vocabulary (name, currency, channel, validity, price, effectiveFrom) stands apart from the products'. No named third party (C5 no)."; the _Alternatives rejected_ line "3 — `catalog` (all seven operations), under R4 — "one bounded context would hold two root aggregates" — [architect] — 2026-10-19"; the `product` line of _Bounded contexts retained_ on listProducts, createProduct, getProduct; _Coverage_ "getProductPrice — PriceList — price-list", "createPriceList — PriceList — price-list", "getPriceList — PriceList — price-list", "setPrice — PriceList — price-list". Replaced `Decided` line: "2026-10-20 · Claire Martin, architect · proposal: option 1 (delta 1.0.0 → 1.1.0: `getProductPrice` moves from `product` to `price-list`)" |
+| 2026-10-20 | 1.1.0 → 2.0.0 | 1e1a066 | breaking | `createDiscount`, `getDiscount`, the `Discount` schema and the tag `Discount` removed; the 404 description of `getProductPrice` reworded (neutral). The scope loses `tag:Discount`, which no longer exists, rewritten to `tag:Product; tag:PriceList` (owner). `discount` owns no unit: its removal is validated (proposal, option 1 · Claire Martin, architect), to be carried out by `partition-reshape`. Replaced `Decided` line: "2026-10-20 · Claire Martin (architect), Paul Durand (PO), Léa Petit (BA) · workshop: `docs/sources/workshop-price-list-into-product.md` (merge: `product` absorbs `price-list`)" |

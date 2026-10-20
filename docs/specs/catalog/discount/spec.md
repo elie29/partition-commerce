@@ -2,11 +2,11 @@
 
 > **Source:** `docs/contracts/catalog.openapi.json`
 >
-> **Source version:** 1.1.0
+> **Source version:** 2.0.0
 >
-> **Provenance:** 2026-10-20 · 260ac4127d89f0b65d7d1d377f5c429f136716f7
+> **Provenance:** 2026-10-20 · 1e1a06661e4397e05abbb1a87ec7b06e2ad1812d
 >
-> **Scope:** tag:Product; tag:PriceList; tag:Discount
+> **Scope:** tag:Product; tag:PriceList
 >
 > **Decomposition:** see `../bounded-contexts.md`
 
@@ -37,10 +37,8 @@ What this bounded context owns in its source. The source says what each part hol
 
 | Unit | Where | What it is for |
 | --- | --- | --- |
-| createDiscount | [POST /discounts](../../../contracts/catalog.openapi.json) (`/paths/~1discounts/post`) | Create a discount |
-| getDiscount | [GET /discounts/{discountId}](../../../contracts/catalog.openapi.json) (`/paths/~1discounts~1{discountId}/get`) | Read a discount |
-| Tag `Discount` | [`/tags/2/description`](../../../contracts/catalog.openapi.json) | What the tag groups |
-| `Discount`, `Money` schemas | [`/components/schemas`](../../../contracts/catalog.openapi.json) | The discount and an amount as the operations exchange them; `Money` is also used by `setPrice` and `getProductPrice` of `product` |
+
+None since 2.0.0: the contract no longer declares `createDiscount`, `getDiscount`, the tag `Discount` nor the `Discount` schema. Removal of `discount` validated (Claire Martin, architect, 2026-10-20), to be carried out by `partition-reshape`. See `../bounded-contexts.md#history`.
 
 ## Business rules
 

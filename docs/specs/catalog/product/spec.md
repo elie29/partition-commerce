@@ -2,11 +2,11 @@
 
 > **Source:** `docs/contracts/catalog.openapi.json`
 >
-> **Source version:** 1.1.0
+> **Source version:** 2.0.0
 >
-> **Provenance:** 2026-10-20 · 260ac4127d89f0b65d7d1d377f5c429f136716f7
+> **Provenance:** 2026-10-20 · 1e1a06661e4397e05abbb1a87ec7b06e2ad1812d
 >
-> **Scope:** tag:Product; tag:PriceList; tag:Discount
+> **Scope:** tag:Product; tag:PriceList
 >
 > **Decomposition:** see `../bounded-contexts.md`
 
@@ -59,7 +59,7 @@ What this bounded context owns in its source. The source says what each part hol
 | Tag `Product` | [`/tags/0/description`](../../../contracts/catalog.openapi.json) | What the tag groups |
 | Tag `PriceList` | [`/tags/1/description`](../../../contracts/catalog.openapi.json) | What the tag groups |
 | `Product` schema | [`/components/schemas/Product`](../../../contracts/catalog.openapi.json) | The product as the operations return it |
-| `PriceList`, `Price`, `Money` schemas | [`/components/schemas`](../../../contracts/catalog.openapi.json) | The price list, a price and an amount as the operations exchange them; `Money` is also used by the discounts |
+| `PriceList`, `Price`, `Money` schemas | [`/components/schemas`](../../../contracts/catalog.openapi.json) | The price list, a price and an amount as the operations exchange them |
 
 ## Business rules
 
