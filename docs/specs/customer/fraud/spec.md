@@ -21,7 +21,7 @@ Let the risk team place a customer under fraud review and lift it, and tell the 
 
 **In scope:** the fraud review the risk team runs on customers (`#3-fraud-review`).
 
-**Out of scope:** the customer accounts: `customer` (`#2-customer-accounts`). Refusing to pay or refund a customer under fraud review: `payment` in `billing` (its BR-32; `payInvoice` and `refundInvoice` of `docs/contracts/billing.openapi.json`).
+**Out of scope:** the customer accounts: `customer` (`#2-customer-accounts`). Paying and refunding, and refusing them to a customer under fraud review: `payment` in `billing` (`payInvoice` and `refundInvoice` of `docs/contracts/billing.openapi.json`), which asks `fraud` through `CustomerStatus` (BR-3).
 
 ## Language
 
@@ -49,6 +49,7 @@ What this bounded context owns in its source. The source says what each part hol
 | --- | --- | --- | --- | --- |
 | BR-1 | A review is lifted only by a member of the risk team. | — | — | from source: #3-fraud-review |
 | BR-2 | Reviews older than one year are archived, not deleted. | — | — | from source: #6-ruling-history, 2024-09-02 |
+| BR-3 | A customer under fraud review can neither pay nor be refunded. | — | — | from source: #6-ruling-history, 2024-03-12; owned by `fraud`, `payment` consumes it through `CustomerStatus` (owner, 2026-10-20) |
 
 Remove the banner once the section is filled and confirmed.
 
@@ -71,12 +72,14 @@ None.
 
 | Neighbour | Direction | Contract | What crosses |
 | --------- | --------- | -------- | ------------ |
+| `payment` (`billing`) | inbound, in process | `CustomerStatus`, an interface of `fraud`'s application layer (architect, 2026-10-20) | in: a customer (how it is named: open question 6); out: is this customer blocked, yes or no (BR-3) |
 
 ## Applicable area rules and invariants
 
 | Entry | What it constrains here |
 | ----- | ----------------------- |
-| Candidate: "A customer under fraud review can neither pay nor be refunded." (from source: #6-ruling-history, 2024-03-12) | What being under fraud review means for paying and refunding. Also held by `docs/specs/billing/payment/spec.md` as BR-32: spans two areas; candidate for the admission test of the invariant register, until the owner validates it at its level |
+
+None.
 
 ## Open questions
 
@@ -86,4 +89,4 @@ None.
 4. "Reviews older than one year" (BR-2): counted from the placing or from the lifting?
 5. Does an archived review still block its customer?
 6. How does a review name its customer: the identifier of the account of `customer`, or another?
-7. Which services ask whether a customer is blocked, and through which contract?
+7. Which services besides `payment` ask whether a customer is blocked, and through which contract? (`payment`: `CustomerStatus`, architect, 2026-10-20)
