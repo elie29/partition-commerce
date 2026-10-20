@@ -2,9 +2,9 @@
 
 > **Source:** `docs/contracts/catalog.openapi.json`
 >
-> **Source version:** 1.0.0
+> **Source version:** 1.1.0
 >
-> **Provenance:** 2026-10-19 · 5016f59abcc032d499cd375b285e213b3b90cc56
+> **Provenance:** 2026-10-20 · 260ac4127d89f0b65d7d1d377f5c429f136716f7
 >
 > **Scope:** tag:Product; tag:PriceList; tag:Discount
 >
@@ -41,7 +41,7 @@ What this bounded context owns in its source. The source says what each part hol
 | listProducts | [GET /products](../../../contracts/catalog.openapi.json) (`/paths/~1products/get`) | List the products, one page at a time |
 | createProduct | [POST /products](../../../contracts/catalog.openapi.json) (`/paths/~1products/post`) | Create a product |
 | getProduct | [GET /products/{productId}](../../../contracts/catalog.openapi.json) (`/paths/~1products~1{productId}/get`) | Read a product |
-| getProductPrice | [GET /products/{productId}/price](../../../contracts/catalog.openapi.json) (`/paths/~1products~1{productId}~1price/get`) | Read the price of a product in a price list |
+| getProductPrice | [GET /price-lists/{priceListId}/product-prices/{productId}](../../../contracts/catalog.openapi.json) (`/paths/~1price-lists~1{priceListId}~1product-prices~1{productId}/get`) | Read the price of a product in a price list |
 | Tag `Product` | [`/tags/0/description`](../../../contracts/catalog.openapi.json) | What the tag groups |
 | `Product` schema | [`/components/schemas/Product`](../../../contracts/catalog.openapi.json) | The product as the operations return it |
 

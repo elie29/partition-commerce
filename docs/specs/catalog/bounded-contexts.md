@@ -2,15 +2,15 @@
 
 > **Source:** `docs/contracts/catalog.openapi.json`
 >
-> **Source version:** 1.0.0
+> **Source version:** 1.1.0
 >
-> **Provenance:** 2026-10-19 · 5016f59abcc032d499cd375b285e213b3b90cc56
+> **Provenance:** 2026-10-20 · 260ac4127d89f0b65d7d1d377f5c429f136716f7
 >
 > **Scope:** tag:Product; tag:PriceList; tag:Discount
 >
 > **Units covered:** 9 / 9
 >
-> **Decided:** 2026-10-20 · Claire Martin, architect · proposal: option 1
+> **Decided:** 2026-10-20 · Claire Martin, architect · proposal: option 1 (delta 1.0.0 → 1.1.0: `getProductPrice` moves from `product` to `price-list`)
 
 The **Scope** line fixes the units analysed; the others appear in the `Coverage` table with the mention "out of scope". Change it only when a scope extension has been validated.
 
@@ -48,6 +48,7 @@ None.
 | 2 | `product` (listProducts, createProduct, getProduct), `price-list` (createPriceList, getPriceList, setPrice, getProductPrice) | "`getProductPrice` is read under `/products`, its root aggregate (C2, R3)" | [architect] | 2026-10-19 |
 | 3 | `catalog` (all seven operations), under R4 | "one bounded context would hold two root aggregates" | [architect] | 2026-10-19 |
 | 2 (scope extension) | `product` unchanged, `price-list` (createPriceList, getPriceList, setPrice, createDiscount, getDiscount); breaks R1 on createDiscount, getDiscount | "a discount is its own aggregate, created and read by its own operations; no price list holds it" | Claire Martin, architect | 2026-10-20 |
+| 2 (delta 1.0.0 → 1.1.0) | `product` keeps `getProductPrice` beside listProducts, createProduct, getProduct; `price-list` unchanged; breaks C2/R3 on getProductPrice, whose root aggregate is now `price-lists` | No reason stated: option 1 validated by name | Claire Martin, architect | 2026-10-20 |
 
 ## Kept against the criteria
 
@@ -67,6 +68,12 @@ None.
 - "Order" (`/tags/2/description`, `minimumOrder` of `createDiscount` and `Discount`) is defined by no bounded context of `catalog` and by no contract: open question of `discount`. Resolved on 2026-10-20 (version 1.0.0): nothing of an order in this version; `discount` stores and returns discounts, nothing applies them (architect; `discount` BR-6).
 - Two time windows: `validity {from, to}` (date) of `createPriceList` and `period {start, end}` (date-time) of `createDiscount`; whether they are one notion is an open question of `discount`. Resolved on 2026-10-20 (version 1.0.0): `period` governs nothing and is not kept, as the validity of a price list (BA; `discount` BR-2).
 - "A currency is a known ISO 4217 code" is held by `price-list` BR-4 and `discount` BR-4, and cites `invoice`'s rule in `billing`: a rule in two specs and two areas, with no owner and in no area file. Owner bounded context, area file, or admission test of the invariant register? Kept as a citation for now (architect, 2026-10-20).
+- Version 1.1.0 moves `getProductPrice` from `GET /products/{productId}/price` to [`GET /price-lists/{priceListId}/product-prices/{productId}`](../../contracts/catalog.openapi.json), turns `priceListId` from a required query parameter into a required path parameter, and retags it from `Product` to `PriceList`: breaking for its callers. Its root aggregate is now `price-lists` (C2), so the justification of `product` in `Bounded contexts retained` no longer holds for it. Its move to `price-list` is validated by name (Claire Martin, architect, 2026-10-20, proposal: option 1) and is carried out by `partition-reshape`, in the specs and in the code: pending. Until then `Bounded contexts retained`, `Coverage` and the `Source parts owned` of `product`, `price-list` and `discount` still put it in `product`.
+- After the move: "The product check goes: an unknown product gets, as the contract says, `404` `PRICE_NOT_FOUND`, no price for it in that list. The integration after the move: none; `price-list` answers from its own data, `product` no longer calls `PriceListPrices`." ([architect], 2026-10-20). BR-9 and BR-10 of `product`, which `getProductPrice` alone carries, move with it, carried by a person; not rewritten.
+- With `priceListId` in the path, AR-3 answers an identifier that is not a UUID with a 404, no longer a 400: BR-10 of `product` ("A `priceListId` … the schema refuses is content: 400") and its AR-3 line ("`priceListId` in the query of `getProductPrice`") no longer match 1.1.0. Reported, not rewritten.
+- Hand-written lines left untrue by 1.1.0 and the validated move, reported, not rewritten: `Business objective`, `Scope`, the `Callers` and `price-list` lines of `Contracts with neighbours` and the INV-DATA-001 line of `product/spec.md`; the `Out of scope` line, BR-1 ("by the day as `product`'s BR-9 reads it"), BR-12 ("`price-list` does not read `product`", still true) and the `product` line of `Contracts with neighbours` of `price-list/spec.md`.
+- Code / spec divergence: `getProductPrice` is implemented in `product` at the 1.0.0 path, with `priceListId` in the query (`src/main/java/com/commerce/product/inbound/ProductController.java:68`, `application/GetProductPriceUseCase.java`, `inbound/ProductRequestCheck.java:35`, `outbound/PriceListPricesAdapter.java`; `src/test/java/com/commerce/product/GetProductPriceTest.java`; the `product` → `price-list` contract of `src/test/java/com/commerce/ArchitectureTest.java:132`): the break is not absorbed.
+- Delta 1.0.0 → 1.1.0: no schema touched, no coupling outside the scope, no orphan schema.
 
 ## Coverage
 
@@ -87,3 +94,4 @@ None.
 | Date | Version | Provenance | Nature | Detail |
 | ---- | ------- | ---------- | ------ | ------ |
 | 2026-10-20 | 1.0.0 | 5016f59 | scope extension | `tag:Discount` added to the scope; createDiscount, getDiscount form the new bounded context `discount` (proposal, option 1 · Claire Martin, architect); the decomposition of 2026-10-19 (proposal, option 1 · [architect]) stands for `product` and `price-list` |
+| 2026-10-20 | 1.0.0 → 1.1.0 | 260ac41 | breaking | `getProductPrice` moves to `GET /price-lists/{priceListId}/product-prices/{productId}`, `priceListId` from the query to the path, tag `Product` → `PriceList`; its root aggregate becomes `price-lists` (C2): move from `product` to `price-list` validated (proposal, option 1 · Claire Martin, architect), to be carried out by `partition-reshape` |
