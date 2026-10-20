@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Catalog API",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Every amount is stored in minor units, with its currency.",
     "license": { "name": "MIT", "identifier": "MIT" }
   },
@@ -605,10 +605,10 @@
         }
       }
     },
-    "/products/{productId}/price": {
+    "/price-lists/{priceListId}/product-prices/{productId}": {
       "get": {
         "operationId": "getProductPrice",
-        "tags": ["Product"],
+        "tags": ["PriceList"],
         "summary": "Read the price of a product",
         "parameters": [
           {
@@ -626,17 +626,17 @@
             "schema": { "type": "string", "format": "uuid" }
           },
           {
+            "name": "priceListId",
+            "in": "path",
+            "required": true,
+            "description": "The price list.",
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
             "name": "productId",
             "in": "path",
             "required": true,
             "description": "The product.",
-            "schema": { "type": "string", "format": "uuid" }
-          },
-          {
-            "name": "priceListId",
-            "in": "query",
-            "required": true,
-            "description": "The price list the price is read from.",
             "schema": { "type": "string", "format": "uuid" }
           },
           {
