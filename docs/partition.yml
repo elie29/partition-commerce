@@ -25,16 +25,16 @@ contexts:                     # one entry per bounded context, declared by parti
   - id: invoice
     area: billing
     code:
-      - src/main/java/com/commerce/invoice/**
+      - commerce-app/src/main/java/com/commerce/invoice/**
     hexagons:
       - id: invoice
         form: rich
         reason: an invoice moves from issued to paid or cancelled under BR-3, BR-4, BR-18 and BR-23, and some transitions are forbidden
         layers:
-          domain: src/main/java/com/commerce/invoice/domain/**
-          application: src/main/java/com/commerce/invoice/application/**
-          inbound: src/main/java/com/commerce/invoice/inbound/**
-          outbound: src/main/java/com/commerce/invoice/outbound/**
+          domain: commerce-app/src/main/java/com/commerce/invoice/domain/**
+          application: commerce-app/src/main/java/com/commerce/invoice/application/**
+          inbound: commerce-app/src/main/java/com/commerce/invoice/inbound/**
+          outbound: commerce-app/src/main/java/com/commerce/invoice/outbound/**
         allowed:
           - application -> domain
           - inbound -> application
@@ -43,16 +43,16 @@ contexts:                     # one entry per bounded context, declared by parti
   - id: payment
     area: billing
     code:
-      - src/main/java/com/commerce/payment/**
+      - payment-app/src/main/java/com/commerce/payment/**
     hexagons:
       - id: payment
         form: rich
         reason: "a payment moves from made to cancelled within 24 hours (workshop, architect, 2026-10-19); a refund is bounded by what was paid, and it moves from requested to sent to settled (architect, 2026-10-19); absorbed refund (architect, 2026-10-20)"
         layers:
-          domain: src/main/java/com/commerce/payment/domain/**
-          application: src/main/java/com/commerce/payment/application/**
-          inbound: src/main/java/com/commerce/payment/inbound/**
-          outbound: src/main/java/com/commerce/payment/outbound/**
+          domain: payment-app/src/main/java/com/commerce/payment/domain/**
+          application: payment-app/src/main/java/com/commerce/payment/application/**
+          inbound: payment-app/src/main/java/com/commerce/payment/inbound/**
+          outbound: payment-app/src/main/java/com/commerce/payment/outbound/**
         allowed:
           - application -> domain
           - inbound -> application
@@ -61,16 +61,16 @@ contexts:                     # one entry per bounded context, declared by parti
   - id: product
     area: catalog
     code:
-      - src/main/java/com/commerce/product/**
+      - commerce-app/src/main/java/com/commerce/product/**
     hexagons:
       - id: product
         form: rich
         reason: "a product can be retired and is never reactivated (BR-9); the unique reference (BR-1) stays held by the store's unique constraint (Claire Martin, architect, 2026-10-20); one price per product and list holds at every write (BR-10) (architect, 2026-10-19); absorbed `price-list` (Claire Martin, architect, 2026-10-20)"
         layers:
-          domain: src/main/java/com/commerce/product/domain/**
-          application: src/main/java/com/commerce/product/application/**
-          inbound: src/main/java/com/commerce/product/inbound/**
-          outbound: src/main/java/com/commerce/product/outbound/**
+          domain: commerce-app/src/main/java/com/commerce/product/domain/**
+          application: commerce-app/src/main/java/com/commerce/product/application/**
+          inbound: commerce-app/src/main/java/com/commerce/product/inbound/**
+          outbound: commerce-app/src/main/java/com/commerce/product/outbound/**
         allowed:
           - application -> domain
           - inbound -> application
@@ -81,16 +81,16 @@ contexts:                     # one entry per bounded context, declared by parti
   - id: fraud
     area: customer
     code:
-      - src/main/java/com/commerce/fraud/**
+      - commerce-app/src/main/java/com/commerce/fraud/**
     hexagons:
       - id: fraud
         form: rich
         reason: "a review moves from open to lifted, and only the risk team lifts it (architect, 2026-10-20); one open review per customer holds at every write (BR-6) (architect, 2026-10-20)"
         layers:
-          domain: src/main/java/com/commerce/fraud/domain/**
-          application: src/main/java/com/commerce/fraud/application/**
-          inbound: src/main/java/com/commerce/fraud/inbound/**
-          outbound: src/main/java/com/commerce/fraud/outbound/**
+          domain: commerce-app/src/main/java/com/commerce/fraud/domain/**
+          application: commerce-app/src/main/java/com/commerce/fraud/application/**
+          inbound: commerce-app/src/main/java/com/commerce/fraud/inbound/**
+          outbound: commerce-app/src/main/java/com/commerce/fraud/outbound/**
         allowed:
           - application -> domain
           - inbound -> application

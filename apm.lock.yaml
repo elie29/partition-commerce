@@ -185,7 +185,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:76b90f0957e1176722898cc8da63741bff8673701e04b28158d8ada0550b19b2
+  content_hash: sha256:e0629d6d2c5a3864c74d6c6c9fe0c8a82605fd3dbb190338e2308f8f1e0184e7
 - kind: project-relative
   target: claude
   value: .claude/rules/backend-api-contract-customer.md
@@ -194,7 +194,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:d75e075a49c4488fd7be7f3c518bfb11108b4885db0fe178553e0d563806fae6
+  content_hash: sha256:d374daa1d49ead1f9f20d24f8410e77deae5d15f308b80d8dea32350defc9d23
 - kind: project-relative
   target: claude
   value: .claude/rules/backend-api-contract.md
@@ -203,7 +203,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:f05a1ea2bf76a9455a910570f8344cf35f64b8ecf3d7e668bd7f17e6c41aec4b
+  content_hash: sha256:308bff5ee7cd383195a3629b08d24db27f4ab32dde811c93a99838316c46f46f
 - kind: project-relative
   target: claude
   value: .claude/rules/backend-architecture-invoice.md
@@ -212,7 +212,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:115555652ac20c7a21e5f53aafde6493d5e6f3c7f8d77896b0b77c4b99038d96
+  content_hash: sha256:eda9d87b9074e19165e6da4980894f9e355c2f2d1b4b47aa2467df5982ed9d22
 - kind: project-relative
   target: claude
   value: .claude/rules/backend-architecture.md
@@ -221,7 +221,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:b73e6a07f454ffba12cb2c952e9d68839fea425c91ef35418a82586325f520df
+  content_hash: sha256:adbf402dfeb54d286ca5cb80509bf8d5706f7d643b35613620550abbfb94ab83
 - kind: project-relative
   target: claude
   value: .claude/rules/backend-configuration.md
@@ -230,7 +230,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:1ca1185b0cd2f9ce7fcd8112a274332a35001e881e4b51835f8c8d150c35ae38
+  content_hash: sha256:b032b271ec0a63d5ab8114825906ae1445855c88317537ad8aeda3a848197f4f
 - kind: project-relative
   target: claude
   value: .claude/rules/backend-database.md
@@ -239,7 +239,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:3cf38c05f9edac36dec641486529afc34c01032d6fb554c846ccf6a3418b1ff5
+  content_hash: sha256:c2341d96133096e9d672e61d44552437efdb9e47fc8fc945c1aea52c2862e51a
 - kind: project-relative
   target: claude
   value: .claude/rules/backend-security-invoice.md
@@ -248,7 +248,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:1d188ad77bffc01a05d25fd8bd1f69d1ce72be110698e9acc2498108ac9e1c91
+  content_hash: sha256:fbbb6c144a570cb27fd632469448f841b4c974d58addf6a80d514e7ce26a6ffd
 - kind: project-relative
   target: claude
   value: .claude/rules/backend-security.md
@@ -257,7 +257,16 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:528096b117d21f78a65ea64126ee3d113db81f0f16df3a882d7c35f5eacefe5a
+  content_hash: sha256:006c3bd7351208df6b411c76ae850d560bee3081f7fdaf35e83eeefd475ac08b
+- kind: project-relative
+  target: claude
+  value: .claude/rules/backend-testing-payment.md
+  runtime: null
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: sha256:d2abcfd946d54c5c18d63b5f3874f773dc59132faeb8f40860d9be5b97e64d64
 - kind: project-relative
   target: claude
   value: .claude/rules/backend-testing.md
@@ -266,7 +275,7 @@ deployments:
   owners:
   - .
   active_owner: .
-  content_hash: sha256:baf2d10d60347815da9a6459963641b1761bf7febc45d34654b04ab054fb4782
+  content_hash: sha256:86b9d1012579b3cd8cbd933701ddb91aeabdcbd29da5db1300a1d0c4853c91eb
 - kind: project-relative
   target: claude
   value: .claude/rules/partition.md
@@ -1024,15 +1033,17 @@ local_deployed_files:
 - .claude/rules/backend-database.md
 - .claude/rules/backend-security-invoice.md
 - .claude/rules/backend-security.md
+- .claude/rules/backend-testing-payment.md
 - .claude/rules/backend-testing.md
 local_deployed_file_hashes:
-  .claude/rules/backend-api-contract-catalog.md: sha256:76b90f0957e1176722898cc8da63741bff8673701e04b28158d8ada0550b19b2
-  .claude/rules/backend-api-contract-customer.md: sha256:d75e075a49c4488fd7be7f3c518bfb11108b4885db0fe178553e0d563806fae6
-  .claude/rules/backend-api-contract.md: sha256:f05a1ea2bf76a9455a910570f8344cf35f64b8ecf3d7e668bd7f17e6c41aec4b
-  .claude/rules/backend-architecture-invoice.md: sha256:115555652ac20c7a21e5f53aafde6493d5e6f3c7f8d77896b0b77c4b99038d96
-  .claude/rules/backend-architecture.md: sha256:b73e6a07f454ffba12cb2c952e9d68839fea425c91ef35418a82586325f520df
-  .claude/rules/backend-configuration.md: sha256:1ca1185b0cd2f9ce7fcd8112a274332a35001e881e4b51835f8c8d150c35ae38
-  .claude/rules/backend-database.md: sha256:3cf38c05f9edac36dec641486529afc34c01032d6fb554c846ccf6a3418b1ff5
-  .claude/rules/backend-security-invoice.md: sha256:1d188ad77bffc01a05d25fd8bd1f69d1ce72be110698e9acc2498108ac9e1c91
-  .claude/rules/backend-security.md: sha256:528096b117d21f78a65ea64126ee3d113db81f0f16df3a882d7c35f5eacefe5a
-  .claude/rules/backend-testing.md: sha256:baf2d10d60347815da9a6459963641b1761bf7febc45d34654b04ab054fb4782
+  .claude/rules/backend-api-contract-catalog.md: sha256:e0629d6d2c5a3864c74d6c6c9fe0c8a82605fd3dbb190338e2308f8f1e0184e7
+  .claude/rules/backend-api-contract-customer.md: sha256:d374daa1d49ead1f9f20d24f8410e77deae5d15f308b80d8dea32350defc9d23
+  .claude/rules/backend-api-contract.md: sha256:308bff5ee7cd383195a3629b08d24db27f4ab32dde811c93a99838316c46f46f
+  .claude/rules/backend-architecture-invoice.md: sha256:eda9d87b9074e19165e6da4980894f9e355c2f2d1b4b47aa2467df5982ed9d22
+  .claude/rules/backend-architecture.md: sha256:adbf402dfeb54d286ca5cb80509bf8d5706f7d643b35613620550abbfb94ab83
+  .claude/rules/backend-configuration.md: sha256:b032b271ec0a63d5ab8114825906ae1445855c88317537ad8aeda3a848197f4f
+  .claude/rules/backend-database.md: sha256:c2341d96133096e9d672e61d44552437efdb9e47fc8fc945c1aea52c2862e51a
+  .claude/rules/backend-security-invoice.md: sha256:fbbb6c144a570cb27fd632469448f841b4c974d58addf6a80d514e7ce26a6ffd
+  .claude/rules/backend-security.md: sha256:006c3bd7351208df6b411c76ae850d560bee3081f7fdaf35e83eeefd475ac08b
+  .claude/rules/backend-testing-payment.md: sha256:d2abcfd946d54c5c18d63b5f3874f773dc59132faeb8f40860d9be5b97e64d64
+  .claude/rules/backend-testing.md: sha256:86b9d1012579b3cd8cbd933701ddb91aeabdcbd29da5db1300a1d0c4853c91eb

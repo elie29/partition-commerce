@@ -87,7 +87,7 @@ None.
 | Neighbour | Direction | Contract | What crosses |
 | --------- | --------- | -------- | ------------ |
 | Callers: none in this version | inbound | none: placing, lifting and reading a review are use cases with no entry point, called by their tests only (architect, 2026-10-20) | — |
-| `payment` (`billing`) | inbound, in process | `CustomerStatus`, an interface of `fraud`'s application layer (architect, 2026-10-20) | in: a customer, by the `customerId` billing holds, the same text (architect, 2026-10-20); out: is this customer blocked, yes or no (BR-4) |
+| `payment` (`billing`), in `payment-app` | inbound, over HTTP | `docs/contracts/billing-internal.openapi.json` 1.0.0, `getCustomerStatus` (tag `CustomerStatus`), frozen | in: a customer, by the `customerId` billing holds, the same text (architect, 2026-10-20); out: is this customer blocked, yes or no (BR-4) |
 
 ## Applicable area rules and invariants
 

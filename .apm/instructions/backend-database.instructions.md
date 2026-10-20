@@ -1,6 +1,6 @@
 ---
 description: 'Backend database: Flyway migrations, amounts'
-applyTo: 'src/main/resources/db/migration/**'
+applyTo: 'commerce-app/src/main/resources/db/migration/**, payment-app/src/main/resources/db/migration/**'
 ---
 
 - Every schema change is a new Flyway file `V<n>__<what>.sql`; a migration already merged is never edited.

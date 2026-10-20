@@ -1,6 +1,6 @@
 ---
 paths:
-  - "src/main/java/com/commerce/product/**"
+  - "commerce-app/src/main/java/com/commerce/product/**"
 ---
 
 - The generator execution of the catalog (`pom.xml`, `product`, for the tags `Product` and `PriceList`) maps `UUID` to `String`, turns bean validation off and lists no `modelsToGenerate`: `UUID.fromString` accepts `1-1-1-1-1` (BR-29 of `product`), a generated `@Size` counts UTF-16 units against a Character, binding stops at the first field (BR-27 of `product`), and `modelsToGenerate` drops the inline models (TL, 2026-10-19; the executions: TL, 2026-10-20).

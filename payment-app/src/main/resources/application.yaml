@@ -1,0 +1,34 @@
+spring:
+  output.ansi.enabled: always
+  application:
+    name: payment
+
+  datasource:
+    url: jdbc:h2:file:./.local/h2/payment;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+server:
+  port: 8081
+
+# Where payment-app finds commerce-app, for docs/contracts/billing-internal.openapi.json (architect, TL, 2026-10-20).
+commerce:
+  billing-internal:
+    base-url: http://localhost:8080
+
+management:
+  endpoints:
+    web:
+      discovery:
+        enabled: true
+      exposure:
+        include: 'health,info,metrics'
+  endpoint:
+    health:
+      show-details: always

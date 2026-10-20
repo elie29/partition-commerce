@@ -73,7 +73,7 @@ What this bounded context owns in its source. The source says what each part hol
 | BR-17 | The lines of an invoice are read back in the order they were issued. | A read | The lines in the order of the issue request | PO, 2026-10-19 |
 | BR-18 | A cancelled invoice is not cancelled again. | A cancel of a cancelled invoice, the second of two cancels of one invoice at the same moment included | Refused: 409, no body; nothing changes | PO, architect, 2026-10-19 |
 | BR-19 | An invoice is cancelled by anyone holding its identifier. | A cancel | An identifier that names no invoice, one that is not a UUID included: 404, no body | PO, architect, 2026-10-19 |
-| BR-23 | A payment is recorded only on an invoice still `ISSUED`. | A record of a payment, by `payment` through `InvoicePayments` | The status becomes `PAID` by a conditional update on an invoice still `ISSUED`, as a cancel is, in the caller's transaction: of a pay and a cancel of one invoice at the same moment, the first to commit holds. An invoice no longer `ISSUED`: refused, nothing changes | architect, 2026-10-19 (the conditional record of BR-5 of `payment`) |
+| BR-23 | A payment is recorded only on an invoice still `ISSUED`. | A record of a payment, by `payment` through `InvoicePayments` | The status becomes `PAID` by a conditional update on an invoice still `ISSUED`, as a cancel is; `invoice` decides: of two records, or a record and a cancel, of one invoice at the same moment, the first it records holds. An invoice no longer `ISSUED`: refused, nothing changes | architect, 2026-10-19 (the conditional record of BR-5 of `payment`); `invoice` decides, no longer in the caller's transaction: architect, 2026-10-20 |
 
 BR-4 against BR-6 of `payment`, and BR-3 against BR-5 and BR-6 of `payment`, are kept as written in 1.0, knowingly (PO, 2026-10-19); see `../bounded-contexts.md`, _Gaps detected_.
 
@@ -96,7 +96,7 @@ None: CardPay is `payment`'s (fission, 2026-10-19).
 | Neighbour | Direction | Contract | What crosses |
 | --------- | --------- | -------- | ------------ |
 | Callers: the accountant (issue), anyone holding an identifier (read, cancel) | inbound | `docs/contracts/billing.openapi.json` 1.3.0: `issueInvoice`, `getInvoice`, `cancelInvoice` (tag `Invoice`) | in: `orderId`, `customerId`, the lines; the identifier to cancel; out: the invoice, without its customer |
-| `payment` | inbound, in process | `InvoicePayments`, in `invoice`'s application layer, frozen 2026-10-19 | read an invoice as `getInvoice` shows it, with its customer, its `customerId` (agreed by `invoice` and `payment`: architect, 2026-10-19); record a payment (BR-23); record a payment cancelled (REQ-5, not built). Used from `payment`'s outbound adapter only (architect, 2026-10-19) |
+| `payment`, in `payment-app` | inbound, over HTTP | `docs/contracts/billing-internal.openapi.json` 1.0.0, tag `InvoicePayments`, frozen | read an invoice as `getInvoice` shows it, and its customer, its `customerId` (agreed by `invoice` and `payment`: architect, 2026-10-19); on every operation, an identifier that names no invoice, one that is not a UUID included: 404, no body, as `getInvoice` (architect, 2026-10-20); record a payment (BR-23), refused 409; record a payment cancelled (REQ-5, not built): 501 until then (architect, 2026-10-20). Used from `payment`'s outbound adapter only (architect, 2026-10-19) |
 
 What the contract does not declare (the 400, the bound of AR-1, no body on a refusal) the code enforces (architect, 2026-10-19).
 
@@ -108,6 +108,7 @@ AR-1 of `../area.md`, with its language; INV-DATA-001 of `../../invariants.md` (
 
 - An invoice whose payment is cancelled is `ISSUED` again and is not cancelled by the accountant: REQ-3 holds (PO, 2026-10-19). Yet BR-4 cancels any invoice whose status is `ISSUED`. How does `invoice` tell an invoice whose payment was cancelled from one never paid? Settled with REQ-5 (2026-10-19). Owner: PO, architect.
 - After a refund of all or part of a paid invoice (REQ-6, `refund`), what is the invoice's status, and does a fully refunded invoice still count for BR-1? (1.1, 2026-10-19). Owner: PO.
+- `billing-internal` 1.0.0 is served on `commerce-app`'s port with no restriction: anyone can record an invoice paid (BR-23) without a charge. Accepted in this version, a demo not intended for production whose public API has no login either; open until the apps are deployed anywhere, when the internal API gets its own port or a network rule (architect, 2026-10-20). Owner: architect.
 - A currency a later JDK drops (BR-9, "updated with the JDK"): an invoice issued in it no longer passes BR-9, yet is read as issued (BR-3, BR-15). How is it read once the JDK is upgraded? (2026-10-19). Owner: architect.
 
 ### Attack — 2026-10-19 — feature "the accountant issues the invoice of a confirmed order, and anyone can read it back"

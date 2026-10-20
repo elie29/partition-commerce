@@ -26,9 +26,11 @@ elements:
     name: Invoicing
     context: invoice
   - id: payment
-    kind: component
-    in: commerce-app
-    name: Payment
+    kind: container
+    in: commerce
+    name: Payment app
+    technology: Spring Boot 4.1, jar, port 8081
+    description: Pays and refunds invoices by card; promoted from a component of Commerce app (workshop, 2026-10-16)
     context: payment
   - id: product
     kind: component
@@ -45,19 +47,25 @@ elements:
     kind: container
     in: commerce
     name: H2
-    description: The database
+    description: The database of Commerce app
+  - id: payment-h2
+    kind: container
+    in: commerce
+    name: Payment H2
+    description: The database of Payment app (TL, 2026-10-20)
   - id: cardpay
     kind: system
     external: true
     name: CardPay
 
 relations:
-  - customer -> commerce-app: pays
-  - accountant -> commerce-app: issues, cancels, refunds
+  - customer -> payment: pays
+  - accountant -> commerce-app: issues, cancels
+  - accountant -> payment: refunds
   - invoicing -> h2: SQL
-  - payment -> invoicing: InvoicePayments, in process
-  - payment -> fraud: CustomerStatus, in process
-  - payment -> h2: SQL
+  - payment -> invoicing: "InvoicePayments, HTTP: billing-internal 1.0.0"
+  - payment -> fraud: "CustomerStatus, HTTP: billing-internal 1.0.0"
+  - payment -> payment-h2: SQL
   - payment -> cardpay: charges, reverses, sends refunds
   - product -> h2: SQL
   - fraud -> h2: SQL
@@ -104,52 +112,54 @@ views:
   - id: pay-invoice
     kind: dynamic
     title: Dynamic - Pay an invoice by card
-    participants: [customer, payment, invoicing, fraud, h2, cardpay]
+    participants: [customer, payment, invoicing, fraud, h2, payment-h2, cardpay]
     steps:
       - "customer -> payment: POST /invoices/{invoiceId}/pay (cardToken)"
       - "payment --> customer: content refused (contract, BR-22): 400, no body"
-      - "payment -> invoicing: InvoicePayments.find"
-      - "invoicing --> payment: the invoice, or none"
+      - "payment -> invoicing: GET /internal/invoices/{invoiceId} (billing-internal 1.0.0)"
+      - "invoicing --> payment: the invoice, or 404"
       - "payment --> customer: not a UUID, or no such invoice (BR-21): 404, no body"
-      - "payment -> invoicing: InvoicePayments.customerOf"
-      - "payment -> fraud: CustomerStatus.blocked, the invoice's customerId"
-      - "fraud --> payment: yes while a review of it is open (BR-4); or no answer"
-      - "payment --> customer: no answer (BR-32): 500; nothing charged, nothing recorded"
+      - "payment -> invoicing: GET /internal/invoices/{invoiceId}/customer"
+      - "payment -> fraud: GET /internal/customers/{customerId}/status, the invoice's customerId"
+      - "fraud --> payment: blocked while a review of it is open (BR-4); or no answer"
+      - "payment --> customer: Commerce app unreachable or slower than 2 seconds (BR-5, BR-32): 500; nothing charged, nothing recorded"
       - "payment --> customer: customer under fraud review (BR-32): 403, no body; CardPay not called"
       - "payment --> customer: paid or cancelled (BR-20): 409, no body"
       - "payment -> cardpay: charge the card token for the whole amount"
       - "cardpay --> payment: declined"
       - "payment --> customer: 402, no body; still issued"
       - "cardpay --> payment: accepted, charge reference"
-      - "payment -> invoicing: InvoicePayments.recordPayment, in payment's transaction"
-      - "invoicing -> h2: set paid, if still issued (BR-23)"
-      - "invoicing --> payment: no longer issued: a pay or a cancel came first"
-      - "payment --> customer: BR-5: 409, no body; the charge is not kept"
-      - "payment -> h2: insert the payment: amount, charge reference, time (BR-24); commit"
+      - "payment -> invoicing: POST /internal/invoices/{invoiceId}/payment (recordPayment)"
+      - "invoicing -> h2: set paid, if still issued (BR-23); invoice decides, the first it records holds"
+      - "invoicing --> payment: 409: no longer issued, a pay or a cancel came first"
+      - "payment --> customer: BR-5: 409, no body; nothing stored, the charge is not kept"
+      - "invoicing --> payment: 200, recorded"
+      - "payment -> payment-h2: insert the payment: amount, charge reference, time (BR-24)"
+      - "payment --> customer: the store fails (BR-5): 500; the invoice stays paid, open until REQ-5"
       - "payment --> customer: 200, the paid invoice"
   - id: refund-invoice
     kind: dynamic
     title: Dynamic - Refund a paid invoice
-    participants: [accountant, payment, invoicing, fraud, h2, cardpay]
+    participants: [accountant, payment, invoicing, fraud, payment-h2, cardpay]
     steps:
       - "accountant -> payment: POST /invoices/{invoiceId}/refunds (amount)"
       - "payment --> accountant: content refused (contract, BR-26): 400, no body"
-      - "payment -> invoicing: InvoicePayments.find"
-      - "invoicing --> payment: the invoice, or none"
+      - "payment -> invoicing: GET /internal/invoices/{invoiceId} (billing-internal 1.0.0)"
+      - "invoicing --> payment: the invoice, or 404"
       - "payment --> accountant: not a UUID, or no such invoice (BR-27): 404, no body"
-      - "payment -> invoicing: InvoicePayments.customerOf"
-      - "payment -> fraud: CustomerStatus.blocked, the invoice's customerId"
-      - "fraud --> payment: yes while a review of it is open (BR-4); or no answer"
-      - "payment --> accountant: no answer (BR-32): 500; nothing sent, nothing recorded"
+      - "payment -> invoicing: GET /internal/invoices/{invoiceId}/customer"
+      - "payment -> fraud: GET /internal/customers/{customerId}/status, the invoice's customerId"
+      - "fraud --> payment: blocked while a review of it is open (BR-4); or no answer"
+      - "payment --> accountant: Commerce app unreachable or slower than 2 seconds (BR-27, BR-32): 500; nothing sent, nothing recorded"
       - "payment --> accountant: customer under fraud review (BR-32): 403, no body"
-      - "payment -> h2: read the payment of the invoice, when it is paid"
+      - "payment -> payment-h2: read the payment of the invoice, when it is paid"
       - "payment --> accountant: not paid (BR-25, BR-29): 409, no body"
       - "payment --> accountant: another currency than the amount paid's (BR-25): 400, no body"
-      - "payment -> h2: open the cap of the invoice at its amount paid, if not open"
-      - "payment -> h2: add to the running total if it stays within the amount paid; insert the refund REQUESTED; commit"
-      - "h2 --> payment: no row changed: it exceeds what remains"
+      - "payment -> payment-h2: open the cap of the invoice at its amount paid, if not open"
+      - "payment -> payment-h2: add to the running total if it stays within the amount paid; insert the refund REQUESTED; commit"
+      - "payment-h2 --> payment: no row changed: it exceeds what remains"
       - "payment --> accountant: BR-25: 409, no body"
       - "payment -> cardpay: send the refund: charge reference, amount (BR-28)"
-      - "payment -> h2: set the refund SENT"
+      - "payment -> payment-h2: set the refund SENT"
       - "payment --> accountant: SENT not recorded: 500; the refund stays REQUESTED and counts"
       - "payment --> accountant: 201, the refund, SENT"

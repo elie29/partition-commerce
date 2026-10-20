@@ -1,6 +1,7 @@
 ---
 paths:
-  - "src/main/resources/db/migration/**"
+  - "commerce-app/src/main/resources/db/migration/**"
+  - "payment-app/src/main/resources/db/migration/**"
 ---
 
 - Every schema change is a new Flyway file `V<n>__<what>.sql`; a migration already merged is never edited.
