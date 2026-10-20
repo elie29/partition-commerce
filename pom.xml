@@ -200,6 +200,31 @@
 							</configOptions>
 						</configuration>
 					</execution>
+					<execution>
+						<id>discount</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/docs/contracts/catalog.openapi.json</inputSpec>
+							<generatorName>spring</generatorName>
+							<apiPackage>com.commerce.discount.inbound.api</apiPackage>
+							<modelPackage>com.commerce.discount.inbound.api.model</modelPackage>
+							<openapiNormalizer>FILTER=tag:Discount</openapiNormalizer>
+							<!-- AR-3: an identifier is checked by its 8-4-4-4-12 form, which UUID.fromString does not hold. -->
+							<typeMappings>UUID=String</typeMappings>
+							<!-- No modelsToGenerate: it drops the inline models (body, envelope) the operations use. -->
+							<configOptions>
+								<!-- AR-1: every field at fault within a group is answered. -->
+								<useBeanValidation>false</useBeanValidation>
+								<interfaceOnly>true</interfaceOnly>
+								<useTags>true</useTags>
+								<openApiNullable>false</openApiNullable>
+								<annotationLibrary>none</annotationLibrary>
+								<documentationProvider>none</documentationProvider>
+							</configOptions>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>

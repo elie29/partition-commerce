@@ -62,10 +62,11 @@ None.
 - None of the contract's field or parameter descriptions is a business rule: they say what the API does when a value is absent, or what a parameter means ([BA], 2026-10-19). They are pointed to, not copied.
 - The common error envelope (`.claude/rules/backend-api-contract.md`), written inline in all nine operations, is a cross-cutting convention: left out of the coupling matrix.
 - No orphan schema.
-- AR-1 of `area.md` binds `discount` (architect, 2026-10-20), but its list of 404 codes does not name `DISCOUNT_NOT_FOUND`, the code of `getDiscount`'s 404: kept as a reported gap for now (architect, 2026-10-20).
+- AR-1 of `area.md` binds `discount` (architect, 2026-10-20), but its list of 404 codes does not name `DISCOUNT_NOT_FOUND`, the code of `getDiscount`'s 404: kept as a reported gap for now (architect, 2026-10-20). Resolved on 2026-10-20 (version 1.0.0): AR-1 names `DISCOUNT_NOT_FOUND` (architect).
 - The "Out of scope" lines of `product/spec.md` and `price-list/spec.md` say the discounts are "out of the decomposition's scope": no longer true since 2026-10-20; hand-written, reported, not rewritten.
-- "Order" (`/tags/2/description`, `minimumOrder` of `createDiscount` and `Discount`) is defined by no bounded context of `catalog` and by no contract: open question of `discount`.
-- Two time windows: `validity {from, to}` (date) of `createPriceList` and `period {start, end}` (date-time) of `createDiscount`; whether they are one notion is an open question of `discount`.
+- "Order" (`/tags/2/description`, `minimumOrder` of `createDiscount` and `Discount`) is defined by no bounded context of `catalog` and by no contract: open question of `discount`. Resolved on 2026-10-20 (version 1.0.0): nothing of an order in this version; `discount` stores and returns discounts, nothing applies them (architect; `discount` BR-6).
+- Two time windows: `validity {from, to}` (date) of `createPriceList` and `period {start, end}` (date-time) of `createDiscount`; whether they are one notion is an open question of `discount`. Resolved on 2026-10-20 (version 1.0.0): `period` governs nothing and is not kept, as the validity of a price list (BA; `discount` BR-2).
+- "A currency is a known ISO 4217 code" is held by `price-list` BR-4 and `discount` BR-4, and cites `invoice`'s rule in `billing`: a rule in two specs and two areas, with no owner and in no area file. Owner bounded context, area file, or admission test of the invariant register? Kept as a citation for now (architect, 2026-10-20).
 
 ## Coverage
 

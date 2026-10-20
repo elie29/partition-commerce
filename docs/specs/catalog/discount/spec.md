@@ -29,6 +29,7 @@ One meaning per word, no synonyms. A word that changes meaning in a neighbour ma
 
 | Term | Meaning in this bounded context |
 | ---- | ------------------------------- |
+| Discount | A reduction of 1 to 90 percent, with an optional minimum order (BA, 2026-10-20). |
 
 ## Source parts owned
 
@@ -43,14 +44,18 @@ What this bounded context owns in its source. The source says what each part hol
 
 ## Business rules
 
-> **TO FILL BEFORE THIS BOUNDED CONTEXT IS USED.** This section is left empty on purpose: a business rule cannot be deduced from a source or from code. While this banner stands, the bounded context is not fit for design or implementation.
-
-<!-- Keep one banner: "TO FILL" while the section is empty, "TO VALIDATE" while it holds only copied rules. -->
-
 | # | Rule | Trigger | Expected effect | Source |
 | --- | --- | --- | --- | --- |
-
-Remove the banner once the section is filled and confirmed.
+| BR-1 | A discount is between 1 and 90 percent, both bounds included. | A `createDiscount` with a `percent` below 1 or above 90 | Refused: 400, nothing created | BA, 2026-10-20 |
+| BR-2 | The period of a discount governs nothing in this version, as the validity of a price list. | A `createDiscount` | `period` is accepted, not kept, not returned; an end before its start is accepted; a value the contract's schema refuses is still refused, 400 (`backend-api-contract`) | BA, 2026-10-20 |
+| BR-3 | The amount of a minimum order is never negative. | A `createDiscount` whose `minimumOrder` amount is negative | Refused: 400, nothing created; zero is a minimum order | BA, 2026-10-20 |
+| BR-4 | A currency is a known ISO 4217 code, as `price-list`'s BR-4 says. | A `createDiscount` whose `minimumOrder` currency the contract's pattern accepts but is not a known code (`XYZ`) | Refused: 400, nothing created; content, checked with the body (BR-9); incoming requests only | BA, 2026-10-20 |
+| BR-5 | A discount keeps its `minimumOrder`. | A `createDiscount` that sends one | Returned as kept by `createDiscount` and `getDiscount`; it governs nothing in this version | BA, 2026-10-20 |
+| BR-6 | A discount names no product, no price list and no order; nothing applies it in this version. | Any operation | `discount` stores and returns discounts; it reads no neighbour | architect, 2026-10-20 |
+| BR-7 | Two discounts may overlap. | A `createDiscount` like an existing discount | Created; `createDiscount` never answers 409 in this version. A retried `createDiscount` creates another discount: `X-Request-Id` does not make a create idempotent; avoiding a retry is the caller's job | BA, 2026-10-20; the retry: TL, 2026-10-20 |
+| BR-8 | An unknown discount is not found. | A `getDiscount` whose `discountId` is not a UUID or names no discount | 404, `DISCOUNT_NOT_FOUND` | architect, 2026-10-20 (AR-1, AR-3) |
+| BR-9 | A `createDiscount` checks its body as one group. | A `createDiscount` refused on more than one ground | `percent` (BR-1), the currency (BR-4), the amount (BR-3) and any value the schema refuses are all content: one 400, one item per field at fault (AR-1) | TL, 2026-10-20 (the catalog's order of checks, `backend-api-contract`) |
+| BR-10 | `Accept-Language` changes nothing. | A `createDiscount` or `getDiscount` that carries it | Accepted and ignored | TL, 2026-10-20 |
 
 ## Decisions
 
@@ -73,13 +78,14 @@ None.
 
 | Neighbour | Direction | Contract | What crosses |
 | --------- | --------- | -------- | ------------ |
+| Callers | inbound | `docs/contracts/catalog.openapi.json` 1.0.0: `createDiscount`, `getDiscount` (tag `Discount`), served under `/commerce/v1/catalog` | as the contract says; authentication is out of this version: the contract's `security` is kept as written, nothing of it is built, 401 and 403 are never answered (TL, 2026-10-20); anyone creates a discount, the demo runs without a login (PO, 2026-10-20) |
 
 ## Applicable area rules and invariants
 
 | Entry | What it constrains here |
 | ----- | ----------------------- |
 | INV-DATA-001 of `../../invariants.md` | The `minimumOrder` of a discount |
-| AR-1 of `../area.md` | Every error answer of its two operations; its list of 404 codes does not name `DISCOUNT_NOT_FOUND`, a reported gap (architect, 2026-10-20) |
+| AR-1 of `../area.md` | Every error answer of its two operations (architect, 2026-10-20) |
 | AR-2 of `../area.md` | What it logs (architect, 2026-10-20) |
 | AR-3 of `../area.md` | `discountId` in the path of `getDiscount` (architect, 2026-10-20) |
 | AR-4 of `../area.md` | The body of `createDiscount` (architect, 2026-10-20) |
@@ -88,11 +94,9 @@ AR-5 does not bind `discount` in this version (architect, 2026-10-20).
 
 ## Open questions
 
-- What is the order a discount reduces ("Reductions on an order.", `/tags/2/description`; `minimumOrder`)? No bounded context and no contract defines it: who applies a discount to an order?
-- Which values of `percent` are accepted: zero, above 100, negative?
-- `period` is sent to `createDiscount` but `Discount` does not return it: is it kept?
-- May `period.end` come before `period.start`, and what does an absent `end` mean?
-- Is `period` (date-time, `start` / `end`) the same notion as the `validity` of a price list (date, `from` / `to`), or another one?
-- Must the currency of `minimumOrder` be a known ISO 4217 code, as `price-list`'s BR-4 requires of a price?
-- Does a discount apply to some products or price lists? The contract links it to none.
-- `Accept-Language` is a parameter of both operations while `Discount` carries no label: does it change anything?
+Findings of the attack of 2026-10-20 (`partition-attack`). Findings 2 to 5 were settled on 2026-10-20 and left this section: BR-4 keeps its citation and the amount rules stay separate copies, under the gap recorded in `../bounded-contexts.md` (architect); a retry is the caller's to avoid (TL, BR-7); `minimumOrder` governs nothing (BA, BR-5).
+
+1. **Anonymous discounts that outlive the demo.** Scenario: without a token, a caller sends `createDiscount` with `percent` 90, a thousand times; each is created (BR-7), with no record of who created it. Impact: today none, as nothing applies a discount (BR-6); the day something does, every discount created anonymously during the demo applies, and their number is unbounded. Missing: what becomes of the discounts created without a login once authentication is built or something applies them. Accepted for this version, no limit on how many are created; stays open until authentication is built or something applies discounts (PO, 2026-10-20).
+2. **A date-time without seconds.** `period/start` or `period/end` as `2026-01-01T00:00Z` is accepted, which RFC 3339 refuses; no effect, the period is not kept (BR-2). Accepted in this version, in `price-list` and `discount` alike; is it refused once a period is kept? (TL, 2026-10-20)
+
+Attacks with nothing to report: **the session** (no status, no permission, no selection that can change under a caller: a discount is created and read, never changed); **the contract** (the spec shows nothing the contract does not declare: 401 and 403 are declared and never answered, as in the rest of `catalog`; a `null` `minimumOrder` or `period` is a value the OpenAPI 3.1 schema refuses: 400, `backend-api-contract`); **the data** (no amount in a log, AR-2; no value in an error, AR-1; the period accepted and not kept is BR-2).

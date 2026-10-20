@@ -97,5 +97,4 @@ None.
 
 ## Open questions
 
-
-None (2026-10-19).
+1. **A date-time without seconds.** An `effectiveFrom` of `setPrice` as `2026-01-01T00:00Z` is accepted, which RFC 3339 refuses (found by the gate of `docs/plans/catalog-discounts.md`). Accepted in this version, in `price-list` and `discount` alike; is it refused in a later version? (TL, 2026-10-20)

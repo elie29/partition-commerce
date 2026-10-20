@@ -45,6 +45,11 @@ elements:
     in: commerce-app
     name: Price list
     context: price-list
+  - id: discount
+    kind: component
+    in: commerce-app
+    name: Discount
+    context: discount
   - id: h2
     kind: container
     in: commerce
@@ -68,6 +73,7 @@ relations:
   - product -> h2: SQL
   - product -> price-list: PriceListPrices, in process
   - price-list -> h2: SQL
+  - discount -> h2: SQL
 
 views:
   - id: context
