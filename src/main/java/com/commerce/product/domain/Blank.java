@@ -1,13 +1,13 @@
-package com.commerce.product.application;
+package com.commerce.product.domain;
 
 /** The one definition in {@code product} of Blank (`docs/specs/catalog/area.md`). */
-final class Blank {
+public final class Blank {
 
     private Blank() {
     }
 
     /** Empty or only white space, non-breaking spaces included, which {@link String#isBlank()} keeps. */
-    static boolean is(String value) {
+    public static boolean is(String value) {
         return value.codePoints().allMatch(c -> Character.isWhitespace(c) || Character.isSpaceChar(c));
     }
 }

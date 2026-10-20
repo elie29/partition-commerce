@@ -14,6 +14,9 @@ public class GetProductUseCase {
 
     /** @throws ProductNotFound when the identifier is not a UUID (AR-3) or names no product */
     public ProductView get(String productId) {
-        return Identifiers.parse(productId).flatMap(products::find).orElseThrow(ProductNotFound::new);
+        return Identifiers.parse(productId)
+                .flatMap(products::find)
+                .map(ProductView::of)
+                .orElseThrow(ProductNotFound::new);
     }
 }

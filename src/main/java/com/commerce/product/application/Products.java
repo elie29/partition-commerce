@@ -1,5 +1,6 @@
 package com.commerce.product.application;
 
+import com.commerce.product.domain.Product;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,9 +14,12 @@ public interface Products {
      *
      * @throws ReferenceAlreadyHeld when another product holds the reference
      */
-    void add(ProductView product);
+    void add(Product product);
 
-    Optional<ProductView> find(UUID productId);
+    Optional<Product> find(UUID productId);
+
+    /** Writes the status of a product the store holds (BR-9). */
+    void changeStatus(Product product);
 
     /** The page {@code page} of {@code size} products, by reference ascending; no reference given is no filter. */
     ProductPage page(Collection<String> references, long page, int size);

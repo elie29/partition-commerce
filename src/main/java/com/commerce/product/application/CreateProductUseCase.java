@@ -1,5 +1,7 @@
 package com.commerce.product.application;
 
+import com.commerce.product.domain.Blank;
+import com.commerce.product.domain.Product;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -30,8 +32,8 @@ public class CreateProductUseCase {
     /** A content {@link #contentFaults} and the contract accept; created at the server's clock, in UTC, to the ms. */
     public ProductView create(String reference, String label) {
         Instant now = clock.instant().truncatedTo(ChronoUnit.MILLIS);
-        ProductView product = new ProductView(UUID.randomUUID(), reference, label, now);
+        Product product = Product.create(UUID.randomUUID(), reference, label, now);
         products.add(product);
-        return product;
+        return ProductView.of(product);
     }
 }

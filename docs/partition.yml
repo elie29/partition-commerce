@@ -82,15 +82,18 @@ contexts:                     # one entry per bounded context, declared by parti
       - src/main/java/com/commerce/product/**
     hexagons:
       - id: product
-        form: thin
-        reason: "its only rule checks an input: there is no state to protect; the unique reference (BR-1) is held by a unique constraint in the store (architect, 2026-10-19)"
+        form: rich
+        reason: "a product can be retired and is never reactivated (BR-9); the unique reference (BR-1) stays held by the store's unique constraint (Claire Martin, architect, 2026-10-20)"
         layers:
+          domain: src/main/java/com/commerce/product/domain/**
           application: src/main/java/com/commerce/product/application/**
           inbound: src/main/java/com/commerce/product/inbound/**
           outbound: src/main/java/com/commerce/product/outbound/**
         allowed:
+          - application -> domain
           - inbound -> application
           - outbound -> application
+          - outbound -> domain
   - id: price-list
     area: catalog
     code:
