@@ -71,7 +71,6 @@ relations:
   - refund -> h2: SQL
   - refund -> cardpay: sends refunds
   - product -> h2: SQL
-  - product -> price-list: PriceListPrices, in process
   - price-list -> h2: SQL
   - discount -> h2: SQL
 

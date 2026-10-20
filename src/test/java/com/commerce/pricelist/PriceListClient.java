@@ -62,6 +62,20 @@ final class PriceListClient {
                 .build());
     }
 
+    /** {@code getProductPrice}; {@code query} is appended as written, {@code ""} for none. */
+    HttpResponse<String> productPrice(String priceListId, String productId, String query) {
+        return productPrice(priceListId, productId, query, headers());
+    }
+
+    HttpResponse<String> productPrice(
+            String priceListId, String productId, String query, Map<String, String> headers) {
+        HttpRequest.Builder request = HttpRequest.newBuilder(
+                        URI.create(base + "/price-lists/" + priceListId + "/product-prices/" + productId + query))
+                .GET();
+        headers.forEach(request::header);
+        return send(request.build());
+    }
+
     /** {@code Accept} and a fresh, well-formed {@code X-Request-Id}; a test removes or replaces either. */
     static Map<String, String> headers() {
         Map<String, String> headers = new LinkedHashMap<>();

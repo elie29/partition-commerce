@@ -50,28 +50,6 @@ final class ProductClient {
         return send(request.build());
     }
 
-    /** Creates a price list through the API of {@code price-list}, as a caller does; a test of the price needs one. */
-    HttpResponse<String> createPriceList(String currency) {
-        return write("POST", "/price-lists",
-                "{\"name\":\"Shop\",\"currency\":" + quoted(currency) + ",\"channel\":\"SHOP\"}");
-    }
-
-    /** Sets a price through the API of {@code price-list}, as a caller does. */
-    HttpResponse<String> setPrice(String priceListId, String productId, long amountMinor, String currency,
-            String effectiveFrom) {
-        return write("PUT", "/price-lists/" + priceListId + "/prices/" + productId,
-                "{\"price\":{\"amountMinor\":" + amountMinor + ",\"currency\":" + quoted(currency) + "}"
-                        + (effectiveFrom == null ? "" : ",\"effectiveFrom\":" + quoted(effectiveFrom)) + "}");
-    }
-
-    private HttpResponse<String> write(String method, String path, String body) {
-        HttpRequest.Builder request = HttpRequest.newBuilder(URI.create(base + path))
-                .header("Content-Type", "application/json")
-                .method(method, HttpRequest.BodyPublishers.ofString(body));
-        headers().forEach(request::header);
-        return send(request.build());
-    }
-
     HttpResponse<String> read(String productId) {
         return get("/products/" + productId, headers());
     }

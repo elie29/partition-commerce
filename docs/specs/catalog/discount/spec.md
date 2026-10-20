@@ -2,9 +2,9 @@
 
 > **Source:** `docs/contracts/catalog.openapi.json`
 >
-> **Source version:** 1.0.0
+> **Source version:** 1.1.0
 >
-> **Provenance:** 2026-10-20 · 5016f59abcc032d499cd375b285e213b3b90cc56
+> **Provenance:** 2026-10-20 · 260ac4127d89f0b65d7d1d377f5c429f136716f7
 >
 > **Scope:** tag:Product; tag:PriceList; tag:Discount
 >
@@ -21,7 +21,7 @@ Grant reductions on an order: create a discount and read it.
 
 **In scope:** the discounts.
 
-**Out of scope:** the products and the reading of a product's price (`product`); the price lists and the setting of a price (`price-list`); the order a discount reduces, which no operation of the contract handles.
+**Out of scope:** the products (`product`); the price lists, the setting and the reading of a price (`price-list`); the order a discount reduces, which no operation of the contract handles.
 
 ## Language
 
@@ -40,7 +40,7 @@ What this bounded context owns in its source. The source says what each part hol
 | createDiscount | [POST /discounts](../../../contracts/catalog.openapi.json) (`/paths/~1discounts/post`) | Create a discount |
 | getDiscount | [GET /discounts/{discountId}](../../../contracts/catalog.openapi.json) (`/paths/~1discounts~1{discountId}/get`) | Read a discount |
 | Tag `Discount` | [`/tags/2/description`](../../../contracts/catalog.openapi.json) | What the tag groups |
-| `Discount`, `Money` schemas | [`/components/schemas`](../../../contracts/catalog.openapi.json) | The discount and an amount as the operations exchange them; `Money` is also used by `setPrice` of `price-list` and `getProductPrice` of `product` |
+| `Discount`, `Money` schemas | [`/components/schemas`](../../../contracts/catalog.openapi.json) | The discount and an amount as the operations exchange them; `Money` is also used by `setPrice` and `getProductPrice` of `price-list` |
 
 ## Business rules
 

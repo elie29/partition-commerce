@@ -18,11 +18,8 @@ One meaning per word, no synonyms. A word used by one bounded context only stays
 | ---- | -------------------- |
 | Product | What the shop sells (BA, 2026-10-19). |
 | Price list | The prices of products in one currency, for one channel (BA, 2026-10-19). |
-| Price | An amount in `Money` and its `effectiveFrom`; its amount is "the amount" (BA, 2026-10-19). |
-| Day | A calendar date in UTC (BA, 2026-10-19). |
 | Currency | A three-letter ISO 4217 code; one meaning with `billing`'s (BA, architect, 2026-10-19). |
 | Amount | A sum of money in one currency, stored in minor units; of a price, its amount; one meaning with `billing`'s (BA, 2026-10-19). |
-| Applies | Of a price, on a day: its `effectiveFrom` is on or before the end of that day, in UTC (BA, 2026-10-19). |
 | Blank | Empty or only white space; a non-breaking space (U+00A0, U+2007, U+202F) is white space; one meaning with `billing`'s (BA, 2026-10-19). |
 | Character | A Unicode code point: an emoji is one character; one meaning with `billing`'s (BA, 2026-10-19). |
 | Identifier | A UUID made by the bounded context that creates the resource (BA, 2026-10-19). |

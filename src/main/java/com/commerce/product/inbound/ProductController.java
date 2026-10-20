@@ -1,21 +1,16 @@
 package com.commerce.product.inbound;
 
 import com.commerce.product.application.CreateProductUseCase;
-import com.commerce.product.application.GetProductPriceUseCase;
 import com.commerce.product.application.GetProductUseCase;
 import com.commerce.product.application.ListProductsUseCase;
 import com.commerce.product.application.ProductPage;
-import com.commerce.product.application.ProductPriceView;
 import com.commerce.product.application.ProductView;
 import com.commerce.product.inbound.api.ProductApi;
 import com.commerce.product.inbound.api.model.CreateProductRequest;
 import com.commerce.product.inbound.api.model.ListProducts200Response;
 import com.commerce.product.inbound.api.model.ListProducts200ResponsePage;
-import com.commerce.product.inbound.api.model.Money;
-import com.commerce.product.inbound.api.model.Price;
 import com.commerce.product.inbound.api.model.Product;
 import java.net.URI;
-import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -37,17 +32,12 @@ public class ProductController implements ProductApi {
     private final CreateProductUseCase createProduct;
     private final GetProductUseCase getProduct;
     private final ListProductsUseCase listProducts;
-    private final GetProductPriceUseCase getProductPrice;
 
     public ProductController(
-            CreateProductUseCase createProduct,
-            GetProductUseCase getProduct,
-            ListProductsUseCase listProducts,
-            GetProductPriceUseCase getProductPrice) {
+            CreateProductUseCase createProduct, GetProductUseCase getProduct, ListProductsUseCase listProducts) {
         this.createProduct = createProduct;
         this.getProduct = getProduct;
         this.listProducts = listProducts;
-        this.getProductPrice = getProductPrice;
     }
 
     /** The body was judged whole before it was bound ({@link ProductBodyCheck}). */
@@ -62,14 +52,6 @@ public class ProductController implements ProductApi {
     @Override
     public ResponseEntity<Product> getProduct(String xRequestId, String productId, String acceptLanguage) {
         return ResponseEntity.ok(toProduct(getProduct.get(productId)));
-    }
-
-    @Override
-    public ResponseEntity<Price> getProductPrice(
-            String xRequestId, String productId, String priceListId, String acceptLanguage, LocalDate at) {
-        ProductPriceView price = getProductPrice.get(productId, priceListId, at);
-        return ResponseEntity.ok(new Price(productId, new Money(price.amountMinor(), price.currency()))
-                .effectiveFrom(price.effectiveFrom().atOffset(ZoneOffset.UTC)));
     }
 
     @Override

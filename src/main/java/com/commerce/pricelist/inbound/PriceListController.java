@@ -2,6 +2,7 @@ package com.commerce.pricelist.inbound;
 
 import com.commerce.pricelist.application.CreatePriceListUseCase;
 import com.commerce.pricelist.application.GetPriceListUseCase;
+import com.commerce.pricelist.application.GetProductPriceUseCase;
 import com.commerce.pricelist.application.PriceListView;
 import com.commerce.pricelist.application.PriceView;
 import com.commerce.pricelist.application.SetPriceUseCase;
@@ -12,6 +13,7 @@ import com.commerce.pricelist.inbound.api.model.Price;
 import com.commerce.pricelist.inbound.api.model.PriceList;
 import com.commerce.pricelist.inbound.api.model.SetPriceRequest;
 import java.net.URI;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * The operations of the tag {@code PriceList} of `docs/contracts/catalog.openapi.json`, under its base path. The
- * headers are checked before binding ({@link PriceListRequestCheck}), the body whole before it is bound
+ * headers and the query are checked before binding ({@link PriceListRequestCheck}), the body whole before it is bound
  * ({@link PriceListBodyCheck}), then the path's identifiers. {@code Accept-Language} changes nothing (BR-13).
  */
 @RestController
@@ -32,12 +34,17 @@ public class PriceListController implements PriceListApi {
     private final CreatePriceListUseCase createPriceList;
     private final GetPriceListUseCase getPriceList;
     private final SetPriceUseCase setPrice;
+    private final GetProductPriceUseCase getProductPrice;
 
     public PriceListController(
-            CreatePriceListUseCase createPriceList, GetPriceListUseCase getPriceList, SetPriceUseCase setPrice) {
+            CreatePriceListUseCase createPriceList,
+            GetPriceListUseCase getPriceList,
+            SetPriceUseCase setPrice,
+            GetProductPriceUseCase getProductPrice) {
         this.createPriceList = createPriceList;
         this.getPriceList = getPriceList;
         this.setPrice = setPrice;
+        this.getProductPrice = getProductPrice;
     }
 
     /** The request model prints its amount: it is handed to the use case and never logged (AR-2). */
@@ -47,8 +54,13 @@ public class PriceListController implements PriceListApi {
         OffsetDateTime effectiveFrom = request.getEffectiveFrom();
         PriceView set = setPrice.set(priceListId, productId, request.getPrice().getAmountMinor(),
                 request.getPrice().getCurrency(), effectiveFrom == null ? null : effectiveFrom.toInstant());
-        return ResponseEntity.ok(new Price(set.productId().toString(), new Money(set.amountMinor(), set.currency()))
-                .effectiveFrom(set.effectiveFrom().atOffset(ZoneOffset.UTC)));
+        return ResponseEntity.ok(toPrice(set));
+    }
+
+    @Override
+    public ResponseEntity<Price> getProductPrice(
+            String xRequestId, String priceListId, String productId, String acceptLanguage, LocalDate at) {
+        return ResponseEntity.ok(toPrice(getProductPrice.get(priceListId, productId, at)));
     }
 
     @Override
@@ -63,6 +75,11 @@ public class PriceListController implements PriceListApi {
     @Override
     public ResponseEntity<PriceList> getPriceList(String xRequestId, String priceListId, String acceptLanguage) {
         return ResponseEntity.ok(toPriceList(getPriceList.get(priceListId)));
+    }
+
+    private static Price toPrice(PriceView price) {
+        return new Price(price.productId().toString(), new Money(price.amountMinor(), price.currency()))
+                .effectiveFrom(price.effectiveFrom().atOffset(ZoneOffset.UTC));
     }
 
     private static PriceList toPriceList(PriceListView list) {

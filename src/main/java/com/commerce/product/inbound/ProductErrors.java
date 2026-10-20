@@ -1,6 +1,5 @@
 package com.commerce.product.inbound;
 
-import com.commerce.product.application.PriceNotFound;
 import com.commerce.product.application.ProductNotFound;
 import com.commerce.product.application.ReferenceAlreadyHeld;
 import com.commerce.product.inbound.api.model.ListProducts400Response;
@@ -59,13 +58,6 @@ class ProductErrors {
     ResponseEntity<ListProducts400Response> productNotFound(HttpServletRequest request) {
         return answer(request, HttpStatus.NOT_FOUND, "No such product.",
                 List.of(item("PRODUCT_NOT_FOUND", "No product holds this identifier.", null)));
-    }
-
-    /** BR-9: no such product, no such price list, or no price that applies, told apart by nothing. */
-    @ExceptionHandler(PriceNotFound.class)
-    ResponseEntity<ListProducts400Response> priceNotFound(HttpServletRequest request) {
-        return answer(request, HttpStatus.NOT_FOUND, "No such product, or no price for it in that price list.",
-                List.of(item("PRICE_NOT_FOUND", "No price applies for this product in this price list.", null)));
     }
 
     /**

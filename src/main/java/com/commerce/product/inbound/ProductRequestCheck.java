@@ -4,9 +4,6 @@ import com.commerce.product.application.Fault;
 import com.commerce.product.application.Identifiers;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -32,7 +29,6 @@ class ProductRequestCheck implements HandlerInterceptor {
         }
         List<Fault> faults = switch (method.getMethod().getName()) {
             case "listProducts" -> listQuery(request);
-            case "getProductPrice" -> priceQuery(request);
             default -> List.of();
         };
         if (!faults.isEmpty()) {
@@ -55,25 +51,6 @@ class ProductRequestCheck implements HandlerInterceptor {
         }
         integer(request, "page", 0, Integer.MAX_VALUE, faults);
         integer(request, "size", 1, 100, faults);
-        return faults;
-    }
-
-    private static List<Fault> priceQuery(HttpServletRequest request) {
-        List<Fault> faults = new ArrayList<>();
-        String priceListId = request.getParameter("priceListId");
-        if (priceListId == null || priceListId.isEmpty()) {
-            faults.add(new Fault("priceListId", "The parameter is required."));
-        } else if (!Identifiers.isUuid(priceListId)) {
-            faults.add(new Fault("priceListId", "The parameter is not a UUID."));
-        }
-        String at = present(request.getParameter("at"));
-        if (at != null) {
-            try {
-                LocalDate.parse(at, DateTimeFormatter.ISO_LOCAL_DATE);
-            } catch (DateTimeParseException e) {
-                faults.add(new Fault("at", "The parameter is not a date."));
-            }
-        }
         return faults;
     }
 

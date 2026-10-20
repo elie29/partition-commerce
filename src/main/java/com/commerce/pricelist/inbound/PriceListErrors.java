@@ -1,6 +1,7 @@
 package com.commerce.pricelist.inbound;
 
 import com.commerce.pricelist.application.PriceListNotFound;
+import com.commerce.pricelist.application.PriceNotFound;
 import com.commerce.pricelist.application.PriceRefused;
 import com.commerce.pricelist.inbound.api.model.ListProducts400Response;
 import com.commerce.pricelist.inbound.api.model.ListProducts400ResponseErrorsInner;
@@ -60,6 +61,13 @@ class PriceListErrors {
     ResponseEntity<ListProducts400Response> priceListNotFound(HttpServletRequest request) {
         return answer(request, HttpStatus.NOT_FOUND, "No such price list.",
                 List.of(item("PRICE_LIST_NOT_FOUND", "No price list holds this identifier.", null)));
+    }
+
+    /** BR-14: no such price list, no price for the product in it, or no price that applies, told apart by nothing. */
+    @ExceptionHandler(PriceNotFound.class)
+    ResponseEntity<ListProducts400Response> priceNotFound(HttpServletRequest request) {
+        return answer(request, HttpStatus.NOT_FOUND, "No such product, or no price for it in that price list.",
+                List.of(item("PRICE_NOT_FOUND", "No price applies for this product in this price list.", null)));
     }
 
     /**
