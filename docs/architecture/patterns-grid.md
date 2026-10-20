@@ -33,3 +33,4 @@ Every ruling answers the criteria below. The list is the project's: add a column
 
 | Date | Rulings replayed | Conform | Deviations |
 | ---- | ---------------- | ------- | ---------- |
+| 2026-10-20 | P-1 to P-8 (all) | P-1, P-2, P-3, P-5, P-6, P-7, P-8 | P-4: `product` holds two handlers since it absorbed `price-list`, `ProductErrors` (`commerce-app/src/main/java/com/commerce/product/inbound/ProductErrors.java:26`) and `PriceListErrors` (`commerce-app/src/main/java/com/commerce/product/inbound/PriceListErrors.java:27`), each building the envelope with the same `envelope`, `framesOf` and `item`; the owner says whether the code is realigned or the ruling revised. Not ruled: inbound ports with one implementation (`InvoicePayments`, `CustomerStatus`), the GoF Adapter named in `InvoicePaymentsAdapter`, the sealed `Charge`, fakes of CardPay in `src/main`, the interceptor and body advice duplicated per controller in `product` |
