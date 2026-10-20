@@ -60,7 +60,7 @@ Settled on 2026-10-20:
 - [x] One adapter implements that interface: not a fission, a move or a promotion
 - [x] The contract is written and frozen: not a fission, a move or a promotion
 - [x] For a fission, the new bounded context has its durable spec and its own language: not a fission
-- [ ] Each rule both sides need has one home: the owner's spec, the area file or the register: AR-3, DEC-1, the amount paid (finding 3)
+- [x] Each rule both sides need has one home: the owner's spec, the area file or the register: AR-3 became BR-32 of `payment` and left the area file; DEC-1 once in `payment`; "Amount paid" one word in `payment`'s Language — carried over by Léa Petit (BA), 2026-10-20
 - [x] For a merge, the person who carries the hand-written sections over: Léa Petit (business analyst), 2026-10-20
 - [x] For a removal, nothing calls it any more: not a removal
 
@@ -75,5 +75,5 @@ Carried out by `docs/plans/refund-into-payment.md` (Tasks 3 to 5).
 ## After
 
 - [x] C4 model updated and regenerated: the component `refund` and its three relations gone, `payment -> cardpay: charges, reverses, sends refunds`, the dynamic view `refund-invoice` through `payment` and `invoicing`; `c4.drawio` seven pages, 2026-10-20
-- [x] `docs/partition.yml` keeps `refund`, with its area only, while `docs/specs/billing/refund/` exists; its entry is taken out once a person has deleted the folder, 2026-10-20
+- [x] `docs/partition.yml` kept `refund`, with its area only, while `docs/specs/billing/refund/` existed; the folder deleted by a person and the entry taken out, 2026-10-20 (`docs/plans/refund-into-payment-after-carry-over.md`)
 - [x] Budget measured again: `docs/budget/2026-10-20.md` — `payment` 6 057 (19 %), `refund` 5 144 (16 %) while its spec exists; the merge was raised by a workshop, not a gauge

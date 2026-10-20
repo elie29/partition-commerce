@@ -8,7 +8,6 @@ The language and the area rules shared by the bounded contexts of this area. A r
 | --------------- | ------------------- |
 | invoice         | `invoice/spec.md`   |
 | payment         | `payment/spec.md`   |
-| refund          | `refund/spec.md`    |
 
 ## Language
 
@@ -28,7 +27,8 @@ One meaning per word, no synonyms. A word used by one bounded context only stays
 
 | # | Rule | Trigger | Expected effect | Binds | Source |
 | --- | --- | --- | --- | --- | --- |
-| AR-1 | A bounded text is non-blank and holds at most 255 characters. | A text a rule of the area bounds by AR-1: a label, `orderId`, `customerId` (`invoice`); a card token, a charge reference (`payment`); the charge reference (`refund`) | A text blank or longer is refused, as the rule that bounds it says | invoice, payment, refund | architect, 2026-10-19 (the bound of BR-12); binds `refund`: architect, 2026-10-19 |
-| AR-3 | A customer under fraud review can neither pay nor be refunded. | A pay (`payment`) or a refund (`refund`) of an invoice whose customer, the invoice's `customerId`, is under fraud review: listed in `application.yaml` under `commerce.fraud-review.customers`, matched exactly, until the risk team has a system. The risk team puts a customer under review and lifts it by editing the list, read at start-up: an edit counts at the next restart. A missing list, or a blank or overlong entry (AR-1), stops the start | Refused: 403, no body; nothing is recorded and CardPay is not called; no log names a customer under review | payment, refund | from source: REQ-4, REQ-6 (1.1); trigger: PO, 2026-10-19; list: PO, TL, architect, 2026-10-19; confirmed: owner, 2026-10-19 |
+| AR-1 | A bounded text is non-blank and holds at most 255 characters. | A text a rule of the area bounds by AR-1: a label, `orderId`, `customerId` (`invoice`); a card token, a charge reference (`payment`) | A text blank or longer is refused, as the rule that bounds it says | invoice, payment | architect, 2026-10-19 (the bound of BR-12); `refund` merged into `payment`: 2026-10-20 |
+
+AR-3 — moved on 2026-10-20 (BA): BR-32 of `payment/spec.md`, the one bounded context it binds since `refund` merged into `payment`.
 
 AR-2 — removed on 2026-10-19 ([architect]): INV-DATA-001 of `../invariants.md`; the `BIGINT` column in the database rule; three letters and whole numbers in the words Currency and Minor units.

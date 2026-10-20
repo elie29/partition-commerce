@@ -25,7 +25,7 @@ A correction is a cancel, then a new `POST /invoices` for the same order. An ord
 
 CardPay is not reachable in this version: the service charges cards and sends refunds through a fake that accepts every card and every refund. There is no URL and no credentials. No operation reads a refund back, and a refund is never shown `SETTLED` in this version.
 
-A refusal of the billing API carries no body. A JSON value of the wrong type is refused, never coerced; a request with no content type gets `415`. The rules are in `docs/specs/billing/invoice/spec.md` (issue, read, cancel), `docs/specs/billing/payment/spec.md` (pay), `docs/specs/billing/refund/spec.md` (refund) and, for those they share, `docs/specs/billing/area.md`.
+A refusal of the billing API carries no body. A JSON value of the wrong type is refused, never coerced; a request with no content type gets `415`. The rules are in `docs/specs/billing/invoice/spec.md` (issue, read, cancel), `docs/specs/billing/payment/spec.md` (pay, refund) and, for those they share, `docs/specs/billing/area.md`.
 
 The catalog API, as `docs/contracts/catalog.openapi.json` declares it for the tags `Product`, `PriceList` and `Discount`, under the base path `/commerce/v1/catalog`:
 

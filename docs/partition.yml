@@ -58,8 +58,6 @@ contexts:                     # one entry per bounded context, declared by parti
           - inbound -> application
           - outbound -> application
           - outbound -> domain
-  - id: refund                # merged into payment on 2026-10-20; declared until docs/specs/billing/refund/ is deleted by a person
-    area: billing
   - id: product
     area: catalog
     code:
