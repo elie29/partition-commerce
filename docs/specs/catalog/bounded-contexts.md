@@ -6,11 +6,11 @@
 >
 > **Provenance:** 2026-10-19 · 5016f59abcc032d499cd375b285e213b3b90cc56
 >
-> **Scope:** tag:Product; tag:PriceList
+> **Scope:** tag:Product; tag:PriceList; tag:Discount
 >
-> **Units covered:** 7 / 9
+> **Units covered:** 9 / 9
 >
-> **Decided:** 2026-10-19 · [architect] · proposal: option 1
+> **Decided:** 2026-10-20 · Claire Martin, architect · proposal: option 1
 
 The **Scope** line fixes the units analysed; the others appear in the `Coverage` table with the mention "out of scope". Change it only when a scope extension has been validated.
 
@@ -35,6 +35,7 @@ Decision rules: **R1** a bounded context needs C2 and one of C3–C5; **R2** C1 
 | --- | --- | --- | --- |
 | product | listProducts, createProduct, getProduct, getProductPrice | C2, C3, C4 (hint: C1, tag `Product`) | The terminal resource is `products`; `getProductPrice` (`…/products/{productId}/price`) is a sub-resource of `products`, its root aggregate (C2, R3). Its vocabulary (reference, label, attributes, translations) stands apart from the price lists'; a price list knows a product only by its `productId`. No named third party (C5 no). |
 | price-list | createPriceList, getPriceList, setPrice | C2, C3, C4 (hint: C1, tag `PriceList`) | The terminal resource is `price-lists`; `setPrice` (`…/price-lists/{priceListId}/prices/{productId}`) is a sub-resource of `price-lists`. Its vocabulary (name, currency, channel, validity, price, effectiveFrom) stands apart from the products'. No named third party (C5 no). Against R4: it shares `Price` and `Money` with `getProductPrice` of `product`; weak sharing, it does not prevail. |
+| discount | createDiscount, getDiscount | C2, C3, C4 (hint: C1, tag `Discount`) | The terminal resource is `discounts`, not a sub-resource. Its vocabulary (percent, minimumOrder, period, order) stands apart from the products' and the price lists'. A `Discount` names no `productId` and no `priceListId`: it evolves without them. No named third party (C5 no). Against R4: it shares only the value `Money` with `setPrice` and `getProductPrice`; weak sharing, it does not prevail. "A discount is its own aggregate, created and read by its own operations; no price list holds it." (Claire Martin, architect, 2026-10-20) |
 
 ## Decisions not to split
 
@@ -46,6 +47,7 @@ None.
 | --- | --- | --- | --- | --- |
 | 2 | `product` (listProducts, createProduct, getProduct), `price-list` (createPriceList, getPriceList, setPrice, getProductPrice) | "`getProductPrice` is read under `/products`, its root aggregate (C2, R3)" | [architect] | 2026-10-19 |
 | 3 | `catalog` (all seven operations), under R4 | "one bounded context would hold two root aggregates" | [architect] | 2026-10-19 |
+| 2 (scope extension) | `product` unchanged, `price-list` (createPriceList, getPriceList, setPrice, createDiscount, getDiscount); breaks R1 on createDiscount, getDiscount | "a discount is its own aggregate, created and read by its own operations; no price list holds it" | Claire Martin, architect | 2026-10-20 |
 
 ## Kept against the criteria
 
@@ -55,11 +57,15 @@ None.
 
 - "Every amount is stored in minor units, with its currency." ([`/info/description`](../../contracts/catalog.openapi.json)) is a rule of the contract, the one `docs/specs/billing/area.md` holds as AR-2 ([BA], 2026-10-19): it spans two areas, goes to no area file, and is quoted as a candidate under `Applicable area rules and invariants` of `product` (getProductPrice) and `price-list` (setPrice). Candidate for the admission test of the invariant register. Nothing moved in `billing`. Resolved on 2026-10-19 ([architect]): passes the admission test, written as INV-DATA-001 of `docs/specs/invariants.md` (category `DATA`, the register's only category for now); `product` and `price-list` name it. AR-2 of `billing` removed, its place kept by a note in `docs/specs/billing/area.md`; `invoice`, `payment` and `refund` name INV-DATA-001 instead ([architect], 2026-10-19). The `BIGINT` of AR-2 moves to the database rule: "An amount column is a `BIGINT` named `<what>_minor`, its currency column `<what>_currency`." ([TL], 2026-10-19, written in `.apm/instructions/backend-database.instructions.md`, deployed by `apm install`). "Three letters" and "never a decimal" stay with the words Currency and Minor units of `billing`'s Language ([architect], 2026-10-19). Migrations V4 and V6 are not edited ([TL], 2026-10-19); the comments and the error messages that cite AR-2 in `src/main/java/com/commerce/payment/domain/Money.java` and `src/main/java/com/commerce/refund/domain/Money.java` name INV-DATA-001 instead, with the catalog work ([TL], 2026-10-19): pending.
 - No invariant register existed at `docs/specs/invariants.md`: created on 2026-10-19 with INV-DATA-001.
-- Coupling outside the scope: `Money` is used by `setPrice`, `getProductPrice` and by `createDiscount`, `getDiscount` (out of scope). Extend the scope to `tag:Discount` or not?
+- Coupling outside the scope: `Money` is used by `setPrice`, `getProductPrice` and by `createDiscount`, `getDiscount` (out of scope). Extend the scope to `tag:Discount` or not? Resolved on 2026-10-20 (version 1.0.0): scope extended to `tag:Discount`, validated by name.
 - `ean` of `createProduct` is deprecated with "Use attributes.gtin." and no reason: pointed to, not a decision.
 - None of the contract's field or parameter descriptions is a business rule: they say what the API does when a value is absent, or what a parameter means ([BA], 2026-10-19). They are pointed to, not copied.
 - The common error envelope (`.claude/rules/backend-api-contract.md`), written inline in all nine operations, is a cross-cutting convention: left out of the coupling matrix.
 - No orphan schema.
+- AR-1 of `area.md` binds `discount` (architect, 2026-10-20), but its list of 404 codes does not name `DISCOUNT_NOT_FOUND`, the code of `getDiscount`'s 404: kept as a reported gap for now (architect, 2026-10-20).
+- The "Out of scope" lines of `product/spec.md` and `price-list/spec.md` say the discounts are "out of the decomposition's scope": no longer true since 2026-10-20; hand-written, reported, not rewritten.
+- "Order" (`/tags/2/description`, `minimumOrder` of `createDiscount` and `Discount`) is defined by no bounded context of `catalog` and by no contract: open question of `discount`.
+- Two time windows: `validity {from, to}` (date) of `createPriceList` and `period {start, end}` (date-time) of `createDiscount`; whether they are one notion is an open question of `discount`.
 
 ## Coverage
 
@@ -72,10 +78,11 @@ None.
 | createPriceList | PriceList | price-list |
 | getPriceList | PriceList | price-list |
 | setPrice | PriceList | price-list |
-| createDiscount | Discount | out of scope |
-| getDiscount | Discount | out of scope |
+| createDiscount | Discount | discount |
+| getDiscount | Discount | discount |
 
 ## History
 
 | Date | Version | Provenance | Nature | Detail |
 | ---- | ------- | ---------- | ------ | ------ |
+| 2026-10-20 | 1.0.0 | 5016f59 | scope extension | `tag:Discount` added to the scope; createDiscount, getDiscount form the new bounded context `discount` (proposal, option 1 · Claire Martin, architect); the decomposition of 2026-10-19 (proposal, option 1 · [architect]) stands for `product` and `price-list` |

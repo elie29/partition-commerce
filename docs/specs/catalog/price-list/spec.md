@@ -6,7 +6,7 @@
 >
 > **Provenance:** 2026-10-19 · 5016f59abcc032d499cd375b285e213b3b90cc56
 >
-> **Scope:** tag:Product; tag:PriceList
+> **Scope:** tag:Product; tag:PriceList; tag:Discount
 >
 > **Decomposition:** see `../bounded-contexts.md`
 
