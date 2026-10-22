@@ -4,8 +4,9 @@ dependencies:
 - repo_url: elie29/partition
   name: partition
   host: github.com
-  resolved_commit: cef3090ab522eaf416757caf9d301b171adc95a3
-  version: 0.1.0
+  resolved_commit: 081c78ebe164383f1b801139001d2e803fb87468
+  resolved_ref: v1.0.0
+  version: 1.0.0
   package_type: apm_package
   deployed_files:
   - .claude/agents/spec-auditor.md
@@ -50,6 +51,8 @@ dependencies:
   - .claude/skills/partition-plan/assets/hook/partition-reminder.py
   - .claude/skills/partition-plan/assets/hook/settings.json
   - .claude/skills/partition-plan/assets/plan.md
+  - .claude/skills/partition-plan/references/hook.md
+  - .claude/skills/partition-plan/references/plans-folder.md
   - .claude/skills/partition-readme
   - .claude/skills/partition-readme/LICENSE
   - .claude/skills/partition-readme/SKILL.md
@@ -90,24 +93,25 @@ dependencies:
   - .claude/skills/partition-spec/assets/area.md
   - .claude/skills/partition-spec/assets/invariants.md
   - .claude/skills/partition-spec/assets/spec.md
+  - .claude/skills/partition-spec/references/area.md
   - .claude/skills/partition-spec/references/glossary.md
   - .claude/skills/partition-spec/references/invariants.md
   deployed_file_hashes:
     .claude/agents/spec-auditor.md: sha256:bb3da05acbaaf6a937a64056f45f98c9f41f697bc49845bf498b54ff339eb019
-    .claude/rules/partition.md: sha256:a026f34be68b16df16904830c325c17ebf4a45bd127733e214163539a5e2a254
+    .claude/rules/partition.md: sha256:c96e19144da654b15f83e065c2b379245afe6eb3942c5fb149f4127f3f829612
     .claude/skills/partition-attack/LICENSE: sha256:10f1d5f4dd9428ba07bab74ebfac05e958579536d6deb8885b09e58da97f2dc3
     .claude/skills/partition-attack/SKILL.md: sha256:e61969c064ba468ca3422e60d6265bdc2d13c9a052f0a4e45e4a01b5a2f380aa
     .claude/skills/partition-budget/LICENSE: sha256:10f1d5f4dd9428ba07bab74ebfac05e958579536d6deb8885b09e58da97f2dc3
     .claude/skills/partition-budget/SKILL.md: sha256:a6bbd082914b2d046db64219e26acf0a7b975b72c3835be2ddb5e6a78b5ffb14
     .claude/skills/partition-budget/assets/assessment.md: sha256:91faf03eaad3682fe79bb5c1b307d24bfedcd6e4040b43fc82db5280879903d8
-    .claude/skills/partition-budget/assets/partition.schema.json: sha256:823567ea461795efc5fc8f6f9c7dfd11ee5b4d07458b57e921fd370403b67730
-    .claude/skills/partition-budget/assets/partition.yml: sha256:99dd6ebcd702542821ed18f882784f5a493a0d6b1b24ecbb6f3d2a2e0ffed852
-    .claude/skills/partition-budget/scripts/budget.mjs: sha256:2375bf09ba58ab6bcfda0dd82e4d8dd337dd87189200dc3fc20d9e1ad9d5825c
+    .claude/skills/partition-budget/assets/partition.schema.json: sha256:bd9d06185b5e130ee982aacfe8426611572f443233eaf87c833c89cc783d34fa
+    .claude/skills/partition-budget/assets/partition.yml: sha256:2caaf5036badb970d89dd9cd3aef00fe61265660fccc8a8b17bf109113a08e37
+    .claude/skills/partition-budget/scripts/budget.mjs: sha256:c1dfd7214ce6b9a5428d9e52557aa8a2d6d51fe3eec707fcf499dd0ab2596161
     .claude/skills/partition-c4/LICENSE: sha256:10f1d5f4dd9428ba07bab74ebfac05e958579536d6deb8885b09e58da97f2dc3
     .claude/skills/partition-c4/SKILL.md: sha256:802ab029b8a409f507e08810e06d8c49ada2f70dd5419f5a7a25d936fbe50c19
     .claude/skills/partition-c4/assets/model.yml: sha256:cf8c90c543ed698e88493bf2da7276e18d2fbdd32f340cdb13e23490b2b23ce7
     .claude/skills/partition-c4/references/model.md: sha256:769b1fa15dd230d488665532bcb72ff1f0e97434313def689676d2674c0e0ff3
-    .claude/skills/partition-c4/scripts/c4-drawio.mjs: sha256:b25570d49848734a4ce16bbabad35cc958744b96a3c4a35862c9edd06a79b7a1
+    .claude/skills/partition-c4/scripts/c4-drawio.mjs: sha256:7fe433e694bf112f1c1c8bc328f1ccb97efea678741e361482ecccc1ba771137
     .claude/skills/partition-gate/LICENSE: sha256:10f1d5f4dd9428ba07bab74ebfac05e958579536d6deb8885b09e58da97f2dc3
     .claude/skills/partition-gate/SKILL.md: sha256:6691cec0ce87fa0c27b185b02007579ff59fc5fd10e29950a65f9af58887c5cf
     .claude/skills/partition-gate/references/database-and-migrations.md: sha256:39f6432f190e1d843f2d1ea4e640d7607f28f1f1051669e49a0bb9c41814596a
@@ -124,10 +128,12 @@ dependencies:
     .claude/skills/partition-patterns/SKILL.md: sha256:1db002ab7b17cc36e438f32bce0ff4865922338dea719944694e2c964c8737e0
     .claude/skills/partition-patterns/assets/patterns-grid.md: sha256:edc36793411a3f139450525d4f9ccec68f0eda2ffc294f8ee4fee5dd68ebd9f1
     .claude/skills/partition-plan/LICENSE: sha256:10f1d5f4dd9428ba07bab74ebfac05e958579536d6deb8885b09e58da97f2dc3
-    .claude/skills/partition-plan/SKILL.md: sha256:5f7a4bafe449fb1365e47654e60690c4d8a5c52b46f1e02233d574d9038e3c17
-    .claude/skills/partition-plan/assets/hook/partition-reminder.py: sha256:81aa7d08f95fe4e12f8a016cdb317d829ca5403a3391cc38091db2f39904746b
+    .claude/skills/partition-plan/SKILL.md: sha256:dfe70ab2cf50d75d731ed9069561f3c908b804f034da0c83eec543c91d3d67b3
+    .claude/skills/partition-plan/assets/hook/partition-reminder.py: sha256:5f22c7451e04982ab3fc1ea192b283211189f10aef964ea87bd9c8ea4d6f2199
     .claude/skills/partition-plan/assets/hook/settings.json: sha256:02d38557bdb0222eac10c922c9ea16513ec011e219581db3747edc1db29bab32
     .claude/skills/partition-plan/assets/plan.md: sha256:a4521291ba0de90a848af3e85f9db29ea0d81f8e69c75d8022e9abe13ce1a647
+    .claude/skills/partition-plan/references/hook.md: sha256:553a1b163f2e22829661a13261da7886cf81f9252a6ad24bc5f93b522182c735
+    .claude/skills/partition-plan/references/plans-folder.md: sha256:802b034abef5e63cccab52bc43d5e9c9e5c61fa6bf295b9f10d7a4d6c3748039
     .claude/skills/partition-readme/LICENSE: sha256:10f1d5f4dd9428ba07bab74ebfac05e958579536d6deb8885b09e58da97f2dc3
     .claude/skills/partition-readme/SKILL.md: sha256:2ab7479edf42705616e8379584e7bdc403b488c7d3c74556867675bfa64809b4
     .claude/skills/partition-reshape/LICENSE: sha256:10f1d5f4dd9428ba07bab74ebfac05e958579536d6deb8885b09e58da97f2dc3
@@ -135,7 +141,7 @@ dependencies:
     .claude/skills/partition-reshape/assets/reshape-record.md: sha256:6a8332644cdb97363c020be05ca10c0984d500eb2807b41cfeb6612907c1bdcb
     .claude/skills/partition-reshape/references/specs.md: sha256:84262e49d353dcf98e80e7ea1311d451e619707893941d1f8c15dcf3688b3bcf
     .claude/skills/partition-rules/LICENSE: sha256:10f1d5f4dd9428ba07bab74ebfac05e958579536d6deb8885b09e58da97f2dc3
-    .claude/skills/partition-rules/SKILL.md: sha256:e575e5435db9a9cb1ae0a32760136ff800d2dc1030c73b303be1ceb6f7fcf9b4
+    .claude/skills/partition-rules/SKILL.md: sha256:1a8e5cccaa74b9593e59142d48bda6d7ca7524184b0decceb4110b97b9f6ce99
     .claude/skills/partition-rules/assets/backend/api-contract.md: sha256:c7e9082b411f79ffb1d86cf5c38e3d61c4eb0905e4eca110eacd05b7e99ebaa8
     .claude/skills/partition-rules/assets/backend/architecture.md: sha256:7be753aa3cf3fb291a50e33b413be524c3f07294f99fc07c83faa4711e9f3418
     .claude/skills/partition-rules/assets/backend/database.md: sha256:1adeccc572c96044cf864c28abf153514143969e521774c812b9b05c86aab31b
@@ -149,23 +155,24 @@ dependencies:
     .claude/skills/partition-rules/assets/frontend/naming.md: sha256:becbd59243c58ee7e2be950d8d55520e0a5d550ea22026d290f6305c1386d2ef
     .claude/skills/partition-rules/assets/frontend/testing.md: sha256:ec842999f4db353efe413e02c6aaa295d13c5ffc627748386d2584a2645ec08a
     .claude/skills/partition-shape/LICENSE: sha256:10f1d5f4dd9428ba07bab74ebfac05e958579536d6deb8885b09e58da97f2dc3
-    .claude/skills/partition-shape/SKILL.md: sha256:c97eeff0d81c963ecbbb1edf54bd308b55fccb77208854772097890477cb8afd
-    .claude/skills/partition-shape/assets/bounded-contexts.md: sha256:e5287a7a300eaa9982e1b1be2ecb378b910ed1d5c6b04510a6d764731d5e8152
-    .claude/skills/partition-shape/references/boundary-decision.md: sha256:987d27d735c467ef89e4b9644532f72a4dc05bdcd219370ec37250c314636942
+    .claude/skills/partition-shape/SKILL.md: sha256:14f8c7880bea575682805e2400cbd6bfdfabf7c94446a4bede720fb9979db8e5
+    .claude/skills/partition-shape/assets/bounded-contexts.md: sha256:322cc3fed1579f010dfe2ce40ebe974bbfd02568121e22eac32747537595faf2
+    .claude/skills/partition-shape/references/boundary-decision.md: sha256:40c5c34b2b8102417d163fae4a3105ce1f35e6f3ea5cc0d49548dc00995f02d6
     .claude/skills/partition-shape/references/criteria.md: sha256:a04f576b1c338549b5c0303878b3caec069411a7b2665006ce6476c84605348c
-    .claude/skills/partition-shape/references/decompose.md: sha256:59bc2da6126b9d68e3a4bb7bce86b78700004b312429d7f888ab47b22b6e4f51
-    .claude/skills/partition-shape/references/delta.md: sha256:94e364214fb5a9fb20fa155c44877cd585c3e14b48effcb10630e624fe171e45
-    .claude/skills/partition-shape/references/sources/document.md: sha256:6bc7bb0566fc27f9d7c1ef797a8da1c6615b4b3236193c272dfb5b5d5c266b3f
+    .claude/skills/partition-shape/references/decompose.md: sha256:f8430ea77f280daaef68669e159cf3a3afb4a7e2342a9f22f3464a636d6b210c
+    .claude/skills/partition-shape/references/delta.md: sha256:831618903a2eec22a31f027aa4d6273e56d68d7a194b1d7e2bca8fed79a4520e
+    .claude/skills/partition-shape/references/sources/document.md: sha256:7535f64e005d5ebbfbfc9e3ee4c661083903b50b1d4ddf0c5e50f6aa18081edf
     .claude/skills/partition-shape/references/sources/openapi.md: sha256:9437bc7df6d68ce51d82684b875d7ac9683a67b5710bd5198db370656beca3dd
-    .claude/skills/partition-shape/scripts/contract.mjs: sha256:2f8901eb044132dbcb4797d2b860a41478c5886b984c928e98a5959fcd23559b
+    .claude/skills/partition-shape/scripts/contract.mjs: sha256:53fbe686596c0c3ee842f9375a8641f77a0669454d67772d0bd101b3f7ec6eab
     .claude/skills/partition-spec/LICENSE: sha256:10f1d5f4dd9428ba07bab74ebfac05e958579536d6deb8885b09e58da97f2dc3
-    .claude/skills/partition-spec/SKILL.md: sha256:70e27df37d23f05ba4c666073f96c9dfcb29b2dd39ff8215dcde041d1e70fbfc
+    .claude/skills/partition-spec/SKILL.md: sha256:7beed266cbed49ba90d48981929afdfb1ad3a1a349025a02ebc00546305633c8
     .claude/skills/partition-spec/assets/area.md: sha256:323ec33844b698a06525e344dfb6a08ded438be8f91eda4e52b14bc533478a3f
     .claude/skills/partition-spec/assets/invariants.md: sha256:20ade837bfc35438ec5a96e4f9464237df191040d01c6014fd8e52e1bff9451f
-    .claude/skills/partition-spec/assets/spec.md: sha256:72765c080810edc5717a73b7b028eee717b704cb6c0e00a2a4ef02c286655e36
-    .claude/skills/partition-spec/references/glossary.md: sha256:7ff1c5f079a18b1c8d5bfde899992062ce5e3b9816166ea5f9e091efbc85284e
-    .claude/skills/partition-spec/references/invariants.md: sha256:98e56c370a3a4bae5e2be87c74e5a6785d3f74266e6c18d4d25064a7e44982a9
-  content_hash: sha256:f694facbe49e1c26937be1d7b1a74c83f0151fa94bb613fefc4938526b01b8c8
+    .claude/skills/partition-spec/assets/spec.md: sha256:d6b83808ff38d0d2f04a41c8acda529dd599d7fb5684c8a8d7b13770f0bb0c83
+    .claude/skills/partition-spec/references/area.md: sha256:4ddb979f9da50d430b3d286df010b73d6b0ba2bb865cb33c37155d1a92bbb81f
+    .claude/skills/partition-spec/references/glossary.md: sha256:2a37747fdfeb5368d95e6f40b05babe04076a15f0fa6d24c917eec197483d4e0
+    .claude/skills/partition-spec/references/invariants.md: sha256:dbd297721077d7ef941f4f8dd75533282a35577ac6c0e0b9c3e44166b0280ca9
+  content_hash: sha256:2e3f55fdded0dd4b4107a6d624d8395e82a892a2db4a91b4799f94d2e76257bc
   declared_license: MIT
 deployments:
 - kind: project-relative
@@ -284,7 +291,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:a026f34be68b16df16904830c325c17ebf4a45bd127733e214163539a5e2a254
+  content_hash: sha256:c96e19144da654b15f83e065c2b379245afe6eb3942c5fb149f4127f3f829612
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-attack
@@ -356,7 +363,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:823567ea461795efc5fc8f6f9c7dfd11ee5b4d07458b57e921fd370403b67730
+  content_hash: sha256:bd9d06185b5e130ee982aacfe8426611572f443233eaf87c833c89cc783d34fa
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-budget/assets/partition.yml
@@ -365,7 +372,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:99dd6ebcd702542821ed18f882784f5a493a0d6b1b24ecbb6f3d2a2e0ffed852
+  content_hash: sha256:2caaf5036badb970d89dd9cd3aef00fe61265660fccc8a8b17bf109113a08e37
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-budget/scripts/budget.mjs
@@ -374,7 +381,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:2375bf09ba58ab6bcfda0dd82e4d8dd337dd87189200dc3fc20d9e1ad9d5825c
+  content_hash: sha256:c1dfd7214ce6b9a5428d9e52557aa8a2d6d51fe3eec707fcf499dd0ab2596161
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-c4
@@ -428,7 +435,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:b25570d49848734a4ce16bbabad35cc958744b96a3c4a35862c9edd06a79b7a1
+  content_hash: sha256:7fe433e694bf112f1c1c8bc328f1ccb97efea678741e361482ecccc1ba771137
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-gate
@@ -617,7 +624,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:5f7a4bafe449fb1365e47654e60690c4d8a5c52b46f1e02233d574d9038e3c17
+  content_hash: sha256:dfe70ab2cf50d75d731ed9069561f3c908b804f034da0c83eec543c91d3d67b3
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-plan/assets/hook/partition-reminder.py
@@ -626,7 +633,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:81aa7d08f95fe4e12f8a016cdb317d829ca5403a3391cc38091db2f39904746b
+  content_hash: sha256:5f22c7451e04982ab3fc1ea192b283211189f10aef964ea87bd9c8ea4d6f2199
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-plan/assets/hook/settings.json
@@ -645,6 +652,24 @@ deployments:
   - elie29/partition
   active_owner: elie29/partition
   content_hash: sha256:a4521291ba0de90a848af3e85f9db29ea0d81f8e69c75d8022e9abe13ce1a647
+- kind: project-relative
+  target: claude
+  value: .claude/skills/partition-plan/references/hook.md
+  runtime: null
+  scope: project
+  owners:
+  - elie29/partition
+  active_owner: elie29/partition
+  content_hash: sha256:553a1b163f2e22829661a13261da7886cf81f9252a6ad24bc5f93b522182c735
+- kind: project-relative
+  target: claude
+  value: .claude/skills/partition-plan/references/plans-folder.md
+  runtime: null
+  scope: project
+  owners:
+  - elie29/partition
+  active_owner: elie29/partition
+  content_hash: sha256:802b034abef5e63cccab52bc43d5e9c9e5c61fa6bf295b9f10d7a4d6c3748039
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-readme
@@ -743,7 +768,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:e575e5435db9a9cb1ae0a32760136ff800d2dc1030c73b303be1ceb6f7fcf9b4
+  content_hash: sha256:1a8e5cccaa74b9593e59142d48bda6d7ca7524184b0decceb4110b97b9f6ce99
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-rules/assets/backend/api-contract.md
@@ -878,7 +903,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:c97eeff0d81c963ecbbb1edf54bd308b55fccb77208854772097890477cb8afd
+  content_hash: sha256:14f8c7880bea575682805e2400cbd6bfdfabf7c94446a4bede720fb9979db8e5
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-shape/assets/bounded-contexts.md
@@ -887,7 +912,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:e5287a7a300eaa9982e1b1be2ecb378b910ed1d5c6b04510a6d764731d5e8152
+  content_hash: sha256:322cc3fed1579f010dfe2ce40ebe974bbfd02568121e22eac32747537595faf2
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-shape/references/boundary-decision.md
@@ -896,7 +921,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:987d27d735c467ef89e4b9644532f72a4dc05bdcd219370ec37250c314636942
+  content_hash: sha256:40c5c34b2b8102417d163fae4a3105ce1f35e6f3ea5cc0d49548dc00995f02d6
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-shape/references/criteria.md
@@ -914,7 +939,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:59bc2da6126b9d68e3a4bb7bce86b78700004b312429d7f888ab47b22b6e4f51
+  content_hash: sha256:f8430ea77f280daaef68669e159cf3a3afb4a7e2342a9f22f3464a636d6b210c
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-shape/references/delta.md
@@ -923,7 +948,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:94e364214fb5a9fb20fa155c44877cd585c3e14b48effcb10630e624fe171e45
+  content_hash: sha256:831618903a2eec22a31f027aa4d6273e56d68d7a194b1d7e2bca8fed79a4520e
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-shape/references/sources/document.md
@@ -932,7 +957,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:6bc7bb0566fc27f9d7c1ef797a8da1c6615b4b3236193c272dfb5b5d5c266b3f
+  content_hash: sha256:7535f64e005d5ebbfbfc9e3ee4c661083903b50b1d4ddf0c5e50f6aa18081edf
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-shape/references/sources/openapi.md
@@ -950,7 +975,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:2f8901eb044132dbcb4797d2b860a41478c5886b984c928e98a5959fcd23559b
+  content_hash: sha256:53fbe686596c0c3ee842f9375a8641f77a0669454d67772d0bd101b3f7ec6eab
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-spec
@@ -977,7 +1002,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:70e27df37d23f05ba4c666073f96c9dfcb29b2dd39ff8215dcde041d1e70fbfc
+  content_hash: sha256:7beed266cbed49ba90d48981929afdfb1ad3a1a349025a02ebc00546305633c8
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-spec/assets/area.md
@@ -1004,7 +1029,16 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:72765c080810edc5717a73b7b028eee717b704cb6c0e00a2a4ef02c286655e36
+  content_hash: sha256:d6b83808ff38d0d2f04a41c8acda529dd599d7fb5684c8a8d7b13770f0bb0c83
+- kind: project-relative
+  target: claude
+  value: .claude/skills/partition-spec/references/area.md
+  runtime: null
+  scope: project
+  owners:
+  - elie29/partition
+  active_owner: elie29/partition
+  content_hash: sha256:4ddb979f9da50d430b3d286df010b73d6b0ba2bb865cb33c37155d1a92bbb81f
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-spec/references/glossary.md
@@ -1013,7 +1047,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:7ff1c5f079a18b1c8d5bfde899992062ce5e3b9816166ea5f9e091efbc85284e
+  content_hash: sha256:2a37747fdfeb5368d95e6f40b05babe04076a15f0fa6d24c917eec197483d4e0
 - kind: project-relative
   target: claude
   value: .claude/skills/partition-spec/references/invariants.md
@@ -1022,7 +1056,7 @@ deployments:
   owners:
   - elie29/partition
   active_owner: elie29/partition
-  content_hash: sha256:98e56c370a3a4bae5e2be87c74e5a6785d3f74266e6c18d4d25064a7e44982a9
+  content_hash: sha256:dbd297721077d7ef941f4f8dd75533282a35577ac6c0e0b9c3e44166b0280ca9
 local_deployed_files:
 - .claude/rules/backend-api-contract-catalog.md
 - .claude/rules/backend-api-contract-customer.md
