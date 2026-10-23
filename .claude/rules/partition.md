@@ -1,3 +1,8 @@
+---
+paths:
+  - "**"
+---
+
 ### Truth
 
 - The durable spec of a bounded context (its `spec.md` under `docs/specs/`) is the source of truth; the code implements it. When they disagree or a behaviour changes, settle it in the spec first with `partition-spec`, then change the code.
