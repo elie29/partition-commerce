@@ -26,3 +26,6 @@ jobs:
 
       - name: Build
         run: ./mvnw --batch-mode --no-transfer-progress clean verify
+
+      - name: End to end (both apps up)
+        run: scripts/e2e.sh
